@@ -1,27 +1,34 @@
-<!DOCTYPE html>
+<index.html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mermaid Homes - Your Gateway to Phuket Real Estate</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts - Josefin Sans -->
     <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome for WhatsApp Icon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        html {
+            scroll-behavior: smooth;
+        }
         body {
             font-family: 'Josefin Sans', sans-serif;
-            color: #5d4037; /* สีน้ำตาลเข้มสำหรับข้อความ */
+            color: #5d4037;
         }
         .container {
-            max-width: 1200px; /* จำกัดความกว้างเนื้อหา */
+            max-width: 1200px;
         }
         .hero-background {
-            background: linear-gradient(135deg, #8d6e63 0%, #a1887f 100%); /* พื้นหลังไล่ระดับสำหรับส่วนฮีโร่ */
+            background: linear-gradient(135deg, #8d6e63 0%, #a1887f 100%);
             position: relative;
-            overflow: hidden; /* ป้องกันคลื่นไม่ให้ล้น */
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 4rem 1rem;
+            min-height: 600px;
         }
         .hero-background::before {
             content: '';
@@ -33,18 +40,15 @@
             background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="waves" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M0 50 Q25 25 50 50 T100 50 V100 H0 Z" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23waves)"/></svg>') repeat;
             opacity: 0.3;
         }
-        /* คลาสสีที่กำหนดเอง */
-        .beige-primary { background-color: #d7ccc8; } /* น้ำตาลอ่อน */
-        .beige-secondary { background-color: #efebe9; } /* น้ำตาลอ่อนกว่า/ครีม */
-        .beige-dark { background-color: #8d6e63; } /* น้ำตาลกลาง */
-        .beige-light { background-color: #f5f5f5; } /* สีขาวนวล */
-        .text-beige-dark { color: #5d4037; } /* น้ำตาลเข้มสุดสำหรับข้อความ */
-        .text-beige-medium { color: #8d6e63; } /* น้ำตาลกลางสำหรับข้อความ */
-        .border-beige { border-color: #d7ccc8; } /* เส้นขอบสีน้ำตาลอ่อน */
-        /* สีเน้นสำหรับ Mermaid Homes, ไล่ระดับสีเขียวอมฟ้า */
+        .beige-primary { background-color: #d7ccc8; }
+        .beige-secondary { background-color: #efebe9; }
+        .beige-dark { background-color: #8d6e63; }
+        .beige-light { background-color: #f5f5f5; }
+        .text-beige-dark { color: #5d4037; }
+        .text-beige-medium { color: #8d6e63; }
+        .border-beige { border-color: #d7ccc8; }
         .mermaid-accent { background: linear-gradient(135deg, #4db6ac, #26a69a); }
-        .mermaid-accent-text { color: #26a69a; } /* สีข้อความเขียวอมฟ้า */
-        /* แอนิเมชันลอยสำหรับข้อความฮีโร่ */
+        .mermaid-accent-text { color: #26a69a; }
         .floating-animation {
             animation: float 6s ease-in-out infinite;
         }
@@ -52,34 +56,33 @@
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-20px); }
         }
-        /* ลวดลายคลื่น SVG สำหรับด้านล่างของส่วนฮีโร่ */
         .wave-decoration {
             background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" fill="%23d7ccc8"/><path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" fill="%23d7ccc8"/><path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="%23d7ccc8"/></svg>') no-repeat center bottom;
             background-size: cover;
-            padding-bottom: 60px; /* ระยะห่างด้านล่างสำหรับคลื่น */
+            padding-bottom: 60px;
         }
         /* สไตล์แถบเลื่อนที่กำหนดเอง */
         ::-webkit-scrollbar {
             width: 8px;
         }
         ::-webkit-scrollbar-track {
-            background: #efebe9; /* สีน้ำตาลอ่อนสำหรับรางเลื่อน */
+            background: #efebe9;
             border-radius: 10px;
         }
         ::-webkit-scrollbar-thumb {
-            background: #8d6e63; /* สีน้ำตาลกลางสำหรับปุ่มเลื่อน */
+            background: #8d6e63;
             border-radius: 10px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #5d4037; /* สีน้ำตาลเข้มขึ้นเมื่อโฮเวอร์ */
+            background: #5d4037;
         }
         /* ซ่อนแถบเลื่อนสำหรับเลื่อนแนวนอน */
         .scrollbar-hide::-webkit-scrollbar {
             display: none;
         }
         .scrollbar-hide {
-            -ms-overflow-style: none;  /* IE และ Edge */
-            scrollbar-width: none;  /* Firefox */
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
         /* สไตล์ปุ่มสลับสกุลเงิน */
         .currency-toggle {
@@ -87,24 +90,24 @@
             top: 100px;
             right: 20px;
             z-index: 1000;
-            background: rgba(215, 204, 200, 0.9); /* สีน้ำตาลอ่อนโปร่งแสง */
-            backdrop-filter: blur(10px); /* เอฟเฟกต์เบลอ */
+            background: rgba(215, 204, 200, 0.9);
+            backdrop-filter: blur(10px);
             border-radius: 20px;
             padding: 8px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
         /* สไตล์การ์ดอสังหาริมทรัพย์สำหรับการเปลี่ยนผ่านที่ราบรื่นและเงา */
         .property-card {
-            background: linear-gradient(145deg, #ffffff, #f5f5f5); /* ไล่ระดับสีบางๆ สำหรับพื้นหลังการ์ด */
-            border: 1px solid #d7ccc8; /* เส้นขอบสีน้ำตาลอ่อน */
+            background: linear-gradient(145deg, #ffffff, #f5f5f5);
+            border: 1px solid #d7ccc8;
             border-radius: 16px;
             overflow: hidden;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(141, 110, 99, 0.1); /* เงาสีน้ำตาลอ่อน */
+            box-shadow: 0 4px 15px rgba(141, 110, 99, 0.1);
         }
         .property-card:hover {
-            transform: translateY(-8px); /* เอฟเฟกต์ยกขึ้นเมื่อโฮเวอร์ */
-            box-shadow: 0 12px 30px rgba(141, 110, 99, 0.2); /* เงาที่เพิ่มขึ้นเมื่อโฮเวอร์ */
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(141, 110, 99, 0.2);
         }
         /* สไตล์ปุ่ม 'Add Listing' แบบตรึง */
         .add-listing-btn {
@@ -114,34 +117,34 @@
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #4db6ac, #26a69a); /* ไล่ระดับสีเขียวอมฟ้า (คงไว้เพราะไม่ใช่สีเขียว) */
+            background: linear-gradient(135deg, #4db6ac, #26a69a);
             color: white;
             font-size: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 20px rgba(77, 182, 172, 0.4); /* เงาสีเขียวอมฟ้า */
+            box-shadow: 0 4px 20px rgba(77, 182, 172, 0.4);
             z-index: 1000;
             transition: all 0.3s ease;
         }
         .add-listing-btn:hover {
-            transform: scale(1.1); /* เอฟเฟกต์ขยายเมื่อโฮเวอร์ */
-            box-shadow: 0 6px 25px rgba(77, 182, 172, 0.6); /* เงาที่ใหญ่ขึ้นเมื่อโฮเวอร์ */
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(77, 182, 172, 0.6);
         }
         /* สไตล์ Overlay ของ Modal */
         .modal {
-            display: none; /* ซ่อนไว้ตามค่าเริ่มต้น */
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5); /* พื้นหลังสีดำโปร่งแสง */
+            background: rgba(0,0,0,0.5);
             z-index: 2000;
-            backdrop-filter: blur(5px); /* พื้นหลังเบลอ */
+            backdrop-filter: blur(5px);
         }
         .modal.active {
-            display: flex; /* แสดงเมื่อ Active */
+            display: flex;
             align-items: center;
             justify-content: center;
         }
@@ -152,12 +155,12 @@
             max-width: 600px;
             width: 90%;
             max-height: 90vh;
-            overflow-y: auto; /* เนื้อหาที่สามารถเลื่อนได้ */
+            overflow-y: auto;
             position: relative;
             box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-            transform: scale(0.9); /* ขนาดเริ่มต้นสำหรับแอนิเมชัน */
-            opacity: 0; /* ความทึบแสงเริ่มต้นสำหรับแอนิเมชัน */
-            animation: modal-enter 0.3s forwards ease-out; /* แอนิเมชันเข้า */
+            transform: scale(0.9);
+            opacity: 0;
+            animation: modal-enter 0.3s forwards ease-out;
         }
         .modal.active .modal-content {
             animation: modal-enter 0.3s forwards ease-out;
@@ -197,7 +200,7 @@
             vertical-align: middle;
             background-size: cover;
             background-position: center;
-            border: 1px solid rgba(0,0,0,0.1); /* เส้นขอบบางๆ สำหรับธง */
+            border: 1px solid rgba(0,0,0,0.1);
         }
         .flag-thailand {
             background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9 6"><rect width="9" height="6" fill="%23FFF"/><rect width="9" height="4" y="1" fill="%23002D62"/><rect width="9" height="2" y="2" fill="%23A51931"/></svg>');
@@ -209,15 +212,15 @@
         .whatsapp-float {
             position: fixed;
             bottom: 30px;
-            left: 30px; /* ตำแหน่งด้านซ้าย */
+            left: 30px;
             width: 60px;
             height: 60px;
-            background: #8d6e63; /* เปลี่ยนจากสีเขียวเป็นสีน้ำตาลเข้ม */
+            background: #8d6e63;
             color: white;
             border-radius: 50%;
             text-align: center;
             font-size: 28px;
-            box-shadow: 0 4px 20px rgba(141, 110, 99, 0.4); /* เงาให้เข้ากับพื้นหลังใหม่ */
+            box-shadow: 0 4px 20px rgba(141, 110, 99, 0.4);
             z-index: 1000;
             display: flex;
             align-items: center;
@@ -226,11 +229,11 @@
         }
         .whatsapp-float:hover {
             transform: scale(1.1);
-            box-shadow: 0 6px 25px rgba(141, 110, 99, 0.6); /* เงาที่เพิ่มขึ้นเมื่อโฮเวอร์ */
+            box-shadow: 0 6px 25px rgba(141, 110, 99, 0.6);
         }
         /* เปลี่ยนสีข้อความเขียวอมฟ้าเป็นสีน้ำตาลเข้มหรือสีที่เหมาะสมอื่นๆ */
-        .text-teal-600 { color: #5d4037; } /* เปลี่ยนสีราคาเป็นสีน้ำตาลเข้ม */
-        .hover\:text-teal-200:hover { color: #d7ccc8; } /* เปลี่ยนสีโฮเวอร์สำหรับลิงก์โทรศัพท์ */
+        .text-teal-600 { color: #5d4037; }
+        .hover\:text-teal-200:hover { color: #d7ccc8; }
         /* สไตล์สำหรับ Search Filter Container ใหม่ */
         .search-filter-container {
             background-color: white;
@@ -240,21 +243,21 @@
             margin-bottom: 32px;
             display: grid;
             gap: 16px;
-            grid-template-columns: repeat(1, 1fr); /* เริ่มต้น 1 คอลัมน์บนหน้าจอขนาดเล็ก */
+            grid-template-columns: repeat(1, 1fr);
         }
-        @media (min-width: 640px) { /* sm breakpoint */
+        @media (min-width: 640px) {
             .search-filter-container {
-                grid-template-columns: repeat(2, 1fr); /* 2 คอลัมน์บนหน้าจอขนาดเล็ก-กลาง */
+                grid-template-columns: repeat(2, 1fr);
             }
         }
-        @media (min-width: 1024px) { /* lg breakpoint */
+        @media (min-width: 1024px) {
             .search-filter-container {
-                grid-template-columns: repeat(3, 1fr); /* 3 คอลัมน์บนหน้าจอขนาดใหญ่ */
+                grid-template-columns: repeat(3, 1fr);
             }
         }
-        @media (min-width: 1280px) { /* xl breakpoint */
+        @media (min-width: 1280px) {
             .search-filter-container {
-                grid-template-columns: repeat(6, 1fr); /* 6 คอลัมน์บนหน้าจอขนาดใหญ่พิเศษ */
+                grid-template-columns: repeat(6, 1fr);
             }
         }
         .search-filter-container select,
@@ -264,15 +267,15 @@
             padding: 10px;
             border: 1px solid #d7ccc8;
             border-radius: 8px;
-            background-color: #efebe9; /* พื้นหลังสีเบจอ่อนสำหรับ Input */
+            background-color: #efebe9;
             color: #5d4037;
             font-family: 'Josefin Sans', sans-serif;
         }
         .search-filter-container select:focus,
         .search-filter-container input:focus {
             outline: none;
-            border-color: #8d6e63; /* เส้นขอบสีเบจเข้มขึ้นเมื่อโฟกัส */
-            box-shadow: 0 0 0 2px rgba(141, 110, 99, 0.2); /* เงาอ่อนๆ เมื่อโฟกัส */
+            border-color: #8d6e63;
+            box-shadow: 0 0 0 2px rgba(141, 110, 99, 0.2);
         }
         .search-filter-container label {
             display: block;
@@ -283,22 +286,22 @@
 
         /* สไตล์ Modal รายละเอียดอสังหาริมทรัพย์ */
         .property-detail-modal {
-            display: none; /* ซ่อนไว้ตามค่าเริ่มต้น */
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.7); /* พื้นหลังสีดำโปร่งแสง */
+            background: rgba(0,0,0,0.7);
             z-index: 3000;
             align-items: center;
             justify-content: center;
-            backdrop-filter: blur(5px); /* พื้นหลังเบลอ */
-            overflow-y: auto; /* อนุญาตให้เนื้อหา Modal เลื่อนได้ */
+            backdrop-filter: blur(5px);
+            overflow-y: auto;
             padding: 20px;
         }
         .property-detail-modal.active {
-            display: flex; /* แสดงเมื่อ Active */
+            display: flex;
         }
         .property-detail-content {
             background: white;
@@ -310,7 +313,7 @@
             box-shadow: 0 8px 30px rgba(0,0,0,0.3);
             animation: modal-enter 0.3s forwards ease-out;
             max-height: 95vh;
-            overflow-y: auto; /* อนุญาตให้เนื้อหาสามารถเลื่อนได้ภายใน Modal */
+            overflow-y: auto;
         }
         .property-detail-modal.leaving .property-detail-content {
             animation: modal-leave 0.3s forwards ease-in;
@@ -324,13 +327,13 @@
         }
         .image-gallery img {
             width: 100%;
-            height: 400px; /* ความสูงคงที่สำหรับรูปภาพแกลเลอรี่ */
+            height: 400px;
             object-fit: cover;
-            display: none; /* ซ่อนรูปภาพทั้งหมดตามค่าเริ่มต้น */
+            display: none;
             border-radius: 8px;
         }
         .image-gallery img.active {
-            display: block; /* แสดงรูปภาพที่ Active */
+            display: block;
         }
         .gallery-nav-button {
             position: absolute;
@@ -388,7 +391,7 @@
                 <a href="#services" class="text-beige-medium hover:text-beige-dark font-medium transition duration-300">Services</a>
                 <a href="#properties" class="text-beige-medium hover:text-beige-dark font-medium transition duration-300">Properties</a>
                 <a href="#projects" class="text-beige-medium hover:text-beige-dark font-medium transition duration-300">Projects</a>
-                <a href="#video-tours" class="text-beige-medium hover:text-beige-dark font-medium transition duration-300">Video Tours</a>
+                <a href="#video-section" class="text-beige-medium hover:text-beige-dark font-medium transition duration-300">Video Tours</a>
                 <a href="#communities" class="text-beige-medium hover:text-beige-dark font-medium transition duration-300">Areas</a>
                 <a href="#testimonials" class="text-beige-medium hover:text-beige-dark font-medium transition duration-300">Reviews</a>
                 <a href="#contact" class="text-beige-medium hover:text-beige-dark font-medium transition duration-300">Contact</a>
@@ -404,7 +407,7 @@
                 <a href="#services" class="text-beige-dark hover:text-beige-medium font-medium py-2 w-full text-center transition duration-300">Services</a>
                 <a href="#properties" class="text-beige-dark hover:text-beige-medium font-medium py-2 w-full text-center transition duration-300">Properties</a>
                 <a href="#projects" class="text-beige-dark hover:text-beige-medium font-medium py-2 w-full text-center transition duration-300">Projects</a>
-                <a href="#video-tours" class="text-beige-dark hover:text-beige-medium font-medium py-2 w-full text-center transition duration-300">Video Tours</a>
+                <a href="#video-section" class="text-beige-dark hover:text-beige-medium font-medium py-2 w-full text-center transition duration-300">Video Tours</a>
                 <a href="#communities" class="text-beige-dark hover:text-beige-medium font-medium py-2 w-full text-center transition duration-300">Areas</a>
                 <a href="#testimonials" class="text-beige-dark hover:text-beige-medium font-medium py-2 w-full text-center transition duration-300">Reviews</a>
                 <a href="#contact" class="text-beige-dark hover:text-beige-medium font-medium py-2 w-full text-center transition duration-300">Contact</a>
@@ -412,10 +415,24 @@
         </div>
     </header>
 
-    <section class="hero-background relative h-96 md:h-[600px] flex items-center justify-center text-center text-white p-4 wave-decoration">
+    <section class="hero-background relative w-full flex flex-col items-center justify-center text-center text-white p-4">
         <div class="absolute inset-0 bg-gradient-to-r from-black/40 to-black/20"></div>
-        <div class="relative z-10 max-w-3xl">
-            <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight floating-animation">Find Your Dream Home in Phuket</h1>
+        
+        <!-- Vimeo Video embed moved to Hero Section and given ID for direct linking -->
+        <div id="video-section" class="relative z-10 w-full max-w-3xl mb-8">
+            <div style="padding:56.25% 0 0 0;position:relative; border-radius: 8px; overflow: hidden;">
+                <iframe src="https://player.vimeo.com/video/1092843113?autoplay=1&loop=1&muted=1&playsinline=1&title=0&byline=0&portrait=0"
+                        style="position:absolute;top:0;left:0;width:100%;height:100%;"
+                        frameborder="0"
+                        allow="autoplay; fullscreen; picture-in-picture"
+                        allowfullscreen>
+                </iframe>
+            </div>
+            <script src="https://player.vimeo.com/api/player.js"></script>
+        </div>
+
+        <div class="relative z-10 max-w-3xl floating-animation">
+            <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">Find Your Dream Home in Phuket</h1>
             <p class="text-xl md:text-2xl mb-8 text-gray-100">Discover stunning villas, beachfront properties, and luxury condos in Thailand's tropical paradise.</p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
                 <a href="#properties" class="bg-white text-beige-dark font-semibold py-4 px-8 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-xl">
@@ -496,6 +513,7 @@
                         <option value="Rawai Beach">Rawai Beach</option>
                         <option value="Surin Beach">Surin Beach</option>
                         <option value="Thalang">Thalang</option>
+                        <option value="Bangtao Beach">Bangtao Beach</option>
                         <option value="Phuket">Phuket (General)</option>
                     </select>
                 </div>
@@ -534,65 +552,71 @@
         <div class="container mx-auto px-4">
             <h2 class="text-4xl font-bold text-center mb-12 text-beige-dark">New Projects</h2>
             <div class="flex space-x-6 overflow-x-auto scrollbar-hide pb-4">
+                <!-- Project Card 1: Anchan -->
                 <div class="relative min-w-[280px] max-w-xs bg-white rounded-2xl shadow-lg overflow-hidden flex-shrink-0">
-                    <img src="https://placehold.co/400x300/4db6ac/ffffff?text=Velora" alt="Velora" class="w-full h-48 object-cover rounded-t-xl" />
-                    <div class="absolute top-3 left-3 bg-white/70 rounded px-3 py-1 text-xs font-bold uppercase tracking-wide text-beige-dark">Velora</div>
+                    <img src="https://placehold.co/400x300/4db6ac/ffffff?text=Anchan+Villa" alt="Anchan Luxury Villas" class="w-full h-48 object-cover rounded-t-xl" />
+                    <div class="absolute top-3 left-3 bg-white/70 rounded px-3 py-1 text-xs font-bold uppercase tracking-wide text-beige-dark">Anchan Luxury Villas</div>
                     <a href="#" class="absolute top-3 right-3 bg-white/80 p-2 rounded-full shadow hover:bg-white/90 transition-colors">
                         <svg class="h-5 w-5 text-beige-dark" fill="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                         </svg>
                     </a>
                     <div class="p-4">
+                        <h3 class="text-xl font-semibold mb-2 text-beige-dark">No. 11012</h3>
                         <p class="flex items-center text-sm font-medium text-beige-dark mb-1">
                             <svg class="w-4 h-4 mr-1 text-teal-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11H9v4h4v-2h-2V7z" /></svg>
-                            <span class="price-thb">Price from ฿24,500,000</span>
-                            <span class="price-usd hidden">$680,000</span>
+                            <span class="price-thb">฿32,837,000</span>
+                            <span class="price-usd hidden">$899,643</span>
                         </p>
-                        <p class="flex items-center text-sm text-beige-medium">
-                            <svg class="w-4 h-4 mr-1 text-teal-500" fill="currentColor" viewBox="0 0 24 24"><path d="M8 7V3h8v4m2 0h-1v2H7V7H6v14h12V7z"/></svg>
-                            Completion Date 2027
-                        </p>
+                        <ul class="text-beige-medium text-sm space-y-1 mt-2">
+                            <li><strong class="text-beige-dark">Living Space:</strong> 473 m²</li>
+                            <li><strong class="text-beige-dark">Bedrooms:</strong> 3</li>
+                            <li><strong class="text-beige-dark">Location:</strong> Phuket</li>
+                            <li><strong class="text-beige-dark">Completion:</strong> II quarter, 2026</li>
+                        </ul>
                     </div>
                 </div>
 
+                <!-- Project Card 2: Trichada -->
                 <div class="relative min-w-[280px] max-w-xs bg-white rounded-2xl shadow-lg overflow-hidden flex-shrink-0">
-                    <img src="https://placehold.co/400x300/26a69a/ffffff?text=Greenridge" alt="Greenridge" class="w-full h-48 object-cover rounded-t-xl" />
-                    <div class="absolute top-3 left-3 bg-white/70 rounded px-3 py-1 text-xs font-bold uppercase tracking-wide text-beige-dark">Greenridge</div>
+                    <img src="https://placehold.co/400x300/26a69a/ffffff?text=Trichada+Villas" alt="Trichada Villas" class="w-full h-48 object-cover rounded-t-xl" />
+                    <div class="absolute top-3 left-3 bg-white/70 rounded px-3 py-1 text-xs font-bold uppercase tracking-wide text-beige-dark">Trichada Villas</div>
                     <a href="#" class="absolute top-3 right-3 bg-white/80 p-2 rounded-full shadow hover:bg-white/90 transition-colors">
                         <svg class="h-5 w-5 text-beige-dark" fill="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                         </svg>
                     </a>
                     <div class="p-4">
+                        <h3 class="text-xl font-semibold mb-2 text-beige-dark">Multiple Villa Types</h3>
                         <p class="flex items-center text-sm font-medium text-beige-dark mb-1">
                             <svg class="w-4 h-4 mr-1 text-teal-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11H9v4h4v-2h-2V7z" /></svg>
-                            <span class="price-thb">Price from ฿28,400,000</span>
-                            <span class="price-usd hidden">$790,000</span>
+                            Price on Request
                         </p>
-                        <p class="flex items-center text-sm text-beige-medium">
-                            <svg class="w-4 h-4 mr-1 text-teal-500" fill="currentColor" viewBox="0 0 24 24"><path d="M8 7V3h8v4m2 0h-1v2H7V7H6v14h12V7z"/></svg>
-                            Completion Date 2028
-                        </p>
+                        <ul class="text-beige-medium text-sm space-y-1 mt-2">
+                            <li><strong class="text-beige-dark">Type A:</strong> 4 Beds, 227sqm Living, 4x10m Pool, 399sqm Built Up, 617sqm+ Plot</li>
+                            <li><strong class="text-beige-dark">Type B:</strong> 3 Beds, 121sqm Living, 3x8m Pool, 221sqm Built Up, 349sqm+ Plot</li>
+                        </ul>
                     </div>
                 </div>
 
+                <!-- Project Card 3: Botanica -->
                 <div class="relative min-w-[280px] max-w-xs bg-white rounded-2xl shadow-lg overflow-hidden flex-shrink-0">
-                    <img src="https://placehold.co/400x300/f5f5f5/333333?text=Altus+Towers" alt="Altus Towers" class="w-full h-48 object-cover rounded-t-xl" />
-                    <div class="absolute top-3 left-3 bg-white/70 rounded px-3 py-1 text-xs font-bold uppercase tracking-wide text-beige-dark">Altus Towers</div>
+                    <img src="https://placehold.co/400x300/f5f5f5/333333?text=Botanica+Villas" alt="Botanica Grand Avenue" class="w-full h-48 object-cover rounded-t-xl" />
+                    <div class="absolute top-3 left-3 bg-white/70 rounded px-3 py-1 text-xs font-bold uppercase tracking-wide text-beige-dark">Botanica Grand Avenue</div>
                     <a href="#" class="absolute top-3 right-3 bg-white/80 p-2 rounded-full shadow hover:bg-white/90 transition-colors">
                         <svg class="h-5 w-5 text-beige-dark" fill="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                         </svg>
                     </a>
                     <div class="p-4">
+                        <h3 class="text-xl font-semibold mb-2 text-beige-dark">Cherngtalay, Phuket</h3>
                         <p class="flex items-center text-sm font-medium text-beige-dark mb-1">
                             <svg class="w-4 h-4 mr-1 text-teal-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11H9v4h4v-2h-2V7z" /></svg>
-                            <span class="price-thb">Price from ฿15,700,000</span>
-                            <span class="price-usd hidden">$440,000</span>
+                            <span class="price-thb">Price from ฿58,100,000</span>
+                            <span class="price-usd hidden">Price from $1,591,781</span>
                         </p>
-                        <p class="flex items-center text-sm text-beige-medium">
-                            <svg class="w-4 h-4 mr-1 text-teal-500" fill="currentColor" viewBox="0 0 24 24"><path d="M8 7V3h8v4m2 0h-1v2H7V7H6v14h12V7z"/></svg>
-                            Completion Date 2029
+                        <p class="text-beige-medium text-sm mt-2">
+                            Welcome to the epitome of opulence and grandeur, where a decade-long legacy of crafting luxury pool villas comes alive in every glorious detail. Botanica Luxury Villas, standing tall with over 15 awe-inspiring projects.
                         </p>
                     </div>
                 </div>
@@ -600,38 +624,30 @@
         </div>
     </section>
 
-    <section id="video-tours" class="py-16 beige-secondary">
-        <div class="container mx-auto px-4 text-center">
-            <h2 class="text-4xl font-bold text-center mb-12 text-beige-dark">Exclusive Video Tours</h2>
-            <div class="flex justify-center">
-                <div class="w-full max-w-3xl bg-white rounded-xl shadow-lg overflow-hidden border border-beige-primary">
-                    <div style="padding:56.25% 0 0 0;position:relative;">
-                        <iframe src="https://player.vimeo.com/video/1092843113?autoplay=1&loop=1&muted=1&playsinline=1&title=0&byline=0&portrait=0"
-                                style="position:absolute;top:0;left:0;width:100%;height:100%;"
-                                frameborder="0"
-                                allow="autoplay; fullscreen; picture-in-picture"
-                                allowfullscreen>
-                        </iframe>
-                    </div>
-                    <script src="https://player.vimeo.com/api/player.js"></script>
-                    <div class="p-6">
-                        <h3 class="text-xl font-semibold mb-2 text-beige-dark">Discover Phuket Villas in Motion</h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    <!-- The original Video Tours section has been moved into the Hero Section. -->
+    <!-- So, this section is now effectively removed. -->
+    <section id="video-tours" class="hidden"></section> 
+
 
     <section id="communities" class="py-16 bg-white">
         <div class="container mx-auto px-4">
             <h2 class="text-4xl font-bold text-center mb-12 text-beige-dark">Popular Areas in Phuket</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- New Location Card: Bangtao Beach - Added as first item -->
+                <div class="beige-secondary rounded-2xl shadow-md overflow-hidden transition duration-300 hover:shadow-xl hover:scale-105">
+                    <img src="https://placehold.co/600x300/4db6ac/ffffff?text=Bangtao+Beach" alt="Bangtao Beach" class="w-full h-48 object-cover rounded-t-lg">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-3 text-beige-dark">Bangtao Beach</h3>
+                        <p class="text-beige-medium text-sm mb-4">A long stretch of beach with luxury resorts, beach clubs, and an array of dining options.</p>
+                        <a href="https://www.google.com/maps/search/Bangtao+Beach+Phuket" target="_blank" class="mermaid-accent text-white font-semibold py-2 px-6 rounded-lg transition duration-300 hover:opacity-90">Explore on Map</a>
+                    </div>
+                </div>
                 <div class="beige-secondary rounded-2xl shadow-md overflow-hidden transition duration-300 hover:shadow-xl hover:scale-105">
                     <img src="https://placehold.co/600x300/4db6ac/ffffff?text=Patong+Beach" alt="Patong Beach" class="w-full h-48 object-cover rounded-t-lg">
                     <div class="p-6">
                         <h3 class="text-xl font-semibold mb-3 text-beige-dark">Patong Beach</h3>
                         <p class="text-beige-medium text-sm mb-4">The heart of Phuket's entertainment, shopping, and nightlife scene with stunning beaches.</p>
-                        <button class="mermaid-accent text-white font-semibold py-2 px-6 rounded-lg transition duration-300 hover:opacity-90">Explore</button>
+                        <a href="https://www.google.com/maps/search/Patong+Beach+Phuket" target="_blank" class="mermaid-accent text-white font-semibold py-2 px-6 rounded-lg transition duration-300 hover:opacity-90">Explore on Map</a>
                     </div>
                 </div>
                 <div class="beige-secondary rounded-2xl shadow-md overflow-hidden transition duration-300 hover:shadow-xl hover:scale-105">
@@ -639,7 +655,7 @@
                     <div class="p-6">
                         <h3 class="text-xl font-semibold mb-3 text-beige-dark">Kata Beach</h3>
                         <p class="text-beige-medium text-sm mb-4">Perfect for families with beautiful beaches, restaurants, and a more relaxed atmosphere.</p>
-                        <button class="mermaid-accent text-white font-semibold py-2 px-6 rounded-lg transition duration-300 hover:opacity-90">Explore</button>
+                        <a href="https://www.google.com/maps/search/Kata+Beach+Phuket" target="_blank" class="mermaid-accent text-white font-semibold py-2 px-6 rounded-lg transition duration-300 hover:opacity-90">Explore on Map</a>
                     </div>
                 </div>
                 <div class="beige-secondary rounded-2xl shadow-md overflow-hidden transition duration-300 hover:shadow-xl hover:scale-105">
@@ -647,7 +663,7 @@
                     <div class="p-6">
                         <h3 class="text-xl font-semibold mb-3 text-beige-dark">Kamala Beach</h3>
                         <p class="text-beige-medium text-sm mb-4">Luxury beachfront living with high-end resorts and exclusive villa developments.</p>
-                        <button class="mermaid-accent text-white font-semibold py-2 px-6 rounded-lg transition duration-300 hover:opacity-90">Explore</button>
+                        <a href="https://www.google.com/maps/search/Kamala+Beach+Phuket" target="_blank" class="mermaid-accent text-white font-semibold py-2 px-6 rounded-lg transition duration-300 hover:opacity-90">Explore on Map</a>
                     </div>
                 </div>
                 <div class="beige-secondary rounded-2xl shadow-md overflow-hidden transition duration-300 hover:shadow-xl hover:scale-105">
@@ -655,7 +671,7 @@
                     <div class="p-6">
                         <h3 class="text-xl font-semibold mb-3 text-beige-dark">Rawai Beach</h3>
                         <p class="text-beige-medium text-sm mb-4">Known for its local charm, seafood markets, and access to nearby islands.</p>
-                        <button class="mermaid-accent text-white font-semibold py-2 px-6 rounded-lg transition duration-300 hover:opacity-90">Explore</button>
+                        <a href="https://www.google.com/maps/search/Rawai+Beach+Phuket" target="_blank" class="mermaid-accent text-white font-semibold py-2 px-6 rounded-lg transition duration-300 hover:opacity-90">Explore on Map</a>
                     </div>
                 </div>
                 <div class="beige-secondary rounded-2xl shadow-md overflow-hidden transition duration-300 hover:shadow-xl hover:scale-105">
@@ -663,7 +679,7 @@
                     <div class="p-6">
                         <h3 class="text-xl font-semibold mb-3 text-beige-dark">Surin Beach</h3>
                         <p class="text-beige-medium text-sm mb-4">An upscale area with luxury resorts, fine dining, and beautiful white sand.</p>
-                        <button class="mermaid-accent text-white font-semibold py-2 px-6 rounded-lg transition duration-300 hover:opacity-90">Explore</button>
+                        <a href="https://www.google.com/maps/search/Surin+Beach+Phuket" target="_blank" class="mermaid-accent text-white font-semibold py-2 px-6 rounded-lg transition duration-300 hover:opacity-90">Explore on Map</a>
                     </div>
                 </div>
                 <div class="beige-secondary rounded-2xl shadow-md overflow-hidden transition duration-300 hover:shadow-xl hover:scale-105">
@@ -671,7 +687,7 @@
                     <div class="p-6">
                         <h3 class="text-xl font-semibold mb-3 text-beige-dark">Thalang</h3>
                         <p class="text-beige-medium text-sm mb-4">A district offering a mix of local life, nature, and developing residential areas.</p>
-                        <button class="mermaid-accent text-white font-semibold py-2 px-6 rounded-lg transition duration-300 hover:opacity-90">Explore</button>
+                        <a href="https://www.google.com/maps/search/Thalang+Phuket" target="_blank" class="mermaid-accent text-white font-semibold py-2 px-6 rounded-lg transition duration-300 hover:opacity-90">Explore on Map</a>
                     </div>
                 </div>
             </div>
@@ -741,10 +757,15 @@
         </div>
     </footer>
 
-    <button id="add-listing-btn" class="add-listing-btn">
+    <!-- ปุ่มเพิ่มรายการ (Add Listing Button) พร้อมไอคอน "Signal" -->
+    <button id="add-listing-btn" class="add-listing-btn relative">
         <svg class="h-8 w-8" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
         </svg>
+        <span class="absolute -top-1 -right-1 flex h-4 w-4">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-4 w-4 bg-red-500 text-xs items-center justify-center text-white font-bold">!</span>
+        </span>
     </button>
 
     <a href="https://wa.me/66654765114" target="_blank" class="whatsapp-float">
@@ -796,6 +817,12 @@
                 <div>
                     <label for="property-facilities" class="block text-beige-dark text-sm font-semibold mb-2">Facilities (comma-separated)</label>
                     <input type="text" id="property-facilities" class="w-full p-3 border border-beige-primary rounded-md focus:outline-none focus:ring-2 focus:ring-beige-primary" placeholder="e.g., Pool, Gym, Laundry">
+                </div>
+                <!-- Agent Contact Input Field -->
+                <div>
+                    <label for="agent-contact" class="block text-beige-dark text-sm font-semibold mb-2">Agent Contact (Phone/Email)</label>
+                    <input type="text" id="agent-contact" class="w-full p-3 border border-beige-primary rounded-md focus:outline-none focus:ring-2 focus:ring-beige-primary" placeholder="e.g., agent@example.com or +6612345678">
+                    <p class="text-xs text-gray-500 mt-1">This contact information is for agent reference and will be shown in property details. It is NOT private.</p>
                 </div>
                 <div>
                     <label for="property-image-files" class="block text-beige-dark text-sm font-semibold mb-2">Property Images</label>
@@ -851,6 +878,11 @@
                     <p class="font-semibold text-lg mb-2">Type:</p>
                     <p id="detail-type" class="text-beige-medium"></p>
                 </div>
+                <!-- Agent Contact Display -->
+                <div>
+                    <p class="font-semibold text-lg mb-2">Agent Contact:</p>
+                    <p id="detail-agent-contact" class="text-beige-medium"></p>
+                </div>
             </div>
 
             <h3 class="text-2xl font-bold text-beige-dark mt-6 mb-3">Description</h3>
@@ -899,6 +931,7 @@
         const detailDescription = document.getElementById('detail-description');
         const detailFacilities = document.getElementById('detail-facilities');
         const detailContactWhatsapp = document.getElementById('detail-contact-whatsapp');
+        const detailAgentContact = document.getElementById('detail-agent-contact'); // เพิ่ม Agent Contact Display
         let currentDetailImages = [];
         let currentImageIndex = 0;
 
@@ -920,7 +953,8 @@
                     'https://placehold.co/800x600/4db6ac/ffffff?text=Luxury+Villa+Kamala+1', // รูปภาพ placeholder สำหรับอ้างอิง
                     'https://placehold.co/800x600/4db6ac/ffffff?text=Luxury+Villa+Kamala+2', // รูปภาพ placeholder สำหรับอ้างอิง
                     'https://placehold.co/800x600/4db6ac/ffffff?text=Luxury+Villa+Kamala+3'  // รูปภาพ placeholder สำหรับอ้างอิง
-                ]
+                ],
+                agentContact: 'info@mermaidhomes.com' // ตัวอย่างข้อมูล Agent Contact
             },
             {
                 id: 'condo-patong-1',
@@ -936,7 +970,8 @@
                 images: [
                     'https://placehold.co/800x600/26a69a/ffffff?text=Modern+Condo+Patong+1', // รูปภาพ placeholder สำหรับอ้างอิง
                     'https://placehold.co/800x600/26a69a/ffffff?text=Modern+Condo+Patong+2'  // รูปภาพ placeholder สำหรับอ้างอิง
-                ]
+                ],
+                agentContact: 'agent.patong@mermaidhomes.com'
             },
             {
                 id: 'villa-kata-1',
@@ -952,7 +987,8 @@
                 images: [
                     'https://placehold.co/800x600/4db6ac/ffffff?text=Tropical+Villa+Kata+1', // รูปภาพ placeholder สำหรับอ้างอิง
                     'https://placehold.co/800x600/4db6ac/ffffff?text=Tropical+Villa+Kata+2'  // รูปภาพ placeholder สำหรับอ้างอิง
-                ]
+                ],
+                agentContact: 'agent.kata@mermaidhomes.com'
             },
             {
                 id: 'villa-luxpride-3',
@@ -973,7 +1009,8 @@
                     'L2 (5).jpg',
                     'L2 (6).jpg',
                     // เพิ่มชื่อไฟล์รูปภาพอื่นๆ ที่เกี่ยวข้องกับ Luxpride 3 ที่คุณมีใน GitHub เข้ามาใน Array นี้
-                ]
+                ],
+                agentContact: '+66654765114' // ตัวอย่างข้อมูล Agent Contact (เบอร์โทรศัพท์)
             }
         ];
 
@@ -1057,6 +1094,7 @@
             detailLocation.textContent = property.location;
             detailType.textContent = property.type;
             detailDescription.textContent = property.description;
+            detailAgentContact.textContent = property.agentContact || 'N/A'; // แสดง Agent Contact
 
             // Render รายการสิ่งอำนวยความสะดวก
             detailFacilities.innerHTML = '';
@@ -1222,6 +1260,7 @@
             const description = document.getElementById('property-description').value;
             const facilitiesText = document.getElementById('property-facilities').value;
             const facilities = facilitiesText ? facilitiesText.split(',').map(f => f.trim()) : [];
+            const agentContact = document.getElementById('agent-contact').value; // ดึงข้อมูล Agent Contact
 
             // สำหรับอสังหาริมทรัพย์ที่เพิ่มใหม่ เราจะใช้รูปภาพ placeholder ไปก่อน
             // ผู้ใช้จำเป็นต้องอัปโหลดรูปภาพไปยัง GitHub และอัปเดต propertiesData หรือ logic การส่งฟอร์มด้วยตนเอง
@@ -1238,7 +1277,8 @@
                 priceTHB,
                 description,
                 facilities,
-                images: newImages
+                images: newImages,
+                agentContact: agentContact // เพิ่ม Agent Contact เข้าไปในข้อมูล Property ใหม่
             };
 
             propertiesData.push(newProperty); // เพิ่มอสังหาริมทรัพย์ใหม่ลงใน Array ข้อมูลของเรา
@@ -1281,7 +1321,13 @@
             renderPropertyCards(filtered); // Render เฉพาะการ์ดที่กรองแล้ว
         }
 
-        document.getElementById('apply-filter').addEventListener('click', filterProperties);
+        document.getElementById('apply-filter').addEventListener('click', filterProperties); // ปุ่ม Apply Filters จะเรียกใช้ฟังก์ชันนี้
+        document.getElementById('location-filter').addEventListener('change', filterProperties); // เมื่อเปลี่ยน Location ให้กรองทันที
+        document.getElementById('type-filter').addEventListener('change', filterProperties); // เมื่อเปลี่ยน Type ให้กรองทันที
+        document.getElementById('bedrooms-filter').addEventListener('input', filterProperties); // เมื่อพิมพ์ Beddrooms ให้กรองทันที
+        document.getElementById('min-area-filter').addEventListener('input', filterProperties); // เมื่อพิมพ์ Min Area ให้กรองทันที
+        document.getElementById('max-price-filter').addEventListener('input', filterProperties); // เมื่อพิมพ์ Max Price ให้กรองทันที
+
 
         // แนบ Event Listener สำหรับปุ่ม "View Details"
         function attachViewDetailsListeners() {
