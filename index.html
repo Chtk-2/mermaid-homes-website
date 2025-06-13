@@ -579,8 +579,10 @@
                     <label for="max-price-filter" class="block text-beige-dark text-sm font-semibold mb-2">Max Price (THB)</label>
                     <input type="number" id="max-price-filter" min="0" placeholder="Any">
                 </div>
-                <!-- ปุ่ม Search Properties ที่ถูกย้ายตำแหน่ง -->
-                <button id="apply-filter" class="col-span-full md:col-span-1 bg-beige-dark text-white font-semibold py-3 px-6 rounded-md hover:opacity-90 transition duration-300">Search Properties</button>
+                <!-- ปุ่ม Search Properties ที่ถูกย้ายตำแหน่งและเพิ่มไอคอน -->
+                <button id="apply-filter" class="col-span-full md:col-span-1 bg-beige-dark text-white font-semibold py-3 px-6 rounded-md hover:opacity-90 transition duration-300 flex items-center justify-center space-x-2">
+                    <i class="fas fa-search"></i> <span>Search Properties</span>
+                </button>
             </div>
             <!-- สิ้นสุดส่วน UI สำหรับการค้นหาและกรอง -->
 
@@ -622,7 +624,7 @@
 
                 <!-- Project Card 2: Trichada -->
                 <div class="relative min-w-[280px] max-w-xs bg-white rounded-2xl shadow-lg overflow-hidden flex-shrink-0">
-                    <img src="https://placehold.co/400x300/26a69a/ffffff?text=Trichada+Villas" alt="Trichada Villas" class="w-full h-48 object-cover rounded-t-xl" />
+                    <img src="https://placehold.co/400x300/26a69a/ffffff?text=Trichada+Villas" alt="Trichada Villas" class="w-full h-48 object-cover rounded-t-xl" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/333333?text=Image+Unavailable';" />
                     <div class="absolute top-3 left-3 bg-white/70 rounded px-3 py-1 text-xs font-bold uppercase tracking-wide text-beige-dark">Trichada Villas</div>
                     <a href="#" class="absolute top-3 right-3 bg-white/80 p-2 rounded-full shadow hover:bg-white/90 transition-colors">
                         <svg class="h-5 w-5 text-beige-dark" fill="currentColor" viewBox="0 0 24 24">
@@ -630,14 +632,19 @@
                         </svg>
                     </a>
                     <div class="p-4">
-                        <h3 class="text-xl font-semibold mb-2 text-beige-dark">Multiple Villa Types</h3>
+                        <h3 class="text-xl font-semibold mb-2 text-beige-dark">Pool Villa for Rent</h3>
                         <p class="flex items-center text-sm font-medium text-beige-dark mb-1">
                             <svg class="w-4 h-4 mr-1 text-teal-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11H9v4h4v-2h-2V7z" /></svg>
-                            Price on Request
+                            <span class="price-thb">฿170,000/Month</span>
+                            <span class="price-usd hidden">$4,657/Month</span>
                         </p>
                         <ul class="text-beige-medium text-sm space-y-1 mt-2">
-                            <li><strong class="text-beige-dark">Type A:</strong> 4 Beds, 227sqm Living, 4x10m Pool, 399sqm Built Up, 617sqm+ Plot</li>
-                            <li><strong class="text-beige-dark">Type B:</strong> 3 Beds, 121sqm Living, 3x8m Pool, 221sqm Built Up, 349sqm+ Plot</li>
+                            <li><strong class="text-beige-dark">Bedrooms:</strong> 3</li>
+                            <li><strong class="text-beige-dark">Bathrooms:</strong> 2</li>
+                            <li><strong class="text-beige-dark">Land Plot:</strong> 300 sqm</li>
+                            <li><strong class="text-beige-dark">Living Area:</strong> 200 sqm</li>
+                            <li><strong class="text-beige-dark">Included:</strong> Common fee, Garden & Pool Cleaning (3x/week)</li>
+                            <li><strong class="text-beige-dark">Status:</strong> Move-in Ready!</li>
                         </ul>
                     </div>
                 </div>
@@ -857,7 +864,7 @@
             map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 12,
                 center: phuketCenter,
-                gestureHandling: 'cooperative'
+                gestureHandling: 'cooperative' // Enable scrolling to zoom without Ctrl/Cmd key
             });
 
             marker = new google.maps.Marker({
@@ -884,12 +891,12 @@
 
         // Global function for handling map search
         function handleSearch(mapInstance, address) {
-            geocoder.geocode({ address: address + ", Phuket, Thailand" }, (results, status) => {
+            geocoder.geocode({ address: address + ", Phuket, Thailand" }, (results, status) => { // Force search in Phuket
                 if (status === 'OK' && results[0]) {
                     const location = results[0].geometry.location;
                     mapInstance.setCenter(location);
                     marker.setPosition(location);
-                    mapInstance.setZoom(15);
+                    mapInstance.setZoom(15); // Zoom in a bit after search
                 } else {
                     console.error('Geocode was not successful for the following reason: ' + status);
                     alert('Location not found or invalid. Please try a more specific address in Phuket.');
@@ -1024,23 +1031,52 @@
                 agentContact: '+66654765114'
             },
             {
-                id: 'anchan-villa-11012', // ID สำหรับ Anchan Villa
+                id: 'anchan-villa-11012',
                 title: 'Anchan Luxury Villas No. 11012',
-                location: 'Phuket', // อัปเดต Location ตามที่ระบุ
+                location: 'Phuket',
                 type: 'Sale',
                 bedrooms: 3,
-                bathrooms: 4, // สมมติ
-                area: 473, // Living space
+                bathrooms: 4,
+                area: 473,
                 priceTHB: 32837000,
                 description: 'Experience ultimate luxury at Anchan Villa No. 11012, a beautifully designed property with spacious living areas and high-end finishes. Part of the prestigious Anchan luxury villas collection.',
-                facilities: ['Large Pool', 'Spacious Living Area', 'Modern Design', 'Private Parking'], // ตัวอย่างสิ่งอำนวยความสะดวก
+                facilities: ['Large Pool', 'Spacious Living Area', 'Modern Design', 'Private Parking'],
                 images: [
                     'Anchan1 (1).jpg', // รูปภาพจริงที่คุณอัปโหลด
                     'Anchan2.jpg',    // รูปภาพจริงที่คุณอัปโหลด
                     'Anchan3.jpg'     // รูปภาพจริงที่คุณอัปโหลด
                 ],
-                completionDate: 'II quarter, 2026', // เพิ่มข้อมูล Completion date
+                completionDate: 'II quarter, 2026',
                 agentContact: 'agent.anchan@mermaidhomes.com'
+            },
+            {
+                id: 'trichada-villa-rent', // New ID for Trichada
+                title: 'Trichada Pool Villa for Rent',
+                location: 'Phuket', // Assume Phuket general location
+                type: 'Rent',
+                bedrooms: 3,
+                bathrooms: 2,
+                landPlot: 300, // เพิ่ม Land plot
+                area: 200, // Living area
+                priceTHB: 170000, // Price per month
+                description: 'Spacious pool villa with 3 bedrooms & 2 bathrooms, move-in ready! Included in the price: Common fee, Garden & Pool Cleaning (3x/week).',
+                facilities: ['Private Pool', 'Garden & Pool Cleaning (3x/week) Included', 'Common Fee Included', 'Move-in Ready'],
+                images: [
+                    'T0.jpg',
+                    'T1.jpg',
+                    'T2.jpg',
+                    'T3.jpg',
+                    'T4.jpg',
+                    'T5.jpg',
+                    'T6.jpg',
+                    'T7.jpg',
+                    'T8.jpg',
+                    'T10.jpg',
+                    'T11.jpg',
+                    'T12.jpg',
+                    'T13.jpg',
+                ],
+                agentContact: '+66654765114'
             }
         ];
 
@@ -1431,7 +1467,7 @@
             updateCurrencyDisplay();
 
             // Load Google Maps script after DOM is ready
-            const googleMapsApiKey = 'YOUR_GOOGLE_MAPS_API_KEY';
+            const googleMapsApiKey = 'YOUR_GOOGLE_MAPS_API_KEY'; // <--- เปลี่ยนตรงนี้!
             const script = document.createElement('script');
             script.src = `https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&libraries=places&callback=initMap`;
             script.async = true;
