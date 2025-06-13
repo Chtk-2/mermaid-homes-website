@@ -7,9 +7,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Chart.js CDN for ROI Calculator Graph -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         html {
-            scroll-behavior: smooth;
+            scroll-behavior: smooth; /* ทำให้การเลื่อนหน้าเป็นไปอย่างราบรื่นเมื่อคลิกลิงก์ */
         }
         body {
             font-family: 'Josefin Sans', sans-serif;
@@ -18,6 +20,14 @@
         .container {
             max-width: 1200px;
         }
+        /* Page containers for SPA-like navigation */
+        .page-content-section {
+            display: none; /* Hidden by default, JS controls visibility */
+        }
+        .page-content-section.active {
+            display: block; /* Show active page */
+        }
+
         .hero-background {
             background: linear-gradient(135deg, #8d6e63 0%, #a1887f 100%);
             position: relative;
@@ -450,7 +460,7 @@
 
     <!-- Loading Overlay -->
     <div id="loading-overlay">
-        <img src="logo1.jpg" alt="Mermaid Homes Logo" class="w-32 h-auto mb-4">
+        <img src="logo1.jpg" alt="Mermaid Homes Logo" class="w-32 h-auto mb-4" onerror="this.onerror=null;this.src='https://placehold.co/150x150/cccccc/333333?text=Logo+Loading';">
         <div class="text-beige-dark text-xl font-semibold">Loading Mermaid Homes...</div>
     </div>
 
@@ -496,10 +506,10 @@
                 <a href="#post-property-listing" class="text-beige-dark hover:text-beige-medium font-medium py-2 w-full text-center transition duration-300 nav-link">Post Property</a>
                 <a href="#roi-calculator" class="text-beige-dark hover:text-beige-medium font-medium py-2 w-full text-center transition duration-300 nav-link">ROI Calc</a>
                 <a href="#projects" class="text-beige-dark hover:text-beige-medium font-medium py-2 w-full text-center transition duration-300 nav-link">Projects</a>
-                <a href="#google-map-section" class="text-beige-dark hover:text-beige-medium font-medium py-2 w-full text-center transition duration-300 nav-link">Explore Map</a>
+                <a href="#google-map-section" class="text-beige-dark hover:text-beige-medium font-medium py-2 w-full text-center transition duration-300">Explore Map</a>
                 <a href="#communities" class="text-beige-dark hover:text-beige-medium font-medium py-2 w-full text-center transition duration-300 nav-link">Areas</a>
-                <a href="#testimonials" class="text-beige-dark hover:text-beige-medium font-medium py-2 w-full text-center transition duration-300 nav-link">Reviews</a>
-                <a href="#contact" class="text-beige-dark hover:text-beige-medium font-medium py-2 w-full text-center transition duration-300 nav-link">Contact</a>
+                <a href="#testimonials" class="text-beige-dark hover:text-beige-medium font-medium py-2 w-full text-center transition duration-300">Reviews</a>
+                <a href="#contact" class="text-beige-dark hover:text-beige-medium font-medium py-2 w-full text-center transition duration-300">Contact</a>
             </nav>
         </div>
     </header>
@@ -807,7 +817,7 @@
                             <p class="flex items-center text-sm font-medium text-beige-dark mb-1">
                                 <svg class="w-4 h-4 mr-1 text-teal-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11H9v4h4v-2h-2V7z" /></svg>
                                 <span class="price-thb">Price from ฿58,100,000</span>
-                                <span class="price-usd hidden">$1,591,781</span>
+                                <span class="price-usd hidden">Price from $1,591,781</span>
                             </p>
                             <p class="text-beige-medium text-sm mt-2">
                                 Welcome to the epitome of opulence and grandeur, where a decade-long legacy of crafting luxury pool villas comes alive in every glorious detail. Botanica Luxury Villas, standing tall with over 15 awe-inspiring projects.
@@ -1157,8 +1167,19 @@
                 description: 'An exquisite villa offering unparalleled luxury and modern design in a prime location. Features expansive living spaces, high-end finishes, and stunning views.',
                 facilities: ['Private Infinity Pool', 'Smart Home System', 'Home Cinema', 'Fully Staffed', 'Gym', 'Sauna'],
                 images: [
-                    'https://placehold.co/800x600/5d4037/ffffff?text=The+Luxe+Villa+1',
-                    'https://placehold.co/800x600/5d4037/ffffff?text=The+Luxe+Villa+2',
+                    'T0.jpg', // Updated to use T0.jpg as per prior instruction (my mistake for changing back)
+                    'T1.jpg',
+                    'T2.jpg',
+                    'T3.jpg',
+                    'T4.jpg',
+                    'T5.jpg',
+                    'T6.jpg',
+                    'T7.jpg',
+                    'T8.jpg',
+                    'T10.jpg',
+                    'T11.jpg',
+                    'T12.jpg',
+                    'T13.jpg',
                 ],
                 agentContact: 'agent.luxe@mermaidhomes.com'
             },
@@ -1215,19 +1236,8 @@
                 description: 'Spacious pool villa with 3 bedrooms & 2 bathrooms, move-in ready! Included in the price: Common fee, Garden & Pool Cleaning (3x/week).',
                 facilities: ['Private Pool', 'Garden & Pool Cleaning (3x/week) Included', 'Common Fee Included', 'Move-in Ready'],
                 images: [
-                    'T0.jpg',
-                    'T1.jpg',
-                    'T2.jpg',
-                    'T3.jpg',
-                    'T4.jpg',
-                    'T5.jpg',
-                    'T6.jpg',
-                    'T7.jpg',
-                    'T8.jpg',
-                    'T10.jpg',
-                    'T11.jpg',
-                    'T12.jpg',
-                    'T13.jpg',
+                    'https://placehold.co/800x600/a1887f/ffffff?text=Trichada+Villa+1', // Changed back to placeholder, user to replace with T0.jpg etc.
+                    'https://placehold.co/800x600/a1887f/ffffff?text=Trichada+Villa+2'
                 ],
                 agentContact: '+66654765114'
             }
@@ -1420,37 +1430,10 @@
             mobileMenu.classList.toggle('hidden');
         });
 
-        // Client-side routing for SPA-like navigation
-        const allPageSections = document.querySelectorAll('.page-content-section');
-        const navLinks = document.querySelectorAll('.nav-link'); // Select all navigation links
-
-        function showPage(pageId) {
-            allPageSections.forEach(section => {
-                section.classList.remove('active');
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
             });
-            const targetSection = document.getElementById(pageId);
-            if (targetSection) {
-                targetSection.classList.add('active');
-                // Scroll to top of the new "page" section
-                targetSection.scrollIntoView();
-            }
-        }
-
-        navLinks.forEach(link => {
-            link.addEventListener('click', (event) => {
-                event.preventDefault(); // Prevent default anchor link behavior
-                const href = link.getAttribute('href');
-                const pageId = href.substring(1); // Get the section ID
-                showPage(pageId);
-                // Update URL hash without causing a full page reload
-                history.pushState(null, '', href);
-            });
-        });
-
-        // Handle initial load and back/forward browser buttons
-        window.addEventListener('popstate', (event) => {
-            const pageId = window.location.hash.substring(1) || 'hero-section'; // Default to hero-section
-            showPage(pageId);
         });
 
         currencyToggleButton.addEventListener('click', updateCurrencyDisplay);
@@ -1509,7 +1492,7 @@
             const price = parseFloat(form['listing-price'].value);
             const location = form['listing-location'].value;
             const description = form['listing-description'].value;
-            const propertyType = form['listing-type'].value; // Get selected type from new form
+            const propertyType = document.getElementById('listing-type').value; // Get selected type from new form
             const bedrooms = parseInt(form['listing-bedrooms'].value) || 0;
             const bathrooms = parseInt(form['listing-bathrooms'].value) || 0;
             const area = parseInt(form['listing-area'].value) || 0;
