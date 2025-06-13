@@ -1,154 +1,660 @@
 <index.html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Mermaid Homes - Your Gateway to Phuket Real Estate</title>
-  <script src="https://cdn.tailwindcss.com"></script> 
-  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <!-- Chart.js CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mermaid Homes - AI-Powered Phuket Real Estate</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Enhanced Loading Overlay */
+        #loading-overlay { 
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.6s ease-out, visibility 0.6s ease-out;
+        }
+        #loading-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        #loading-overlay img {
+            max-width: 150px;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.95); }
+            70% { transform: scale(1); }
+            100% { transform: scale(0.95); }
+        }
 
-  <style>
-    /* Enhanced Loading Overlay Styles */
-    #loading-overlay { 
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(255, 255, 255, 0.95);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      opacity: 1;
-      visibility: visible;
-      transition: opacity 0.6s ease-out, visibility 0.6s ease-out;
-    }
+        /* AI Search Section Styles */
+        .ai-search-section {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(141, 110, 99, 0.1);
+            padding: 30px;
+            margin: -60px auto 40px;
+            position: relative;
+            z-index: 10;
+            max-width: 800px;
+        }
+        .ai-tag {
+            background: linear-gradient(135deg, #4db6ac, #26a69a);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        .search-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #5d4037;
+        }
+        .search-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .form-group label {
+            font-weight: 500;
+            font-size: 15px;
+            color: #5d4037;
+        }
+        .form-group input, 
+        .form-group textarea,
+        .form-group select {
+            padding: 14px 16px;
+            border: 1px solid #d7ccc8;
+            border-radius: 10px;
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 16px;
+            transition: border-color 0.2s;
+            background: #efebe9;
+        }
+        .form-group input:focus, 
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #8d6e63;
+            box-shadow: 0 0 0 3px rgba(141, 110, 99, 0.1);
+        }
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+        .form-row .form-group {
+            flex: 1;
+        }
+        .ai-search-btn {
+            background: linear-gradient(135deg, #4db6ac, #26a69a);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 16px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .ai-search-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
 
-    #loading-overlay.hidden {
-      opacity: 0;
-      visibility: hidden;
-    }
+        /* AI Loading Animation */
+        .ai-loading {
+            display: flex;
+            justify-content: center;
+            padding: 30px 0;
+        }
+        .ai-dots {
+            display: flex;
+            gap: 8px;
+        }
+        .ai-dots span {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #26a69a;
+            opacity: 0.6;
+            animation: pulse-dots 1.4s infinite ease-in-out;
+        }
+        .ai-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        .ai-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        @keyframes pulse-dots {
+            0%, 100% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.2); opacity: 1; }
+        }
 
-    #loading-overlay img {
-      max-width: 150px;
-      animation: pulse 1.5s infinite;
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(0.95); }
-      70% { transform: scale(1); }
-      100% { transform: scale(0.95); }
-    }
-
-    /* Page containers for SPA-like navigation */
-    .page-content-section {
-      display: none;
-    }
-    .page-content-section.active {
-      display: block;
-    }
-
-    /* Rest of your existing styles go here... */
-    body {
-      font-family: 'Josefin Sans', sans-serif;
-      color: #5d4037;
-    }
-    .container {
-      max-width: 1200px;
-    }
-    .hero-background {
-      background: linear-gradient(135deg, #8d6e63 0%, #a1887f 100%);
-      position: relative;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 4rem 1rem;
-      min-height: 600px;
-    }
-    .hero-background::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="waves" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M0 50 Q25 25 50 50 T100 50 V100 H0 Z" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23waves)"/></svg>') repeat;
-      opacity: 0.3;
-    }
-    .floating-animation {
-      animation: float 6s ease-in-out infinite;
-    }
-    @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-20px); }
-    }
-  </style>
+        /* Original Mermaid Homes Styles */
+        body {
+            font-family: 'Josefin Sans', sans-serif;
+            color: #5d4037;
+        }
+        .container {
+            max-width: 1200px;
+        }
+        .hero-background {
+            background: linear-gradient(135deg, #8d6e63 0%, #a1887f 100%);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 4rem 1rem;
+            min-height: 600px;
+        }
+        .hero-background::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="waves" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M0 50 Q25 25 50 50 T100 50 V100 H0 Z" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23waves)"/></svg>') repeat;
+            opacity: 0.3;
+        }
+        .floating-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        .beige-primary { background-color: #d7ccc8; }
+        .beige-secondary { background-color: #efebe9; }
+        .beige-dark { background-color: #8d6e63; }
+        .beige-light { background-color: #f5f5f5; }
+        .text-beige-dark { color: #5d4037; }
+        .text-beige-medium { color: #8d6e63; }
+        .border-beige { border-color: #d7ccc8; }
+        .mermaid-accent { background: linear-gradient(135deg, #4db6ac, #26a69a); }
+        .mermaid-accent-text { color: #26a69a; }
+        .property-card {
+            background: linear-gradient(145deg, #ffffff, #f5f5f5);
+            border: 1px solid #d7ccc8;
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(141, 110, 99, 0.1);
+        }
+        .property-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(141, 110, 99, 0.2);
+        }
+        
+        /* Video container */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 */
+            height: 0;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
 </head>
 <body class="beige-light">
 
-<!-- Loading Overlay -->
-<div id="loading-overlay">
-  <img src="logo1.jpg" alt="Mermaid Homes Logo" class="w-32 h-auto mb-4" onerror="this.onerror=null;this.src='https://placehold.co/150x150/cccccc/333333?text=Logo+Loading';">
-  <div class="text-beige-dark text-xl font-semibold">Loading Mermaid Homes...</div>
-</div>
-
-<!-- Main Content -->
-<main id="main-content">
-  <!-- Hero Section -->
-  <section id="hero-section" class="page-content-section active hero-background relative w-full flex flex-col items-center justify-center text-center text-white p-4">
-    <div class="absolute inset-0 bg-gradient-to-r from-black/40 to-black/20"></div>
-    <div class="relative z-10 max-w-3xl floating-animation">
-      <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">Find Your Dream Home in Phuket</h1>
-      <p class="text-xl md:text-2xl mb-8 text-gray-100">Discover stunning villas, beachfront properties, and luxury condos in Thailand's tropical paradise.</p>
-      <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a href="#properties" class="bg-white text-beige-dark font-semibold py-4 px-8 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-xl"> 
-          Browse Properties
-        </a>
-        <a href="#contact" class="border-2 border-white text-white font-semibold py-4 px-8 rounded-full hover:bg-white hover:text-beige-dark transition duration-300 ease-in-out transform hover:scale-105">
-          Get Started
-        </a>
-      </div>
+    <!-- Loading Overlay -->
+    <div id="loading-overlay">
+        <img src="https://mermaidhomes.com/logo.png" alt="Mermaid Homes Logo" class="w-32 h-auto mb-4">
+        <div class="text-beige-dark text-xl font-semibold">Loading Mermaid Homes...</div>
     </div>
-  </section>
-</main>
 
-<!-- Footer, Navigation, etc. — your full HTML content continues here -->
+    <!-- Header -->
+    <header class="bg-white shadow-sm py-4 sticky top-0 z-50 border-b border-beige">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <a href="#hero-section" class="flex items-center space-x-3 nav-link">
+                <img src="https://mermaidhomes.com/logo.png" alt="Mermaid Homes Logo" class="h-10 w-auto"> 
+                <div>
+                    <span class="text-2xl font-bold text-beige-dark">Mermaid Homes</span>
+                    <p class="text-xs text-beige-medium">Phuket, Thailand</p>
+                </div>
+            </a>
+            <nav class="hidden md:flex space-x-6">
+                <a href="#services" class="text-beige-medium hover:text-beige-dark font-medium transition duration-300 nav-link">Services</a>
+                <a href="#ai-search" class="text-beige-medium hover:text-beige-dark font-medium transition duration-300 nav-link">AI Search</a>
+                <a href="#properties" class="text-beige-medium hover:text-beige-dark font-medium transition duration-300 nav-link">Properties</a>
+                <a href="#post-property-listing" class="text-beige-medium hover:text-beige-dark font-medium transition duration-300 nav-link">Post Property</a>
+                <a href="#roi-calculator" class="text-beige-medium hover:text-beige-dark font-medium transition duration-300 nav-link">ROI Calc</a>
+                <a href="#projects" class="text-beige-medium hover:text-beige-dark font-medium transition duration-300 nav-link">Projects</a>
+                <a href="#google-map-section" class="text-beige-medium hover:text-beige-dark font-medium transition duration-300 nav-link">Explore Map</a>
+                <a href="#communities" class="text-beige-medium hover:text-beige-dark font-medium transition duration-300 nav-link">Areas</a>
+                <a href="#testimonials" class="text-beige-medium hover:text-beige-dark font-medium transition duration-300 nav-link">Reviews</a>
+                <a href="#contact" class="text-beige-medium hover:text-beige-dark font-medium transition duration-300 nav-link">Contact</a>
+            </nav>
+            <button id="mobile-menu-button" class="md:hidden text-beige-medium hover:text-beige-dark focus:outline-none">
+                <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-white py-2 shadow-lg border-t border-beige">
+            <nav class="flex flex-col items-center space-y-3">
+                <a href="#services" class="text-beige-dark hover:text-beige-medium font-medium py-2 w-full text-center transition duration-300 nav-link">Services</a>
+                <a href="#ai-search" class="text-beige-dark hover:text-beige-medium font-medium py-2 w-full text-center transition duration-300 nav-link">AI Search</a>
+                <a href="#properties" class="text-beige-dark hover:text-beige-medium font-medium py-2 w-full text-center transition duration-300 nav-link">Properties</a>
+                <a href="#post-property-listing" class="text-beige-dark hover:text-beige-medium font-medium py-2 w-full text-center transition duration-300 nav-link">Post Property</a>
+                <a href="#roi-calculator" class="text-beige-dark hover:text-beige-medium font-medium py-2 w-full text-center transition duration-300 nav-link">ROI Calc</a>
+                <a href="#projects" class="text-beige-dark hover:text-beige-medium font-medium py-2 w-full text-center transition duration-300 nav-link">Projects</a>
+                <a href="#google-map-section" class="text-beige-dark hover:text-beige-medium font-medium py-2 w-full text-center transition duration-300 nav-link">Explore Map</a>
+                <a href="#communities" class="text-beige-dark hover:text-beige-medium font-medium py-2 w-full text-center transition duration-300 nav-link">Areas</a>
+                <a href="#testimonials" class="text-beige-dark hover:text-beige-medium font-medium py-2 w-full text-center transition duration-300 nav-link">Reviews</a>
+                <a href="#contact" class="text-beige-dark hover:text-beige-medium font-medium py-2 w-full text-center transition duration-300 nav-link">Contact</a>
+            </nav>
+        </div>
+    </header>
 
-<!-- Scripts -->
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const loadingOverlay = document.getElementById('loading-overlay');
+    <main id="main-content">
+        <!-- Home Page Section with Video -->
+        <section id="hero-section" class="page-content-section active hero-background relative w-full flex flex-col items-center justify-center text-center text-white p-4">
+            <div class="absolute inset-0 bg-gradient-to-r from-black/40 to-black/20"></div>
+            
+            <!-- Video Container -->
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="video-container">
+                    <iframe src="https://player.vimeo.com/video/1092843113?autoplay=1&loop=1&muted=1&playsinline=1&title=0&byline=0&portrait=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                <script src="https://player.vimeo.com/api/player.js"></script>
+                
+                <div class="max-w-3xl mx-auto floating-animation">
+                    <div class="ai-tag">AI-Powered</div>
+                    <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">Find Your Dream Home in Phuket</h1>
+                    <p class="text-xl md:text-2xl mb-8 text-gray-100">Our AI understands your needs to match you with the perfect property. Experience smarter real estate.</p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <a href="#ai-search" class="bg-white text-beige-dark font-semibold py-4 px-8 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-xl nav-link">
+                            Try AI Search
+                        </a>
+                        <a href="#properties" class="border-2 border-white text-white font-semibold py-4 px-8 rounded-full hover:bg-white hover:text-beige-dark transition duration-300 ease-in-out transform hover:scale-105 nav-link">
+                            Browse Properties
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    function hideLoader() {
-      if (!loadingOverlay) return;
+        <!-- AI Search Section -->
+        <section id="ai-search" class="page-content-section py-16 bg-white">
+            <div class="container mx-auto px-4">
+                <div class="ai-search-section">
+                    <h2 class="search-title">
+                        <i class="fas fa-robot text-mermaid-accent"></i> AI Property Finder
+                    </h2>
+                    <form class="search-form" id="ai-search-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="location">Location</label>
+                                <input type="text" id="location" placeholder="Where in Phuket?">
+                            </div>
+                            <div class="form-group">
+                                <label for="property-type">Property Type</label>
+                                <select id="property-type">
+                                    <option value="">Any Type</option>
+                                    <option value="villa">Villa</option>
+                                    <option value="condo">Condo</option>
+                                    <option value="house">House</option>
+                                    <option value="land">Land</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="bedrooms">Bedrooms</label>
+                                <select id="bedrooms">
+                                    <option value="">Any</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4+</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="budget">Budget (THB)</label>
+                                <select id="budget">
+                                    <option value="">Any Budget</option>
+                                    <option value="5m">Under ฿5M</option>
+                                    <option value="10m">฿5M - ฿10M</option>
+                                    <option value="20m">฿10M - ฿20M</option>
+                                    <option value="50m">฿20M - ฿50M</option>
+                                    <option value="50m+">Over ฿50M</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="preferences">Tell us your preferences (AI will analyze this)</label>
+                            <textarea id="preferences" placeholder="Example: 'Looking for a beachfront villa with pool, modern kitchen, and sea views. Must have high-speed internet for remote work.'"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="ai-search-btn">
+                            <i class="fas fa-search"></i> Find My Perfect Property
+                        </button>
+                    </form>
+                </div>
 
-      loadingOverlay.classList.add('hidden');
-    }
+                <!-- AI Processing Animation -->
+                <div class="ai-loading hidden" id="ai-processing">
+                    <div class="ai-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
 
-    // Hide loader after DOM loads
-    setTimeout(hideLoader, 500);
+                <!-- AI Results Section -->
+                <div class="section-header hidden" id="ai-results-header">
+                    <h2 class="text-4xl font-bold text-center mb-4 text-beige-dark">AI Recommended Properties</h2>
+                    <p class="text-beige-medium text-center max-w-xl mx-auto">Based on your preferences, our AI has found these perfect matches for you</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8 hidden" id="ai-results-grid">
+                    <!-- AI results will be inserted here -->
+                </div>
+            </div>
+        </section>
 
-    // Optionally wait until all assets are fully loaded
-    window.addEventListener('load', () => {
-      setTimeout(hideLoader, 300);
-    });
+        <!-- Properties Section -->
+        <section id="properties" class="page-content-section py-16 beige-secondary">
+            <div class="container mx-auto px-4">
+                <h2 class="text-4xl font-bold text-center mb-12 text-beige-dark">Featured Properties</h2>
+                
+                <!-- Property Search Filters -->
+                <div class="bg-white rounded-xl shadow-md p-6 mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                    <div class="form-group">
+                        <label for="filter-location" class="block text-beige-dark text-sm font-semibold mb-2">Location</label>
+                        <select id="filter-location" class="w-full p-3 border border-beige-primary rounded-md">
+                            <option value="">All Locations</option>
+                            <option value="Kamala Beach">Kamala Beach</option>
+                            <option value="Patong Beach">Patong Beach</option>
+                            <option value="Kata Beach">Kata Beach</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="filter-type" class="block text-beige-dark text-sm font-semibold mb-2">Type</label>
+                        <select id="filter-type" class="w-full p-3 border border-beige-primary rounded-md">
+                            <option value="">All Types</option>
+                            <option value="villa">Villa</option>
+                            <option value="condo">Condo</option>
+                            <option value="house">House</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="filter-bedrooms" class="block text-beige-dark text-sm font-semibold mb-2">Bedrooms</label>
+                        <select id="filter-bedrooms" class="w-full p-3 border border-beige-primary rounded-md">
+                            <option value="">Any</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3+</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="filter-price" class="block text-beige-dark text-sm font-semibold mb-2">Price Range</label>
+                        <select id="filter-price" class="w-full p-3 border border-beige-primary rounded-md">
+                            <option value="">Any Price</option>
+                            <option value="5m">Under ฿5M</option>
+                            <option value="10m">฿5M - ฿10M</option>
+                            <option value="20m">฿10M - ฿20M</option>
+                        </select>
+                    </div>
+                    <button class="mermaid-accent text-white font-semibold py-3 px-4 rounded-md hover:opacity-90 transition duration-300 flex items-center justify-center">
+                        <i class="fas fa-search mr-2"></i> Search
+                    </button>
+                </div>
+                
+                <!-- Property Listings -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Property 1 -->
+                    <div class="property-card">
+                        <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Luxury Villa" class="w-full h-60 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-xl font-bold text-beige-dark">Oceanview Luxury Villa</span>
+                                <span class="mermaid-accent-text font-bold">฿42,500,000</span>
+                            </div>
+                            <p class="text-beige-medium mb-4">Kamala Beach • 4 Beds • 5 Baths • 450 sqm</p>
+                            <p class="text-beige-dark mb-4">Stunning beachfront property with panoramic ocean views, infinity pool, and modern design.</p>
+                            <button class="w-full bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Property 2 -->
+                    <div class="property-card">
+                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Modern Condo" class="w-full h-60 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-xl font-bold text-beige-dark">Modern Beachfront Condo</span>
+                                <span class="mermaid-accent-text font-bold">฿18,900,000</span>
+                            </div>
+                            <p class="text-beige-medium mb-4">Patong • 2 Beds • 2 Baths • 85 sqm</p>
+                            <p class="text-beige-dark mb-4">Contemporary condo with direct beach access, resort-style amenities, and smart home features.</p>
+                            <button class="w-full bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Property 3 -->
+                    <div class="property-card">
+                        <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Tropical Villa" class="w-full h-60 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-xl font-bold text-beige-dark">Tropical Garden Villa</span>
+                                <span class="mermaid-accent-text font-bold">฿32,750,000</span>
+                            </div>
+                            <p class="text-beige-medium mb-4">Rawai • 3 Beds • 4 Baths • 320 sqm</p>
+                            <p class="text-beige-dark mb-4">Private sanctuary with lush tropical gardens, spa facilities, and traditional Thai architecture.</p>
+                            <button class="w-full bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    // Fallback in case everything fails
-    setTimeout(() => {
-      if (!loadingOverlay.classList.contains('hidden')) {
-        hideLoader();
-      }
-    }, 3000);
-  });
-</script>
+        <!-- Other Sections -->
+        <section id="services" class="page-content-section py-16 bg-white">
+            <div class="container mx-auto px-4">
+                <h2 class="text-4xl font-bold text-center mb-12 text-beige-dark">Our Services</h2>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                    <div class="bg-beige-secondary rounded-xl p-8 text-center transition-all duration-300 hover:shadow-xl">
+                        <div class="w-16 h-16 mermaid-accent rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-home text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-4 text-beige-dark">Buy Property</h3>
+                        <p class="text-beige-medium">Expert guidance to find and purchase your ideal tropical home in Phuket.</p>
+                    </div>
+                    
+                    <div class="bg-beige-secondary rounded-xl p-8 text-center transition-all duration-300 hover:shadow-xl">
+                        <div class="w-16 h-16 mermaid-accent rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-key text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-4 text-beige-dark">Rent Property</h3>
+                        <p class="text-beige-medium">Discover a wide selection of rental properties in prime locations.</p>
+                    </div>
+                    
+                    <div class="bg-beige-secondary rounded-xl p-8 text-center transition-all duration-300 hover:shadow-xl">
+                        <div class="w-16 h-16 mermaid-accent rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-hand-holding-usd text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-4 text-beige-dark">Sell Property</h3>
+                        <p class="text-beige-medium">Maximize your property's value with our comprehensive selling strategies.</p>
+                    </div>
+                    
+                    <div class="bg-beige-secondary rounded-xl p-8 text-center transition-all duration-300 hover:shadow-xl">
+                        <div class="w-16 h-16 mermaid-accent rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-building text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-4 text-beige-dark">Property Management</h3>
+                        <p class="text-beige-medium">Professional management services for your residential properties.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- More sections would go here -->
+    </main>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Hide loading overlay
+            const loadingOverlay = document.getElementById('loading-overlay');
+            setTimeout(() => {
+                loadingOverlay.classList.add('hidden');
+            }, 800);
+
+            // AI Search functionality
+            const aiSearchForm = document.getElementById('ai-search-form');
+            const aiProcessing = document.getElementById('ai-processing');
+            const aiResultsHeader = document.getElementById('ai-results-header');
+            const aiResultsGrid = document.getElementById('ai-results-grid');
+            
+            if (aiSearchForm) {
+                aiSearchForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Show processing animation
+                    aiProcessing.classList.remove('hidden');
+                    aiResultsHeader.classList.add('hidden');
+                    aiResultsGrid.classList.add('hidden');
+                    
+                    // Get form values
+                    const location = document.getElementById('location').value;
+                    const propertyType = document.getElementById('property-type').value;
+                    const bedrooms = document.getElementById('bedrooms').value;
+                    const budget = document.getElementById('budget').value;
+                    const preferences = document.getElementById('preferences').value;
+                    
+                    // Simulate AI processing
+                    setTimeout(() => {
+                        aiProcessing.classList.add('hidden');
+                        aiResultsHeader.classList.remove('hidden');
+                        aiResultsGrid.classList.remove('hidden');
+                        generateAIResults(location, propertyType, bedrooms, budget, preferences);
+                    }, 2000);
+                });
+            }
+            
+            function generateAIResults(location, propertyType, bedrooms, budget, preferences) {
+                // Sample properties data based on search
+                const properties = [
+                    {
+                        title: "Oceanview Luxury Villa",
+                        location: "Kamala Beach",
+                        price: "฿42,500,000",
+                        description: "Stunning beachfront property with panoramic ocean views, infinity pool, and modern design. Perfect for luxury living or high-end vacation rental.",
+                        bedrooms: 4,
+                        bathrooms: 5,
+                        area: "450 sqm",
+                        image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                        match: "95% match"
+                    },
+                    {
+                        title: "Modern Beachfront Condo",
+                        location: "Patong",
+                        price: "฿18,900,000",
+                        description: "Contemporary condo with direct beach access, resort-style amenities, and smart home features. Ideal for investors or permanent residents.",
+                        bedrooms: 2,
+                        bathrooms: 2,
+                        area: "85 sqm",
+                        image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                        match: "92% match"
+                    },
+                    {
+                        title: "Tropical Garden Villa",
+                        location: "Rawai",
+                        price: "฿32,750,000",
+                        description: "Private sanctuary with lush tropical gardens, spa facilities, and traditional Thai architectural elements. Peaceful retreat near the beach.",
+                        bedrooms: 3,
+                        bathrooms: 4,
+                        area: "320 sqm",
+                        image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                        match: "88% match"
+                    }
+                ];
+                
+                // Clear previous results
+                aiResultsGrid.innerHTML = '';
+                
+                // Generate property cards
+                properties.forEach(property => {
+                    const card = document.createElement('div');
+                    card.className = 'property-card';
+                    card.innerHTML = `
+                        <div class="relative">
+                            <img src="${property.image}" alt="${property.title}" class="w-full h-48 object-cover">
+                            <div class="absolute top-3 right-3 bg-white px-3 py-1 rounded-full text-sm font-semibold text-mermaid-accent">
+                                ${property.match}
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold mb-2 text-beige-dark">${property.title}</h3>
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-mermaid-accent font-bold">${property.price}</span>
+                                <span class="text-beige-medium">${property.location}</span>
+                            </div>
+                            <p class="text-beige-medium text-sm mb-4">${property.bedrooms} beds • ${property.bathrooms} baths • ${property.area}</p>
+                            <p class="text-beige-dark mb-4">${property.description}</p>
+                            <button class="w-full bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300">
+                                View Details
+                            </button>
+                        </div>
+                    `;
+                    aiResultsGrid.appendChild(card);
+                });
+            }
+        });
+    </script>
 </body>
 </html>
