@@ -7,8 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Chart.js CDN for ROI Calculator Graph -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         html {
             scroll-behavior: smooth;
@@ -20,14 +18,6 @@
         .container {
             max-width: 1200px;
         }
-        /* Page containers for SPA-like navigation */
-        .page-content-section {
-            display: none; /* Hidden by default, JS controls visibility */
-        }
-        .page-content-section.active {
-            display: block; /* Show active page */
-        }
-
         .hero-background {
             background: linear-gradient(135deg, #8d6e63 0%, #a1887f 100%);
             position: relative;
@@ -817,7 +807,7 @@
                             <p class="flex items-center text-sm font-medium text-beige-dark mb-1">
                                 <svg class="w-4 h-4 mr-1 text-teal-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11H9v4h4v-2h-2V7z" /></svg>
                                 <span class="price-thb">Price from ฿58,100,000</span>
-                                <span class="price-usd hidden">Price from $1,591,781</span>
+                                <span class="price-usd hidden">$1,591,781</span>
                             </p>
                             <p class="text-beige-medium text-sm mt-2">
                                 Welcome to the epitome of opulence and grandeur, where a decade-long legacy of crafting luxury pool villas comes alive in every glorious detail. Botanica Luxury Villas, standing tall with over 15 awe-inspiring projects.
@@ -1167,8 +1157,8 @@
                 description: 'An exquisite villa offering unparalleled luxury and modern design in a prime location. Features expansive living spaces, high-end finishes, and stunning views.',
                 facilities: ['Private Infinity Pool', 'Smart Home System', 'Home Cinema', 'Fully Staffed', 'Gym', 'Sauna'],
                 images: [
-                    'https://placehold.co/800x600/5d4037/ffffff?text=The+Luxe+Villa+1', // Placeholder for actual image
-                    'https://placehold.co/800x600/5d4037/ffffff?text=The+Luxe+Villa+2', // Placeholder for actual image
+                    'https://placehold.co/800x600/5d4037/ffffff?text=The+Luxe+Villa+1',
+                    'https://placehold.co/800x600/5d4037/ffffff?text=The+Luxe+Villa+2',
                 ],
                 agentContact: 'agent.luxe@mermaidhomes.com'
             },
@@ -1510,9 +1500,9 @@
             }
         });
 
-        const listingStatusMessage = document.getElementById('listing-status-message');
+        const listingStatusMessage = document.getElementById('listing-status-message'); // Element for status message
         
-        submitPropertyForm.addEventListener('submit', (event) => {
+        submitPropertyForm.addEventListener('submit', (event) => { // Use submitPropertyForm that was newly defined
             event.preventDefault();
             const form = event.target;
             const title = form['listing-title'].value;
@@ -1528,27 +1518,30 @@
             const agentContact = form['listing-agent-contact'].value;
 
             if (title && price && location && description) {
-                const newImages = [];
+                const newImages = []; // Array to hold Data URLs of uploaded images
                 if (propertyImageInput.files.length > 0) {
                     let filesProcessed = 0;
                     Array.from(propertyImageInput.files).forEach(file => {
                         const reader = new FileReader();
                         reader.onload = (e) => {
-                            newImages.push(e.target.result);
+                            newImages.push(e.target.result); // Store Data URL
                             filesProcessed++;
+                            // Check if all files have been processed
                             if (filesProcessed === propertyImageInput.files.length) {
+                                // Once all images are read, add the property
                                 addPropertyToDataAndRender(title, location, propertyType, bedrooms, bathrooms, area, price, description, facilities, agentContact, newImages);
                                 listingStatusMessage.textContent = "Listing submitted successfully and added to current view!";
                                 listingStatusMessage.classList.remove('text-red-500');
                                 listingStatusMessage.classList.add('text-green-600');
                                 form.reset();
                                 imagePreviewContainer.innerHTML = '';
-                                hideModal();
+                                hideModal(); // Hide the modal after successful submission
                             }
                         };
-                        reader.readAsDataURL(file);
+                        reader.readAsDataURL(file); // Read file as Data URL
                     });
                 } else {
+                    // If no images selected, use placeholder and add property immediately
                     newImages.push('https://placehold.co/800x600/8d6e63/ffffff?text=New+Property');
                     addPropertyToDataAndRender(title, location, propertyType, bedrooms, bathrooms, area, price, description, facilities, agentContact, newImages);
                     listingStatusMessage.textContent = "Listing submitted successfully and added to current view (no images uploaded)!";
@@ -1556,13 +1549,14 @@
                     listingStatusMessage.classList.add('text-green-600');
                     form.reset();
                     imagePreviewContainer.innerHTML = '';
-                    hideModal();
+                    hideModal(); // Hide the modal after successful submission
                 }
             } else {
                 listingStatusMessage.textContent = "Please fill in all required fields (Title, Price, Location, Description).";
                 listingStatusMessage.classList.remove('text-green-600');
                 listingStatusMessage.classList.add('text-red-500');
             }
+            // Optional: Hide message after some time
             setTimeout(() => {
                 listingStatusMessage.textContent = '';
                 listingStatusMessage.classList.remove('text-green-600', 'text-red-500');
@@ -1591,7 +1585,7 @@
         }
 
         // ROI Calculator Function
-        let roiChart; // Variable to hold the chart instance
+        let roiChartInstance = null; // Store chart instance
         function calculateROI() {
             const investment = parseFloat(roiInvestmentInput.value);
             const income = parseFloat(roiIncomeInput.value);
@@ -1606,69 +1600,69 @@
                 roiResultBox.classList.remove('text-red-500');
                 roiResultBox.classList.add('text-beige-dark');
 
-                // Render or update Chart.js graph
-                const ctx = document.getElementById('roiChart').getContext('2d');
-                if (roiChartInstance) {
-                    roiChartInstance.destroy(); // Destroy old chart instance if it exists
-                }
-                roiChartInstance = new Chart(ctx, {
-                    type: 'bar', // Simple bar chart
-                    data: {
-                        labels: ['ROI'],
-                        datasets: [{
-                            label: 'Estimated ROI %',
-                            data: [roi],
-                            backgroundColor: roi >= 0 ? '#4db6ac' : '#ef4444', // Teal for positive, red for negative
-                            borderColor: roi >= 0 ? '#26a69a' : '#b91c1c',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false, // Allow chart to fit container height/width
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                title: {
-                                    display: true,
-                                    text: 'ROI (%)'
-                                }
-                            }
+                const ctx = document.getElementById('roiChart');
+                if (ctx) { // Check if canvas element exists
+                    if (roiChartInstance) {
+                        roiChartInstance.destroy();
+                    }
+                    roiChartInstance = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['ROI'],
+                            datasets: [{
+                                label: 'Estimated ROI %',
+                                data: [roi],
+                                backgroundColor: roi >= 0 ? '#4db6ac' : '#ef4444',
+                                borderColor: roi >= 0 ? '#26a69a' : '#b91c1c',
+                                borderWidth: 1
+                            }]
                         },
-                        plugins: {
-                            legend: {
-                                display: false
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    title: {
+                                        display: true,
+                                        text: 'ROI (%)'
+                                    }
+                                }
                             },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        let label = context.dataset.label || '';
-                                        if (label) {
-                                            label += ': ';
+                            plugins: {
+                                legend: {
+                                    display: false
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            let label = context.dataset.label || '';
+                                            if (label) {
+                                                label += ': ';
+                                            }
+                                            if (context.parsed.y !== null) {
+                                                label += context.parsed.y.toFixed(2) + '%';
+                                            }
+                                            return label;
                                         }
-                                        if (context.parsed.y !== null) {
-                                            label += context.parsed.y.toFixed(2) + '%';
-                                        }
-                                        return label;
                                     }
                                 }
                             }
                         }
-                    }
-                });
+                    });
+                }
 
             } else {
                 roiResultBox.innerText = 'Please enter valid numbers for Property Price, Monthly Income, and Annual Expenses.';
                 roiResultBox.classList.remove('text-beige-dark');
                 roiResultBox.classList.add('text-red-500');
                 if (roiChartInstance) {
-                    roiChartInstance.destroy(); // Destroy chart if input is invalid
+                    roiChartInstance.destroy();
                     roiChartInstance = null;
                 }
             }
         }
         document.getElementById('calculate-roi-button').addEventListener('click', calculateROI);
-        // Trigger ROI calculation on input changes for automatic calculation
         roiInvestmentInput.addEventListener('input', calculateROI);
         roiIncomeInput.addEventListener('input', calculateROI);
         roiExpensesInput.addEventListener('input', calculateROI);
@@ -1769,7 +1763,7 @@
             updateCurrencyDisplay();
 
             // Load Google Maps script after DOM is ready
-            const googleMapsApiKey = 'YOUR_GOOGLE_MAPS_API_KEY'; // <--- เปลี่ยนตรงนี้!
+            const googleMapsApiKey = 'YOUR_GOOGLE_MAPS_API_KEY';
             const script = document.createElement('script');
             script.src = `https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&libraries=places&callback=initMap`;
             script.async = true;
@@ -1778,9 +1772,10 @@
 
             // Hide loading overlay after initial content is rendered
             const loadingOverlay = document.getElementById('loading-overlay');
-            setTimeout(() => { // Small delay to ensure content is visible before hiding
+            // Ensure preloader hides after a small delay to allow initial rendering
+            setTimeout(() => {
                 loadingOverlay.classList.add('hidden');
-            }, 500); // Adjust delay as needed
+            }, 500); // 500ms delay for the fade-out effect
         });
     </script>
 </body>
