@@ -1,21 +1,18 @@
 <index.html>
-<html lang="en">
+<html lang="th">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mermaid Homes - Your Gateway to Phuket Real Estate</title>
+    <title>Mermaid Homes - Real Estate Phuket</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Chart.js CDN for the ROI calculator -->
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* --- CORE STYLES --- */
         html { scroll-behavior: smooth; }
-        body { font-family: 'Josefin Sans', sans-serif; color: #5d4037; }
-        .container { max-width: 1200px; }
+        body { font-family: 'Sarabun', 'Josefin Sans', sans-serif; color: #5d4037; }
+        .container { max-width: 1280px; }
 
-        /* --- LOADING OVERLAY --- */
         #loading-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(255, 255, 255, 0.95); display: flex;
@@ -26,15 +23,12 @@
         #loading-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
         #loading-overlay img { max-width: 150px; animation: pulse 1.5s infinite; }
         @keyframes pulse {
-            0%, 100% { transform: scale(0.95); }
-            50% { transform: scale(1); }
+            0%, 100% { transform: scale(0.95); } 50% { transform: scale(1); }
         }
 
-        /* --- SPA NAVIGATION: Page Visibility --- */
         .page-content-section { display: none; }
         .page-content-section.active { display: block; }
         
-        /* --- HERO SECTION WITH VIDEO --- */
         .hero-background {
             position: relative; height: 85vh; min-height: 600px;
             display: flex; align-items: center; justify-content: center;
@@ -42,125 +36,95 @@
         }
         #hero-video {
             position: absolute; top: 50%; left: 50%;
-            width: 100%; height: 100%;
-            object-fit: cover;
-            transform: translate(-50%, -50%);
-            z-index: 1;
+            width: 100%; height: 100%; object-fit: cover;
+            transform: translate(-50%, -50%); z-index: 1;
         }
         .hero-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.4); z-index: 2;
+            background: rgba(0, 0, 0, 0.5); z-index: 2;
         }
         .hero-content { position: relative; z-index: 3; }
-
-        /* --- UI & ANIMATIONS --- */
         .floating-animation { animation: float 6s ease-in-out infinite; }
         @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
+            0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); }
         }
 
-        /* --- CUSTOM COLORS --- */
-        .beige-primary { background-color: #d7ccc8; }
         .beige-secondary { background-color: #efebe9; }
-        .beige-dark { background-color: #8d6e63; }
-        .text-beige-dark { color: #5d4037; }
-        .text-beige-medium { color: #8d6e63; }
         .mermaid-accent { background: linear-gradient(135deg, #4db6ac, #26a69a); }
 
-        /* --- FLOATING BUTTONS & WIDGETS --- */
-        .currency-toggle {
-            position: fixed; top: 100px; right: 20px; z-index: 1000;
-            background: rgba(215, 204, 200, 0.9); backdrop-filter: blur(10px);
-            border-radius: 20px; padding: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        }
         .add-listing-btn, .whatsapp-float {
             position: fixed; bottom: 30px; width: 60px; height: 60px;
             border-radius: 50%; color: white; font-size: 24px;
             display: flex; align-items: center; justify-content: center;
-            z-index: 1000; transition: all 0.3s ease;
+            z-index: 1000; transition: all 0.3s ease; box-shadow: 0 4px 20px rgba(0,0,0,0.2);
         }
-        .add-listing-btn { right: 30px; background: linear-gradient(135deg, #4db6ac, #26a69a); box-shadow: 0 4px 20px rgba(77, 182, 172, 0.4); }
-        .add-listing-btn:hover { transform: scale(1.1); box-shadow: 0 6px 25px rgba(77, 182, 172, 0.6); }
-        .whatsapp-float { left: 30px; background: #25D366; box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4); }
-        .whatsapp-float:hover { transform: scale(1.1); box-shadow: 0 6px 25px rgba(37, 211, 102, 0.6); }
+        .add-listing-btn { right: 30px; background: linear-gradient(135deg, #4db6ac, #26a69a); }
+        .whatsapp-float { left: 30px; background: #25D366; }
+        .add-listing-btn:hover, .whatsapp-float:hover { transform: scale(1.1); }
 
-        /* --- PROPERTY CARD & MODAL STYLES --- */
-        .property-card {
-            background: #fff; border: 1px solid #d7ccc8; border-radius: 16px;
-            overflow: hidden; transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(141, 110, 99, 0.1);
-        }
-        .property-card:hover { transform: translateY(-8px); box-shadow: 0 12px 30px rgba(141, 110, 99, 0.2); }
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); z-index: 2000; backdrop-filter: blur(5px);
+            background: rgba(0,0,0,0.6); z-index: 2000; backdrop-filter: blur(5px);
             align-items: center; justify-content: center;
         }
         .modal.active { display: flex; }
         .modal-content {
             background: white; border-radius: 16px; max-width: 600px;
             width: 90%; max-height: 90vh; overflow-y: auto; position: relative;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.2); transform: scale(0.9); opacity: 0;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
             animation: modal-enter 0.3s forwards ease-out;
         }
-        .modal.leaving .modal-content { animation: modal-leave 0.3s forwards ease-in; }
-        @keyframes modal-enter { to { transform: scale(1); opacity: 1; } }
-        @keyframes modal-leave { from { transform: scale(1); opacity: 1; } to { transform: scale(0.9); opacity: 0; } }
+        @keyframes modal-enter { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         .image-preview { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
         .image-preview img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 2px solid #d7ccc8; }
         
-        /* --- PROPERTY DETAIL MODAL --- */
         .property-detail-modal { z-index: 3000; }
-        .property-detail-content { max-width: 900px; }
-        .image-gallery { position: relative; width: 100%; height: 400px; overflow: hidden; border-radius: 8px; margin-bottom: 20px; background-color: #eee; }
-        .image-gallery img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; opacity: 0; transition: opacity 0.4s ease-in-out; }
-        .image-gallery img.active { opacity: 1; }
-        .gallery-nav-button {
-            position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5);
-            color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
-            z-index: 10; transition: background 0.3s; display: flex; align-items: center; justify-content: center;
-        }
-        .gallery-nav-button:hover { background: rgba(0,0,0,0.7); }
-        .gallery-nav-button.left { left: 10px; }
-        .gallery-nav-button.right { right: 10px; }
+        .image-gallery { position: relative; width: 100%; height: 400px; border-radius: 8px; margin-bottom: 20px; background-color: #eee; }
 
-        /* --- ROI CALCULATOR CHART --- */
         #roiChartContainer { width: 100%; max-width: 300px; margin: 20px auto; height: 300px; }
 
-        /* --- NOTIFICATION --- */
         #notification {
-            position: fixed; top: 80px; left: 50%; transform: translateX(-50%);
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
             padding: 1rem 2rem; border-radius: 8px; color: white;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 9999;
-            opacity: 0; visibility: hidden; transition: all 0.3s ease;
+            opacity: 0; visibility: hidden; transition: all 0.3s ease; transform: translate(-50%, -20px);
         }
-        #notification.show { opacity: 1; visibility: visible; top: 100px; }
+        #notification.show { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
         #notification.success { background-color: #28a745; }
         #notification.error { background-color: #dc3545; }
     </style>
 </head>
-<body class="bg-beige-light">
+<body class="bg-gray-100">
 
-    <!-- Loading Overlay -->
     <div id="loading-overlay">
         <img src="logo1.jpg" alt="Mermaid Homes Logo" onerror="this.onerror=null;this.src='https://placehold.co/150x150/d7ccc8/5d4037?text=Logo';">
         <div class="text-beige-dark text-xl font-semibold">Loading Mermaid Homes...</div>
     </div>
-    
-    <!-- Notification Element -->
     <div id="notification"></div>
 
-    <!-- Currency Toggle -->
-    <div class="currency-toggle">
-        <button id="currency-toggle" class="text-beige-dark font-medium px-3 py-1 rounded-full hover:bg-white transition-colors">
-            <span id="current-currency">THB</span>
-        </button>
-    </div>
-
-    <!-- Header & Navigation -->
-    <header class="bg-white shadow-sm py-4 sticky top-0 z-50 border-b border-beige">
-        <!-- ... Header content from previous version ... -->
+    <header class="bg-white shadow-sm py-4 sticky top-0 z-50">
+       <div class="container mx-auto px-4 flex justify-between items-center">
+            <a href="#hero-section" class="flex items-center space-x-3 nav-link">
+                <img src="logo1.jpg" alt="Mermaid Homes Logo" class="h-10 w-auto" onerror="this.onerror=null;this.src='https://placehold.co/40x40?text=M';">
+                <div>
+                    <span class="text-xl md:text-2xl font-bold text-gray-800">Mermaid Homes</span>
+                    <p class="text-xs text-gray-500">Phuket, Thailand</p>
+                </div>
+            </a>
+            <nav class="hidden md:flex items-center space-x-6">
+                <a href="#properties" class="nav-link text-gray-600 hover:text-gray-900">Properties</a>
+                <a href="#post-property-listing" class="nav-link text-gray-600 hover:text-gray-900">Post Property</a>
+                <a href="#roi-calculator" class="nav-link text-gray-600 hover:text-gray-900">ROI Calculator</a>
+            </nav>
+            <button id="mobile-menu-button" class="md:hidden text-gray-600">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t">
+             <a href="#properties" class="nav-link block text-center py-3 text-gray-700 hover:bg-gray-100">Properties</a>
+             <a href="#post-property-listing" class="nav-link block text-center py-3 text-gray-700 hover:bg-gray-100">Post Property</a>
+             <a href="#roi-calculator" class="nav-link block text-center py-3 text-gray-700 hover:bg-gray-100">ROI Calculator</a>
+        </div>
     </header>
 
     <main id="main-content">
@@ -168,7 +132,6 @@
         <section id="hero-section" class="page-content-section hero-background">
              <div class="hero-overlay"></div>
              <video autoplay loop muted playsinline id="hero-video" poster="https://placehold.co/1920x1080/8d6e63/ffffff?text=Mermaid+Homes">
-                 <!-- The user should replace this src with their actual video file path -->
                  <source src="Video opening.mp4" type="video/mp4">
                  Your browser does not support the video tag.
              </video>
@@ -176,52 +139,89 @@
                 <h1 class="text-4xl md:text-6xl font-bold mb-4 leading-tight">Real Estate Phuket</h1>
                 <p class="text-2xl md:text-3xl font-light mb-6">Thailand best luxury homes | Sell and Rent 🏡</p>
                 <p class="text-lg md:text-xl mb-8 text-gray-200">Explore the Island’s property with us</p>
-                <a href="#properties" class="nav-link bg-white text-beige-dark font-semibold py-3 px-8 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-xl text-lg">
+                <a href="#properties" class="nav-link bg-white text-gray-800 font-semibold py-3 px-8 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-xl text-lg">
                     Browse Properties
                 </a>
             </div>
         </section>
-
-        <!-- Services Page Section -->
-        <section id="services" class="page-content-section py-16 bg-white">
-            <!-- Populated content -->
-        </section>
         
         <!-- Properties Page Section -->
-        <section id="properties" class="page-content-section py-16 beige-secondary">
-             <!-- ... Properties content from previous version ... -->
+        <section id="properties" class="page-content-section py-12 md:py-20 beige-secondary">
+             <div class="container mx-auto px-4">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-10 text-gray-800">Property Listings</h2>
+                <!-- Search and Filter UI -->
+                <div class="bg-white p-6 rounded-xl shadow-md mb-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 items-end">
+                    <div>
+                        <label for="location-filter" class="block text-sm font-medium text-gray-700 mb-1">ทำเล (Location)</label>
+                        <select id="location-filter" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                            <option value="">All Areas</option>
+                            <!-- Options will be added by JS -->
+                        </select>
+                    </div>
+                    <div>
+                        <label for="type-filter" class="block text-sm font-medium text-gray-700 mb-1">ประเภท (Type)</label>
+                        <select id="type-filter" class="w-full p-2 border border-gray-300 rounded-md shadow-sm">
+                            <option value="">All Types</option>
+                            <option value="Sale">For Sale</option>
+                            <option value="Rent">For Rent</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="bedrooms-filter" class="block text-sm font-medium text-gray-700 mb-1">ห้องนอน (Beds)</label>
+                        <select id="bedrooms-filter" class="w-full p-2 border border-gray-300 rounded-md shadow-sm">
+                            <option value="">Any</option>
+                            <option value="1">1+</option>
+                            <option value="2">2+</option>
+                            <option value="3">3+</option>
+                            <option value="4">4+</option>
+                            <option value="5">5+</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="max-price-filter" class="block text-sm font-medium text-gray-700 mb-1">ราคาสูงสุด (Max Price)</label>
+                        <input type="number" id="max-price-filter" placeholder="e.g. 50000000" class="w-full p-2 border border-gray-300 rounded-md">
+                    </div>
+                    <button id="apply-filter-btn" class="w-full mermaid-accent text-white font-bold py-2 px-4 rounded-md hover:opacity-90 transition-opacity">
+                        <i class="fas fa-search mr-2"></i>Search
+                    </button>
+                </div>
+                <!-- Property Cards Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="properties-grid">
+                    <!-- Property cards will be dynamically inserted here -->
+                </div>
+            </div>
         </section>
 
         <!-- Post Your Property Listing Section -->
-        <section id="post-property-listing" class="page-content-section py-16 bg-white">
+        <section id="post-property-listing" class="page-content-section py-12 md:py-20">
             <div class="container mx-auto px-4 text-center">
-                 <h2 class="text-4xl font-bold text-center mb-12 text-beige-dark">Post Your Property Listing</h2>
-                 <p class="max-w-xl mx-auto text-beige-medium mb-8">Ready to list your property? Click the floating '+' button to open the submission form and reach thousands of potential buyers and renters.</p>
+                 <h2 class="text-3xl md:text-4xl font-bold text-center mb-6 text-gray-800">ลงประกาศของคุณ</h2>
+                 <p class="max-w-xl mx-auto text-gray-600 mb-8">พร้อมที่จะลงประกาศทรัพย์สินของคุณแล้วหรือยัง? คลิกปุ่ม '+' ด้านล่างเพื่อเปิดฟอร์มและเข้าถึงผู้ซื้อและผู้เช่าหลายพันคน</p>
                  <button id="open-listing-form-from-page" class="mermaid-accent text-white font-semibold py-3 px-8 rounded-md hover:opacity-90 transition duration-300">
-                    Open Listing Form
+                    เปิดฟอร์มลงประกาศ
                  </button>
             </div>
         </section>
         
         <!-- ROI Calculator Section -->
-        <section id="roi-calculator" class="page-content-section py-16 beige-secondary">
+        <section id="roi-calculator" class="page-content-section py-12 md:py-20 beige-secondary">
              <div class="container mx-auto px-4">
-                <h2 class="text-4xl font-bold text-center mb-12 text-beige-dark">Calculate Your Investment ROI</h2>
-                <div class="max-w-xl mx-auto bg-white rounded-2xl shadow-md p-8">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-10 text-gray-800">คำนวณผลตอบแทนการลงทุน (ROI)</h2>
+                <div class="max-w-xl mx-auto bg-white rounded-2xl shadow-lg p-8">
                     <div class="space-y-4">
                         <div>
-                            <label for="investment" class="block text-beige-dark text-sm font-semibold mb-2">Total Investment (THB)</label>
-                            <input id="investment" type="number" placeholder="e.g., 10000000" class="w-full p-3 border border-beige-primary rounded-md focus:outline-none focus:ring-2 focus:ring-beige-dark"/>
+                            <label for="investment" class="block text-sm font-medium text-gray-700 mb-1">เงินลงทุนทั้งหมด (Total Investment)</label>
+                            <input id="investment" type="number" placeholder="เช่น 10,000,000" class="w-full p-3 border border-gray-300 rounded-md"/>
                         </div>
                         <div>
-                            <label for="income" class="block text-beige-dark text-sm font-semibold mb-2">Monthly Rental Income (THB)</label>
-                            <input id="income" type="number" placeholder="e.g., 50000" class="w-full p-3 border border-beige-primary rounded-md focus:outline-none focus:ring-2 focus:ring-beige-dark"/>
+                            <label for="income" class="block text-sm font-medium text-gray-700 mb-1">รายได้ค่าเช่าต่อเดือน (Monthly Rental Income)</label>
+                            <input id="income" type="number" placeholder="เช่น 50,000" class="w-full p-3 border border-gray-300 rounded-md"/>
                         </div>
                         <div>
-                            <label for="expenses" class="block text-beige-dark text-sm font-semibold mb-2">Annual Expenses (THB)</label>
-                            <input id="expenses" type="number" placeholder="e.g., 60000" class="w-full p-3 border border-beige-primary rounded-md focus:outline-none focus:ring-2 focus:ring-beige-dark" />
+                            <label for="expenses" class="block text-sm font-medium text-gray-700 mb-1">ค่าใช้จ่ายต่อปี (Annual Expenses)</label>
+                            <input id="expenses" type="number" placeholder="เช่น 60,000" class="w-full p-3 border border-gray-300 rounded-md" />
                         </div>
-                         <p id="roi-result" class="mt-4 text-center font-semibold text-beige-dark text-2xl"></p>
+                         <p id="roi-result" class="mt-4 text-center font-bold text-gray-800 text-2xl h-8"></p>
                          <div id="roiChartContainer">
                             <canvas id="roiChart"></canvas>
                         </div>
@@ -229,32 +229,27 @@
                 </div>
             </div>
         </section>
-        
-        <!-- Other sections ... -->
     </main>
 
     <footer class="bg-gray-800 text-white py-8">
         <div class="container mx-auto px-4 text-center">
             <div class="flex justify-center space-x-6 mb-4">
                 <a href="https://www.facebook.com/profile.php?id=61551898026585" target="_blank" class="text-gray-300 hover:text-white transition duration-300 text-2xl">
-                    <i class="fab fa-facebook"></i>
+                    <i class="fab fa-facebook-f"></i>
                 </a>
                 <a href="https://www.instagram.com/merm.homes" target="_blank" class="text-gray-300 hover:text-white transition duration-300 text-2xl">
                     <i class="fab fa-instagram"></i>
                 </a>
-                <!-- Add other social links if needed -->
             </div>
-            <p>&copy; 2024 Mermaid Homes. All rights reserved.</p>
+            <p class="text-sm">&copy; 2024 Mermaid Homes. All rights reserved.</p>
         </div>
     </footer>
 
-    <!-- Add Listing Button -->
-    <button id="add-listing-btn" class="add-listing-btn">
+    <!-- Floating Buttons -->
+    <button id="add-listing-btn" class="add-listing-btn" title="ลงประกาศของคุณ">
          <i class="fas fa-plus"></i>
     </button>
-    
-    <!-- WhatsApp Floating Button -->
-    <a href="https://wa.me/66654765114" target="_blank" class="whatsapp-float">
+    <a href="https://wa.me/66654765114" target="_blank" class="whatsapp-float" title="ติดต่อทาง WhatsApp">
         <i class="fab fa-whatsapp"></i>
     </a>
     
@@ -262,25 +257,31 @@
     <!-- Add Listing Modal -->
     <div id="add-listing-modal" class="modal">
         <div class="modal-content p-6">
-            <h3 class="text-2xl font-bold text-beige-dark mb-4">Submit Your Property</h3>
+            <h3 class="text-2xl font-bold text-gray-800 mb-6">ลงประกาศอสังหาริมทรัพย์</h3>
             <form id="submit-property-form" class="space-y-4">
-                <!-- Form fields for property submission -->
                 <div>
-                    <label for="listing-title" class="block text-sm font-semibold mb-1">Property Title</label>
-                    <input name="listing-title" type="text" required class="w-full p-2 border border-beige-primary rounded-md"/>
+                    <label for="listing-title" class="block text-sm font-medium text-gray-700 mb-1">ชื่อประกาศ (Title)</label>
+                    <input name="listing-title" type="text" placeholder="e.g., Luxury Sea View Villa" required class="w-full p-2 border border-gray-300 rounded-md"/>
                 </div>
                 <div>
-                    <label for="listing-price" class="block text-sm font-semibold mb-1">Price (THB)</label>
-                    <input name="listing-price" type="number" required class="w-full p-2 border border-beige-primary rounded-md"/>
+                    <label for="listing-description" class="block text-sm font-medium text-gray-700 mb-1">รายละเอียด (Description)</label>
+                    <textarea name="listing-description" rows="4" placeholder="e.g., A beautiful villa with a stunning ocean view..." required class="w-full p-2 border border-gray-300 rounded-md"></textarea>
+                </div>
+                <div>
+                    <label for="listing-price" class="block text-sm font-medium text-gray-700 mb-1">ราคา (Price in THB)</label>
+                    <input name="listing-price" type="number" placeholder="25000000" required class="w-full p-2 border border-gray-300 rounded-md"/>
                 </div>
                  <div>
-                    <label for="listing-image-files" class="block text-sm font-semibold mb-1">Property Images (max 15)</label>
-                    <input name="listing-image-files" type="file" id="listing-image-files" class="w-full p-2 border border-beige-primary rounded-md" accept="image/*" multiple>
-                    <div id="image-preview" class="image-preview mt-2"></div>
+                    <label for="listing-agent-code" class="block text-sm font-medium text-gray-700 mb-1">รหัสตัวแทน (Agent Code)</label>
+                    <input name="listing-agent-code" type="text" placeholder="e.g., AG-12345" required class="w-full p-2 border border-gray-300 rounded-md"/>
                 </div>
-
-                <div class="flex justify-end space-x-4 pt-4">
-                    <button type="button" id="cancel-listing-btn" class="bg-gray-200 text-gray-700 font-semibold py-2 px-6 rounded-md hover:bg-gray-300">Cancel</button>
+                <div>
+                    <label for="listing-image-files" class="block text-sm font-medium text-gray-700 mb-1">รูปภาพ (สูงสุด 15 รูป)</label>
+                    <input name="listing-image-files" type="file" id="listing-image-files" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" accept="image/*" multiple>
+                    <div id="image-preview" class="image-preview mt-3"></div>
+                </div>
+                <div class="flex justify-end space-x-4 pt-4 border-t mt-6">
+                    <button type="button" id="cancel-listing-btn" class="bg-gray-200 text-gray-800 font-semibold py-2 px-6 rounded-md hover:bg-gray-300">Cancel</button>
                     <button type="submit" class="mermaid-accent text-white font-semibold py-2 px-6 rounded-md hover:opacity-90">Submit Listing</button>
                 </div>
             </form>
@@ -289,263 +290,309 @@
     
     <!-- Property Detail Modal -->
     <div id="property-detail-modal" class="modal property-detail-modal">
-        <!-- ... Detail Modal content from previous version ... -->
+        <!-- Detail Modal content will be populated by JS -->
     </div>
 
 
-    <script>
-    document.addEventListener('DOMContentLoaded', () => {
+<script>
+document.addEventListener('DOMContentLoaded', () => {
 
-        // --- GLOBAL VARIABLES & CONSTANTS ---
-        const USD_EXCHANGE_RATE = 36.5;
-
-        // --- DOM ELEMENT SELECTORS ---
-        const loadingOverlay = document.getElementById('loading-overlay');
-        const notificationElement = document.getElementById('notification');
-        const currencyToggleButton = document.getElementById('currency-toggle');
-        const allPageSections = document.querySelectorAll('.page-content-section');
-        const navLinks = document.querySelectorAll('.nav-link');
-        const propertiesGrid = document.getElementById('properties-grid');
-        
-        // Modal & Form Elements
-        const addListingBtn = document.getElementById('add-listing-btn');
-        const openListingFormBtn = document.getElementById('open-listing-form-from-page');
-        const addListingModal = document.getElementById('add-listing-modal');
-        const cancelListingBtn = document.getElementById('cancel-listing-btn');
-        const submitPropertyForm = document.getElementById('submit-property-form');
-        const propertyImageInput = document.getElementById('listing-image-files');
-        const imagePreviewContainer = document.getElementById('image-preview');
-
-        // ROI Calculator Elements
-        const roiInvestmentInput = document.getElementById('investment');
-        const roiIncomeInput = document.getElementById('income');
-        const roiExpensesInput = document.getElementById('expenses');
-        const roiResultBox = document.getElementById('roi-result');
-
-        // --- STATE VARIABLES ---
-        let isTHB = true;
-        let currentDetailImages = [];
-        let currentImageIndex = 0;
-        let roiChartInstance = null;
-        let notificationTimeout;
-        
-        // --- DATA ---
-        let propertiesData = [
-            // Sample Data
-             {
-                id: 'villa-kamala-1', title: 'Luxury Beachfront Villa', location: 'Kamala Beach', type: 'Sale',
-                bedrooms: 4, bathrooms: 5, area: 350, priceTHB: 45000000,
-                description: 'Stunning luxury villa on Kamala Beach with breathtaking sea views.',
-                facilities: ['Large Private Pool', 'Beach Access', 'Fully Equipped Kitchen', '24/7 Security'],
-                images: ['https://placehold.co/800x600/4db6ac/ffffff?text=Luxury+Villa+1', 'https://placehold.co/800x600/4db6ac/ffffff?text=Luxury+Villa+2'],
-                agentContact: '+66123456789'
-            }
-        ];
-
-        // --- FUNCTIONS ---
-
-        /**
-         * Shows a notification message.
-         * @param {string} message - The message to display.
-         * @param {string} type - 'success' or 'error'.
-         */
-        function showNotification(message, type = 'success') {
-            clearTimeout(notificationTimeout);
-            notificationElement.textContent = message;
-            notificationElement.className = ``; // Reset classes
-            notificationElement.classList.add('show', type);
-            notificationTimeout = setTimeout(() => {
-                notificationElement.classList.remove('show');
-            }, 4000);
+    // --- DATA STORE ---
+    let propertiesData = [
+        {
+            id: 'anchan-11012', title: 'Anchan Luxury Villas No. 11012', type: 'Sale',
+            location: 'Thalang', bedrooms: 3, bathrooms: 4, area: 473, priceTHB: 32837000,
+            description: 'Experience ultimate luxury at Anchan Villa No. 11012, a beautifully designed property with spacious living areas and high-end finishes. Part of the prestigious Anchan luxury villas collection, with completion expected in Q2 2026.',
+            agentCode: 'AG-PROJ-01',
+            images: ['Anchan1 (1).jpg', 'Anchan2.jpg', 'Anchan3.jpg']
+        },
+        {
+            id: 'trichada-rent', title: 'Trichada Pool Villa', type: 'Rent',
+            location: 'Bangtao Beach', bedrooms: 3, bathrooms: 2, area: 200, priceTHB: 170000,
+            description: 'Spacious 3-bedroom pool villa, move-in ready! Price includes common fees, garden & pool cleaning (3 times/week). Perfect for long-term rental in a desirable location.',
+            agentCode: 'AG-RENT-02',
+            images: ['T0.jpg', 'T1.jpg', 'T2.jpg', 'T3.jpg', 'T4.jpg', 'T5.jpg', 'T6.jpg', 'T7.jpg', 'T8.jpg', 'T10.jpg', 'T11.jpg', 'T12.jpg', 'T13.jpg']
+        },
+        {
+            id: 'botanica-grand', title: 'Botanica Grand Avenue', type: 'Sale',
+            location: 'Cherngtalay', bedrooms: 4, bathrooms: 5, area: 520, priceTHB: 58100000,
+            description: 'The epitome of opulence. Botanica Luxury Villas presents its latest masterpiece in Cherngtalay, offering unparalleled grandeur and a legacy of crafting exquisite pool villas.',
+            agentCode: 'AG-PROJ-03',
+            images: ['https://placehold.co/800x600/a1887f/ffffff?text=Botanica+1', 'https://placehold.co/800x600/a1887f/ffffff?text=Botanica+2']
+        },
+        {
+            id: 'luxpride-3', title: 'Luxpride 3 Villa', type: 'Rent',
+            location: 'Rawai', bedrooms: 3, bathrooms: 4, area: 402, priceTHB: 200000,
+            description: 'A spacious and elegantly designed villa, perfect for long-term rental. Features a large private SPA-style swimming pool, modern amenities, and ample parking, ideal for families or groups up to 6 guests.',
+            agentCode: 'AG-RENT-04',
+            images: ['L2 (1).jpg', 'L2 (2).jpg', 'L2 (3).jpg', 'L2 (4).jpg', 'L2 (5).jpg', 'L2 (6).jpg']
         }
-        
-        /**
-         * Handles SPA-like navigation.
-         */
-        function showPage(pageId) {
-            allPageSections.forEach(section => {
-                section.classList.toggle('active', section.id === pageId);
-            });
-             const targetSection = document.getElementById(pageId);
-             if(targetSection) targetSection.scrollIntoView();
-        }
+    ];
 
-        /**
-         * Renders property cards.
-         */
-        function renderPropertyCards(propertiesToRender) {
-             // Implementation from previous version
-             // Ensure this function calls attachViewDetailsListeners() and updateCurrencyDisplay()
-        }
-        
-        /**
-         * Toggles the currency between THB and USD.
-         */
-        function toggleCurrency() {
-            isTHB = !isTHB;
-            document.getElementById('current-currency').textContent = isTHB ? 'THB' : 'USD';
-            // updateCurrencyDisplay() needs to be called to update prices on the page
-        }
+    // --- DOM ELEMENT SELECTORS ---
+    const loadingOverlay = document.getElementById('loading-overlay');
+    const notificationElement = document.getElementById('notification');
+    const allPageSections = document.querySelectorAll('.page-content-section');
+    const navLinks = document.querySelectorAll('.nav-link');
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    // Properties Page
+    const propertiesGrid = document.getElementById('properties-grid');
+    const locationFilter = document.getElementById('location-filter');
+    const typeFilter = document.getElementById('type-filter');
+    const bedroomsFilter = document.getElementById('bedrooms-filter');
+    const maxPriceFilter = document.getElementById('max-price-filter');
+    const applyFilterBtn = document.getElementById('apply-filter-btn');
 
-        /**
-         * Handles image preview for the listing form.
-         */
-        function handleImagePreview(event) {
-            imagePreviewContainer.innerHTML = '';
-            const files = event.target.files;
-            if (files.length > 15) {
-                showNotification('You can only upload a maximum of 15 images.', 'error');
-                event.target.value = ''; // Clear selected files
-                return;
-            }
-            Array.from(files).forEach(file => {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    imagePreviewContainer.appendChild(img);
-                };
-                reader.readAsDataURL(file);
-            });
+    // Modal & Form Elements
+    const addListingBtn = document.getElementById('add-listing-btn');
+    const openListingFormBtn = document.getElementById('open-listing-form-from-page');
+    const addListingModal = document.getElementById('add-listing-modal');
+    const cancelListingBtn = document.getElementById('cancel-listing-btn');
+    const submitPropertyForm = document.getElementById('submit-property-form');
+    const propertyImageInput = document.getElementById('listing-image-files');
+    const imagePreviewContainer = document.getElementById('image-preview');
+    const propertyDetailModal = document.getElementById('property-detail-modal');
+
+    // ROI Calculator Elements
+    const roiInvestmentInput = document.getElementById('investment');
+    const roiIncomeInput = document.getElementById('income');
+    const roiExpensesInput = document.getElementById('expenses');
+    const roiResultBox = document.getElementById('roi-result');
+    let roiChartInstance = null;
+    let notificationTimeout;
+
+    // --- FUNCTIONS ---
+
+    const showNotification = (message, type = 'success') => {
+        clearTimeout(notificationTimeout);
+        notificationElement.textContent = message;
+        notificationElement.className = ``;
+        notificationElement.classList.add('show', type);
+        notificationTimeout = setTimeout(() => notificationElement.classList.remove('show'), 4000);
+    }
+    
+    const showPage = (pageId) => {
+        allPageSections.forEach(section => section.classList.toggle('active', section.id === pageId));
+        document.getElementById(pageId)?.scrollIntoView();
+        mobileMenu.classList.add('hidden');
+    }
+
+    const renderPropertyCards = (propertiesToRender) => {
+        propertiesGrid.innerHTML = '';
+        if (propertiesToRender.length === 0) {
+            propertiesGrid.innerHTML = `<p class="col-span-full text-center text-gray-500 py-10">ไม่พบรายการที่ตรงกับเงื่อนไขของคุณ</p>`;
+            return;
         }
+        propertiesToRender.forEach(prop => {
+            const card = document.createElement('div');
+            card.className = 'bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:-translate-y-2';
+            card.dataset.id = prop.id;
+            const priceDisplay = prop.type === 'Rent'
+                ? `฿${prop.priceTHB.toLocaleString()}/เดือน`
+                : `฿${prop.priceTHB.toLocaleString()}`;
+
+            card.innerHTML = `
+                <img src="${prop.images[0]}" alt="${prop.title}" class="w-full h-48 object-cover" onerror="this.src='https://placehold.co/600x400/d7ccc8/333333?text=Image+Error'">
+                <div class="p-4">
+                    <h3 class="text-lg font-bold text-gray-800 truncate">${prop.title}</h3>
+                    <p class="text-sm text-gray-500 mb-2"><i class="fas fa-map-marker-alt mr-1"></i>${prop.location}</p>
+                    <p class="text-xl font-semibold text-gray-900 mb-3">${priceDisplay}</p>
+                    <div class="flex justify-between text-sm text-gray-600 border-t pt-3">
+                        <span><i class="fas fa-bed mr-1"></i> ${prop.bedrooms} Beds</span>
+                        <span><i class="fas fa-bath mr-1"></i> ${prop.bathrooms} Baths</span>
+                        <span><i class="fas fa-ruler-combined mr-1"></i> ${prop.area} m²</span>
+                    </div>
+                </div>
+            `;
+            card.addEventListener('click', () => showPropertyDetail(prop.id));
+            propertiesGrid.appendChild(card);
+        });
+    }
+
+    const showPropertyDetail = (propId) => {
+        const prop = propertiesData.find(p => p.id === propId);
+        if (!prop) return;
         
-        /**
-         * Handles the submission of the new property form.
-         */
-        async function handlePropertySubmit(event) {
-            event.preventDefault();
-            const form = event.target;
-            const title = form['listing-title'].value;
-            const price = parseFloat(form['listing-price'].value);
-            // ... get other form values
-            
-            const imageFiles = propertyImageInput.files;
-            const imagePromises = Array.from(imageFiles).map(file => {
-                return new Promise((resolve) => {
+        const priceDisplay = prop.type === 'Rent'
+            ? `฿${prop.priceTHB.toLocaleString()}/เดือน`
+            : `฿${prop.priceTHB.toLocaleString()}`;
+
+        propertyDetailModal.innerHTML = `
+            <div class="modal-content !max-w-4xl p-0">
+                <button class="close-detail-btn absolute top-3 right-4 text-white bg-black/30 rounded-full w-8 h-8 z-20 text-xl hover:bg-black/60">&times;</button>
+                <div class="grid grid-cols-1 md:grid-cols-2">
+                    <div class="image-gallery relative">
+                        <!-- Image will be injected -->
+                    </div>
+                    <div class="p-6 flex flex-col">
+                        <h2 class="text-3xl font-bold text-gray-800 mb-2">${prop.title}</h2>
+                        <p class="text-sm text-gray-500 mb-4"><i class="fas fa-map-marker-alt mr-1"></i>${prop.location}</p>
+                        <p class="text-3xl font-bold text-gray-900 mb-6">${priceDisplay}</p>
+                        <div class="grid grid-cols-3 gap-4 text-center mb-6 border-y py-4">
+                            <div><i class="fas fa-bed text-2xl text-gray-500"></i><p>${prop.bedrooms} Beds</p></div>
+                            <div><i class="fas fa-bath text-2xl text-gray-500"></i><p>${prop.bathrooms} Baths</p></div>
+                            <div><i class="fas fa-ruler-combined text-2xl text-gray-500"></i><p>${prop.area} m²</p></div>
+                        </div>
+                        <h4 class="font-bold text-gray-800">Description</h4>
+                        <p class="text-gray-600 mb-4 flex-grow">${prop.description}</p>
+                        <p class="text-sm text-gray-500 mt-auto">Agent Code: ${prop.agentCode}</p>
+                    </div>
+                </div>
+            </div>`;
+
+        const gallery = propertyDetailModal.querySelector('.image-gallery');
+        gallery.innerHTML = `<img src="${prop.images[0]}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/800x600?text=Image+Error'">`;
+        
+        propertyDetailModal.querySelector('.close-detail-btn').addEventListener('click', () => hideModal(propertyDetailModal));
+        showModal(propertyDetailModal);
+    };
+    
+    const handlePropertySubmit = async (event) => {
+        event.preventDefault();
+        const form = event.target;
+        const newProperty = {
+            id: `prop-${Date.now()}`,
+            title: form['listing-title'].value,
+            description: form['listing-description'].value,
+            priceTHB: parseFloat(form['listing-price'].value),
+            agentCode: form['listing-agent-code'].value,
+            images: [],
+            // Default/placeholder values for other fields
+            location: 'Phuket', type: 'Sale', bedrooms: 3, bathrooms: 3, area: 250
+        };
+
+        const imageFiles = propertyImageInput.files;
+        if (imageFiles.length === 0) {
+            newProperty.images.push('https://placehold.co/600x400/d7ccc8/333333?text=No+Image');
+        } else {
+             const imagePromises = Array.from(imageFiles).map(file => {
+                return new Promise(resolve => {
                     const reader = new FileReader();
-                    reader.onload = (e) => resolve(e.target.result);
+                    reader.onload = e => resolve(e.target.result);
                     reader.readAsDataURL(file);
                 });
             });
-
-            const images = await Promise.all(imagePromises);
-
-            const newProperty = {
-                id: `prop-${Date.now()}`,
-                title, priceTHB: price, images,
-                // ... other property fields
-            };
-
-            propertiesData.push(newProperty);
-            renderPropertyCards(propertiesData);
-            showNotification('Property submitted successfully!', 'success');
-            hideModal(addListingModal);
+            newProperty.images = await Promise.all(imagePromises);
         }
 
-        /**
-         * Calculates ROI and updates the chart and text.
-         */
-        function calculateROI() {
-            const investment = parseFloat(roiInvestmentInput.value) || 0;
-            const monthlyIncome = parseFloat(roiIncomeInput.value) || 0;
-            const annualExpenses = parseFloat(roiExpensesInput.value) || 0;
+        propertiesData.unshift(newProperty); // Add to beginning
+        filterAndRenderProperties(); // Re-render the list
+        hideModal(addListingModal);
+        form.reset();
+        document.getElementById('image-preview').innerHTML = '';
+        showNotification('Property submitted successfully!', 'success');
+        showPage('properties');
+    }
 
-            if (investment <= 0) {
-                roiResultBox.textContent = 'Please enter a valid investment amount.';
-                if(roiChartInstance) roiChartInstance.destroy();
-                return;
-            }
+    const calculateROI = () => {
+        const investment = parseFloat(roiInvestmentInput.value) || 0;
+        const monthlyIncome = parseFloat(roiIncomeInput.value) || 0;
+        const annualExpenses = parseFloat(roiExpensesInput.value) || 0;
 
-            const annualIncome = monthlyIncome * 12;
-            const netProfit = annualIncome - annualExpenses;
-            const roi = (netProfit / investment) * 100;
-
-            roiResultBox.textContent = `Estimated ROI: ${roi.toFixed(2)}%`;
-            
-            const ctx = document.getElementById('roiChart').getContext('2d');
-            if (roiChartInstance) {
-                roiChartInstance.destroy();
-            }
-            
-            roiChartInstance = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Net Profit', 'Annual Expenses'],
-                    datasets: [{
-                        data: [netProfit > 0 ? netProfit : 0, annualExpenses],
-                        backgroundColor: ['#26a69a', '#d7ccc8'],
-                        borderColor: ['#ffffff', '#ffffff'],
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'bottom' },
-                        title: { display: true, text: 'Annual Income Breakdown' }
-                    }
-                }
-            });
+        if (investment <= 0) {
+            roiResultBox.textContent = '';
+            if (roiChartInstance) roiChartInstance.destroy();
+            return;
         }
+
+        const annualIncome = monthlyIncome * 12;
+        const netProfit = annualIncome - annualExpenses;
+        const roi = (netProfit / investment) * 100;
+        roiResultBox.textContent = `ROI: ${roi.toFixed(2)}%`;
         
-        /**
-         * Generic function to show a modal.
-         */
-        function showModal(modalElement) {
-            modalElement.classList.add('active');
-            modalElement.classList.remove('leaving');
-        }
-
-        /**
-         * Generic function to hide a modal with animation.
-         */
-        function hideModal(modalElement) {
-            modalElement.classList.add('leaving');
-            setTimeout(() => {
-                modalElement.classList.remove('active', 'leaving');
-            }, 300);
-        }
-
-        // --- EVENT LISTENERS ---
-
-        window.addEventListener('load', () => setTimeout(() => document.getElementById('loading-overlay')?.classList.add('hidden'), 500));
+        const ctx = document.getElementById('roiChart').getContext('2d');
+        if (roiChartInstance) roiChartInstance.destroy();
         
-        navLinks.forEach(link => {
-            link.addEventListener('click', (event) => {
-                event.preventDefault();
-                const pageId = link.getAttribute('href').substring(1);
-                showPage(pageId);
-                history.pushState({page: pageId}, '', `#${pageId}`);
-            });
+        roiChartInstance = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['กำไรสุทธิ (Net Profit)', 'ค่าใช้จ่าย (Expenses)'],
+                datasets: [{
+                    data: [netProfit > 0 ? netProfit : 0, annualExpenses],
+                    backgroundColor: ['#26a69a', '#d7ccc8'],
+                    borderColor: ['#ffffff', '#ffffff'],
+                    borderWidth: 3
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
         });
+    }
 
-        window.addEventListener('popstate', (event) => {
-            const pageId = event.state?.page || 'hero-section';
+    const populateLocationFilter = () => {
+        const locations = [...new Set(propertiesData.map(p => p.location))];
+        locations.forEach(loc => {
+            const option = document.createElement('option');
+            option.value = loc;
+            option.textContent = loc;
+            locationFilter.appendChild(option);
+        });
+    }
+
+    const filterAndRenderProperties = () => {
+        let filtered = [...propertiesData];
+        const location = locationFilter.value;
+        const type = typeFilter.value;
+        const minBeds = parseInt(bedroomsFilter.value);
+        const maxPrice = parseFloat(maxPriceFilter.value);
+
+        if (location) filtered = filtered.filter(p => p.location === location);
+        if (type) filtered = filtered.filter(p => p.type === type);
+        if (minBeds) filtered = filtered.filter(p => p.bedrooms >= minBeds);
+        if (maxPrice) filtered = filtered.filter(p => p.priceTHB <= maxPrice);
+        
+        renderPropertyCards(filtered);
+    }
+    
+    const showModal = (modalEl) => modalEl.classList.add('active');
+    const hideModal = (modalEl) => modalEl.classList.remove('active');
+
+    // --- EVENT LISTENERS ---
+    window.addEventListener('load', () => loadingOverlay.classList.add('hidden'));
+    mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+    
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const pageId = link.getAttribute('href').substring(1);
             showPage(pageId);
+            history.pushState({page: pageId}, '', `#${pageId}`);
         });
-        
-        currencyToggleButton.addEventListener('click', toggleCurrency);
-
-        // ROI Calculator Listeners
-        [roiInvestmentInput, roiIncomeInput, roiExpensesInput].forEach(input => {
-            input.addEventListener('input', calculateROI);
-        });
-
-        // Add Listing Modal Listeners
-        addListingBtn.addEventListener('click', () => showModal(addListingModal));
-        openListingFormBtn.addEventListener('click', () => showModal(addListingModal));
-        cancelListingBtn.addEventListener('click', () => hideModal(addListingModal));
-        addListingModal.addEventListener('click', (e) => { if (e.target === addListingModal) hideModal(addListingModal); });
-        propertyImageInput.addEventListener('change', handleImagePreview);
-        submitPropertyForm.addEventListener('submit', handlePropertySubmit);
-
-
-        // --- INITIALIZATION CALLS ---
-        showPage(window.location.hash.substring(1) || 'hero-section');
-        renderPropertyCards(propertiesData);
-        calculateROI(); // Initial calculation for the chart
     });
-    </script>
+    window.addEventListener('popstate', e => showPage(e.state?.page || 'hero-section'));
+
+    applyFilterBtn.addEventListener('click', filterAndRenderProperties);
+
+    [roiInvestmentInput, roiIncomeInput, roiExpensesInput].forEach(input => {
+        input.addEventListener('input', calculateROI);
+    });
+
+    addListingBtn.addEventListener('click', () => showModal(addListingModal));
+    openListingFormBtn.addEventListener('click', () => showModal(addListingModal));
+    cancelListingBtn.addEventListener('click', () => hideModal(addListingModal));
+    addListingModal.addEventListener('click', e => { if (e.target === addListingModal) hideModal(addListingModal); });
+    propertyImageInput.addEventListener('change', (event) => {
+        imagePreviewContainer.innerHTML = '';
+        if (event.target.files.length > 15) {
+            showNotification('สามารถอัปโหลดได้สูงสุด 15 รูป', 'error');
+            event.target.value = ''; return;
+        }
+        Array.from(event.target.files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = e => imagePreviewContainer.innerHTML += `<img src="${e.target.result}">`;
+            reader.readAsDataURL(file);
+        });
+    });
+    submitPropertyForm.addEventListener('submit', handlePropertySubmit);
+
+    // --- INITIALIZATION ---
+    showPage(window.location.hash.substring(1) || 'hero-section');
+    populateLocationFilter();
+    filterAndRenderProperties(); // Initial render
+    calculateROI();
+});
+</script>
+
 </body>
 </html>
