@@ -1,4 +1,4 @@
-<index.html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -40,6 +40,7 @@
             background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="waves" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M0 50 Q25 25 50 50 T100 50 V100 H0 Z" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23waves)"/></svg>') repeat;
             opacity: 0.3;
         }
+        /* คลาสสีที่กำหนดเอง */
         .beige-primary { background-color: #d7ccc8; }
         .beige-secondary { background-color: #efebe9; }
         .beige-dark { background-color: #8d6e63; }
@@ -362,6 +363,47 @@
                 grid-template-columns: repeat(2, 1fr);
             }
         }
+
+        /* Google Map Styles */
+        #map {
+            width: 100%;
+            height: 70vh;
+            border-radius: 1rem;
+            margin-top: 2rem;
+            box-shadow: 0 4px 15px rgba(141, 110, 99, 0.1);
+        }
+        #map-search-container {
+            display: flex;
+            gap: 1rem;
+            width: 100%;
+            max-width: 600px;
+            margin-top: 2rem;
+        }
+        #map-search-input {
+            flex-grow: 1;
+            padding: 0.75rem;
+            border: 1px solid #d7ccc8;
+            border-radius: 0.5rem;
+            background-color: #efebe9;
+            color: #5d4037;
+            font-family: 'Josefin Sans', sans-serif;
+        }
+        #map-search-input:focus {
+            outline: none;
+            border-color: #8d6e63;
+            box-shadow: 0 0 0 2px rgba(141, 110, 99, 0.2);
+        }
+        #map-search-button {
+            padding: 0.75rem 1.5rem;
+            background-color: #8d6e63;
+            color: white;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        #map-search-button:hover {
+            background-color: #5d4037;
+        }
     </style>
 </head>
 <body class="beige-light">
@@ -391,7 +433,7 @@
                 <a href="#services" class="text-beige-medium hover:text-beige-dark font-medium transition duration-300">Services</a>
                 <a href="#properties" class="text-beige-medium hover:text-beige-dark font-medium transition duration-300">Properties</a>
                 <a href="#projects" class="text-beige-medium hover:text-beige-dark font-medium transition duration-300">Projects</a>
-                <a href="#video-section" class="text-beige-medium hover:text-beige-dark font-medium transition duration-300">Video Tours</a>
+                <a href="#google-map-section" class="text-beige-medium hover:text-beige-dark font-medium transition duration-300">Explore Map</a>
                 <a href="#communities" class="text-beige-medium hover:text-beige-dark font-medium transition duration-300">Areas</a>
                 <a href="#testimonials" class="text-beige-medium hover:text-beige-dark font-medium transition duration-300">Reviews</a>
                 <a href="#contact" class="text-beige-medium hover:text-beige-dark font-medium transition duration-300">Contact</a>
@@ -407,7 +449,7 @@
                 <a href="#services" class="text-beige-dark hover:text-beige-medium font-medium py-2 w-full text-center transition duration-300">Services</a>
                 <a href="#properties" class="text-beige-dark hover:text-beige-medium font-medium py-2 w-full text-center transition duration-300">Properties</a>
                 <a href="#projects" class="text-beige-dark hover:text-beige-medium font-medium py-2 w-full text-center transition duration-300">Projects</a>
-                <a href="#video-section" class="text-beige-dark hover:text-beige-medium font-medium py-2 w-full text-center transition duration-300">Video Tours</a>
+                <a href="#google-map-section" class="text-beige-dark hover:text-beige-medium font-medium py-2 w-full text-center transition duration-300">Explore Map</a>
                 <a href="#communities" class="text-beige-dark hover:text-beige-medium font-medium py-2 w-full text-center transition duration-300">Areas</a>
                 <a href="#testimonials" class="text-beige-dark hover:text-beige-medium font-medium py-2 w-full text-center transition duration-300">Reviews</a>
                 <a href="#contact" class="text-beige-dark hover:text-beige-medium font-medium py-2 w-full text-center transition duration-300">Contact</a>
@@ -418,7 +460,7 @@
     <section class="hero-background relative w-full flex flex-col items-center justify-center text-center text-white p-4">
         <div class="absolute inset-0 bg-gradient-to-r from-black/40 to-black/20"></div>
         
-        <!-- Vimeo Video embed moved to Hero Section and given ID for direct linking -->
+        <!-- Vimeo Video embed moved to Hero Section -->
         <div id="video-section" class="relative z-10 w-full max-w-3xl mb-8">
             <div style="padding:56.25% 0 0 0;position:relative; border-radius: 8px; overflow: hidden;">
                 <iframe src="https://player.vimeo.com/video/1092843113?autoplay=1&loop=1&muted=1&playsinline=1&title=0&byline=0&portrait=0"
@@ -537,7 +579,8 @@
                     <label for="max-price-filter" class="block text-beige-dark text-sm font-semibold mb-2">Max Price (THB)</label>
                     <input type="number" id="max-price-filter" min="0" placeholder="Any">
                 </div>
-                <button id="apply-filter" class="col-span-full md:col-span-1 bg-beige-dark text-white font-semibold py-3 px-6 rounded-md hover:opacity-90 transition duration-300">Apply Filters</button>
+                <!-- ปุ่ม Search Properties ที่ถูกย้ายตำแหน่ง -->
+                <button id="apply-filter" class="col-span-full md:col-span-1 bg-beige-dark text-white font-semibold py-3 px-6 rounded-md hover:opacity-90 transition duration-300">Search Properties</button>
             </div>
             <!-- สิ้นสุดส่วน UI สำหรับการค้นหาและกรอง -->
 
@@ -624,9 +667,17 @@
         </div>
     </section>
 
-    <!-- The original Video Tours section has been moved into the Hero Section. -->
-    <!-- So, this section is now effectively removed. -->
-    <section id="video-tours" class="hidden"></section> 
+    <!-- Google Map Section -->
+    <section id="google-map-section" class="py-16 beige-secondary text-center flex flex-col items-center">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center mb-6 text-beige-dark">Explore Your Home on Map</h2>
+            <div id="map-search-container">
+                <input type="text" id="map-search-input" placeholder="Search a location in Phuket (e.g., Bangtao, Kata Beach)" class="flex-grow p-2 border rounded-md">
+                <button id="map-search-button" class="bg-beige-dark text-white px-4 py-2 rounded-md hover:opacity-90">Search</button>
+            </div>
+            <div id="map" class="w-full max-w-6xl mx-auto h-[70vh] rounded-lg shadow-md mt-8"></div>
+        </div>
+    </section>
 
 
     <section id="communities" class="py-16 bg-white">
@@ -772,136 +823,82 @@
         <i class="fab fa-whatsapp"></i>
     </a>
 
-    <!-- Modal สำหรับเพิ่มรายการทรัพย์สิน (Add Listing Modal) -->
-    <div id="add-listing-modal" class="modal">
-        <div class="modal-content p-8">
-            <h2 class="text-3xl font-bold text-beige-dark mb-6 text-center">Add New Property Listing</h2>
-            <form id="add-listing-form" class="space-y-6">
-                <div>
-                    <label for="property-title" class="block text-beige-dark text-sm font-semibold mb-2">Property Title</label>
-                    <input type="text" id="property-title" class="w-full p-3 border border-beige-primary rounded-md focus:outline-none focus:ring-2 focus:ring-beige-primary" placeholder="e.g., Luxury Sea View Villa" required>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label for="bedrooms" class="block text-beige-dark text-sm font-semibold mb-2">Bedrooms</label>
-                        <input type="number" id="bedrooms" class="w-full p-3 border border-beige-primary rounded-md focus:outline-none focus:ring-2 focus:ring-beige-primary" min="1" required>
-                    </div>
-                    <div>
-                        <label for="bathrooms" class="block text-beige-dark text-sm font-semibold mb-2">Bathrooms</label>
-                        <input type="number" id="bathrooms" class="w-full p-3 border border-beige-primary rounded-md focus:outline-none focus:ring-2 focus:ring-beige-primary" min="1" required>
-                    </div>
-                </div>
-                <div>
-                    <label for="area" class="block text-beige-dark text-sm font-semibold mb-2">Area (sqm)</label>
-                    <input type="number" id="area" class="w-full p-3 border border-beige-primary rounded-md focus:outline-none focus:ring-2 focus:ring-beige-primary" min="10" required>
-                </div>
-                <div>
-                    <label for="location" class="block text-beige-dark text-sm font-semibold mb-2">Location</label>
-                    <input type="text" id="location" class="w-full p-3 border border-beige-primary rounded-md focus:outline-none focus:ring-2 focus:ring-beige-primary" placeholder="e.g., Rawai, Phuket" required>
-                </div>
-                <div>
-                    <label for="price-thb" class="block text-beige-dark text-sm font-semibold mb-2">Price (THB)</label>
-                    <input type="number" id="price-thb" class="w-full p-3 border border-beige-primary rounded-md focus:outline-none focus:ring-2 focus:ring-beige-primary" min="100000" required>
-                </div>
-                <div>
-                    <label for="property-type-add" class="block text-beige-dark text-sm font-semibold mb-2">Type (Sale/Rent)</label>
-                    <select id="property-type-add" class="w-full p-3 border border-beige-primary rounded-md focus:outline-none focus:ring-2 focus:ring-beige-primary">
-                        <option value="Sale">Sale</option>
-                        <option value="Rent">Rent</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="property-description" class="block text-beige-dark text-sm font-semibold mb-2">Description</label>
-                    <textarea id="property-description" class="w-full p-3 border border-beige-primary rounded-md focus:outline-none focus:ring-2 focus:ring-beige-primary" rows="3" placeholder="Detailed description of the property..."></textarea>
-                </div>
-                <div>
-                    <label for="property-facilities" class="block text-beige-dark text-sm font-semibold mb-2">Facilities (comma-separated)</label>
-                    <input type="text" id="property-facilities" class="w-full p-3 border border-beige-primary rounded-md focus:outline-none focus:ring-2 focus:ring-beige-primary" placeholder="e.g., Pool, Gym, Laundry">
-                </div>
-                <!-- Agent Contact Input Field -->
-                <div>
-                    <label for="agent-contact" class="block text-beige-dark text-sm font-semibold mb-2">Agent Contact (Phone/Email)</label>
-                    <input type="text" id="agent-contact" class="w-full p-3 border border-beige-primary rounded-md focus:outline-none focus:ring-2 focus:ring-beige-primary" placeholder="e.g., agent@example.com or +6612345678">
-                    <p class="text-xs text-gray-500 mt-1">This contact information is for agent reference and will be shown in property details. It is NOT private.</p>
-                </div>
-                <div>
-                    <label for="property-image-files" class="block text-beige-dark text-sm font-semibold mb-2">Property Images</label>
-                    <input type="file" id="property-image-files" class="w-full p-3 border border-beige-primary rounded-md focus:outline-none focus:ring-2 focus:ring-beige-primary" accept="image/*" multiple>
-                    <div id="image-preview" class="image-preview mt-2"></div>
-                </div>
-                <div class="flex justify-end space-x-4 mt-6">
-                    <button type="button" id="cancel-listing-btn" class="bg-gray-300 text-gray-800 font-semibold py-3 px-6 rounded-md hover:bg-gray-400 transition duration-300">Cancel</button>
-                    <button type="submit" class="mermaid-accent text-white font-semibold py-3 px-6 rounded-md hover:opacity-90 transition duration-300">Add Listing</button>
-                </div>
-            </form>
-        </div>
+    <!-- Live Chat Widget HTML -->
+    <div id="live-chat-button" class="fixed bottom-24 right-6 z-50">
+        <button onclick="toggleChat()" class="bg-beige-dark hover:bg-beige-primary text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-2xl">
+            <i class="fas fa-comments"></i>
+        </button>
     </div>
 
-    <!-- Modal รายละเอียดอสังหาริมทรัพย์ (Property Detail Modal) -->
-    <div id="property-detail-modal" class="property-detail-modal">
-        <div class="property-detail-content">
-            <button id="close-detail-modal" class="absolute top-4 right-4 text-gray-600 hover:text-gray-800 text-2xl font-bold">&times;</button>
-            <h2 id="detail-title" class="text-3xl font-bold text-beige-dark mb-4"></h2>
-            
-            <!-- แกลเลอรี่รูปภาพ/สไลด์ (Image Gallery/Carousel) -->
-            <div class="image-gallery">
-                <div id="detail-image-container" class="relative w-full h-[400px]">
-                    <!-- รูปภาพจะถูกโหลดแบบ Dynamic ที่นี่ -->
-                </div>
-                <button id="gallery-prev" class="gallery-nav-button left">&lt;</button>
-                <button id="gallery-next" class="gallery-nav-button right">&gt;</button>
-            </div>
-
-            <div class="property-details-grid text-beige-dark">
-                <div>
-                    <p class="font-semibold text-lg mb-2">Price:</p>
-                    <p class="detail-price-thb text-xl font-bold"></p>
-                    <p class="detail-price-usd text-xl font-bold hidden"></p>
-                </div>
-                <div>
-                    <p class="font-semibold text-lg mb-2">Bedrooms:</p>
-                    <p id="detail-bedrooms" class="text-beige-medium"></p>
-                </div>
-                <div>
-                    <p class="font-semibold text-lg mb-2">Bathrooms:</p>
-                    <p id="detail-bathrooms" class="text-beige-medium"></p>
-                </div>
-                <div>
-                    <p class="font-semibold text-lg mb-2">Area:</p>
-                    <p id="detail-area" class="text-beige-medium"></p>
-                </div>
-                <div>
-                    <p class="font-semibold text-lg mb-2">Location:</p>
-                    <p id="detail-location" class="text-beige-medium"></p>
-                </div>
-                <div>
-                    <p class="font-semibold text-lg mb-2">Type:</p>
-                    <p id="detail-type" class="text-beige-medium"></p>
-                </div>
-                <!-- Agent Contact Display -->
-                <div>
-                    <p class="font-semibold text-lg mb-2">Agent Contact:</p>
-                    <p id="detail-agent-contact" class="text-beige-medium"></p>
-                </div>
-            </div>
-
-            <h3 class="text-2xl font-bold text-beige-dark mt-6 mb-3">Description</h3>
-            <p id="detail-description" class="text-beige-medium leading-relaxed"></p>
-
-            <h3 class="text-2xl font-bold text-beige-dark mt-6 mb-3">Facilities</h3>
-            <ul id="detail-facilities" class="list-disc list-inside text-beige-medium pl-4">
-                <!-- สิ่งอำนวยความสะดวกจะถูกโหลดแบบ Dynamic ที่นี่ -->
-            </ul>
-
-            <div class="text-center mt-8">
-                <a id="detail-contact-whatsapp" href="https://wa.me/66654765114" target="_blank" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition duration-300">
-                    <i class="fab fa-whatsapp mr-2"></i> Contact Agent on WhatsApp
-                </a>
-            </div>
+    <div id="live-chat-box" class="hidden fixed bottom-40 right-6 z-50 w-80 bg-white rounded-xl shadow-xl overflow-hidden border border-beige">
+        <div class="bg-beige-dark text-white px-4 py-3 flex justify-between items-center">
+            <span class="font-semibold">Live Chat 24/7</span>
+            <button onclick="toggleChat()" class="text-white text-xl">&times;</button>
         </div>
+        <div id="chat-messages" class="p-4 h-60 overflow-y-auto text-sm text-beige-dark space-y-2">
+            <div class="text-center text-beige-medium">Hi! How can we help you?</div>
+        </div>
+        <form onsubmit="sendMessage(event)" class="flex border-t border-beige">
+            <input id="chat-input" type="text" placeholder="Type your message..." class="flex-1 px-3 py-2 focus:outline-none text-sm">
+            <button type="submit" class="bg-beige-dark text-white px-4">Send</button>
+        </form>
     </div>
 
     <script>
+        // Global variables for Google Maps
+        let map;
+        let geocoder;
+        let marker;
+
+        // Global function for Google Maps callback
+        function initMap() {
+            const phuketCenter = { lat: 7.8804, lng: 98.3923 }; // Phuket default center
+
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 12,
+                center: phuketCenter,
+                gestureHandling: 'cooperative' // Enable scrolling to zoom without Ctrl/Cmd key
+            });
+
+            marker = new google.maps.Marker({
+                position: phuketCenter,
+                map: map,
+                title: 'Phuket'
+            });
+
+            geocoder = new google.maps.Geocoder();
+
+            const searchInput = document.getElementById('map-search-input');
+            const searchButton = document.getElementById('map-search-button');
+
+            // Add event listener to the search button
+            searchButton.addEventListener('click', () => {
+                handleSearch(map, searchInput.value);
+            });
+
+            // Add event listener for Enter key in search input
+            searchInput.addEventListener('keypress', (event) => {
+                if (event.key === 'Enter') {
+                    handleSearch(map, searchInput.value);
+                }
+            });
+        }
+
+        // Global function for handling map search
+        function handleSearch(mapInstance, address) {
+            geocoder.geocode({ address: address + ", Phuket, Thailand" }, (results, status) => { // Force search in Phuket
+                if (status === 'OK' && results[0]) {
+                    const location = results[0].geometry.location;
+                    mapInstance.setCenter(location);
+                    marker.setPosition(location);
+                    mapInstance.setZoom(15); // Zoom in a bit after search
+                } else {
+                    console.error('Geocode was not successful for the following reason: ' + status);
+                    alert('Location not found or invalid. Please try a more specific address in Phuket.');
+                }
+            });
+        }
+
         const mobileMenuButton = document.getElementById('mobile-menu-button');
         const mobileMenu = document.getElementById('mobile-menu');
         const currencyToggleButton = document.getElementById('currency-toggle');
@@ -931,7 +928,7 @@
         const detailDescription = document.getElementById('detail-description');
         const detailFacilities = document.getElementById('detail-facilities');
         const detailContactWhatsapp = document.getElementById('detail-contact-whatsapp');
-        const detailAgentContact = document.getElementById('detail-agent-contact'); // เพิ่ม Agent Contact Display
+        const detailAgentContact = document.getElementById('detail-agent-contact');
         let currentDetailImages = [];
         let currentImageIndex = 0;
 
@@ -950,11 +947,11 @@
                 description: 'Stunning luxury villa located directly on Kamala Beach, offering breathtaking sea views, spacious living areas, and direct beach access. Perfect for an opulent lifestyle or high-end rental investment.',
                 facilities: ['Large Private Pool', 'Beach Access', 'Fully Equipped Kitchen', 'Outdoor Dining', 'Garden', '24/7 Security'],
                 images: [
-                    'https://placehold.co/800x600/4db6ac/ffffff?text=Luxury+Villa+Kamala+1', // รูปภาพ placeholder สำหรับอ้างอิง
-                    'https://placehold.co/800x600/4db6ac/ffffff?text=Luxury+Villa+Kamala+2', // รูปภาพ placeholder สำหรับอ้างอิง
-                    'https://placehold.co/800x600/4db6ac/ffffff?text=Luxury+Villa+Kamala+3'  // รูปภาพ placeholder สำหรับอ้างอิง
+                    'https://placehold.co/800x600/4db6ac/ffffff?text=Luxury+Villa+Kamala+1',
+                    'https://placehold.co/800x600/4db6ac/ffffff?text=Luxury+Villa+Kamala+2',
+                    'https://placehold.co/800x600/4db6ac/ffffff?text=Luxury+Villa+Kamala+3'
                 ],
-                agentContact: 'info@mermaidhomes.com' // ตัวอย่างข้อมูล Agent Contact
+                agentContact: 'info@mermaidhomes.com'
             },
             {
                 id: 'condo-patong-1',
@@ -968,8 +965,8 @@
                 description: 'Contemporary condo unit in the vibrant heart of Patong, ideal for urban living. Close to shopping, nightlife, and just a short walk to Patong Beach.',
                 facilities: ['Communal Pool', 'Gym', 'Balcony', 'City View', 'Air Conditioning'],
                 images: [
-                    'https://placehold.co/800x600/26a69a/ffffff?text=Modern+Condo+Patong+1', // รูปภาพ placeholder สำหรับอ้างอิง
-                    'https://placehold.co/800x600/26a69a/ffffff?text=Modern+Condo+Patong+2'  // รูปภาพ placeholder สำหรับอ้างอิง
+                    'https://placehold.co/800x600/26a69a/ffffff?text=Modern+Condo+Patong+1',
+                    'https://placehold.co/800x600/26a69a/ffffff?text=Modern+Condo+Patong+2'
                 ],
                 agentContact: 'agent.patong@mermaidhomes.com'
             },
@@ -985,8 +982,8 @@
                 description: 'Charming tropical villa nestled near Kata Beach, featuring a private pool and lush garden. Offers a peaceful retreat with easy access to beach activities and local restaurants.',
                 facilities: ['Private Pool', 'Garden', 'Outdoor Shower', 'Covered Parking', 'WiFi'],
                 images: [
-                    'https://placehold.co/800x600/4db6ac/ffffff?text=Tropical+Villa+Kata+1', // รูปภาพ placeholder สำหรับอ้างอิง
-                    'https://placehold.co/800x600/4db6ac/ffffff?text=Tropical+Villa+Kata+2'  // รูปภาพ placeholder สำหรับอ้างอิง
+                    'https://placehold.co/800x600/4db6ac/ffffff?text=Tropical+Villa+Kata+1',
+                    'https://placehold.co/800x600/4db6ac/ffffff?text=Tropical+Villa+Kata+2'
                 ],
                 agentContact: 'agent.kata@mermaidhomes.com'
             },
@@ -998,19 +995,18 @@
                 bedrooms: 3,
                 bathrooms: 4,
                 area: 402,
-                priceTHB: 200000, // นี่คือราคาต่อเดือน
+                priceTHB: 200000,
                 description: 'Luxpride 3 is a spacious and elegantly designed villa, perfect for long-term rental. Features a large private pool, modern amenities, and ample parking, ideal for families or groups up to 6 guests.',
                 facilities: ['Fully equipped kitchen', 'Laundry room', 'Outdoor dining area', 'Barbecue grill', 'Private SPA-style swimming pool', '2 Private Parking Spaces'],
                 images: [
-                    'L2 (1).jpg', // ใส่ชื่อไฟล์รูปภาพจริงของคุณ
-                    'L2 (2).jpg', // ใส่ชื่อไฟล์รูปภาพจริงของคุณ
-                    'L2 (3).jpg', // ใส่ชื่อไฟล์รูปภาพจริงของคุณ
+                    'L2 (1).jpg',
+                    'L2 (2).jpg',
+                    'L2 (3).jpg',
                     'L2 (4).jpg',
                     'L2 (5).jpg',
                     'L2 (6).jpg',
-                    // เพิ่มชื่อไฟล์รูปภาพอื่นๆ ที่เกี่ยวข้องกับ Luxpride 3 ที่คุณมีใน GitHub เข้ามาใน Array นี้
                 ],
-                agentContact: '+66654765114' // ตัวอย่างข้อมูล Agent Contact (เบอร์โทรศัพท์)
+                agentContact: '+66654765114'
             }
         ];
 
@@ -1018,7 +1014,7 @@
 
         // ฟังก์ชันสำหรับ Render การ์ดอสังหาริมทรัพย์ทั้งหมดตามข้อมูล propertiesData
         function renderPropertyCards(propertiesToRender) {
-            propertiesGrid.innerHTML = ''; // ล้างการ์ดที่มีอยู่เดิม
+            propertiesGrid.innerHTML = '';
             propertiesToRender.forEach(property => {
                 const priceTextTHB = property.type === 'Rent' ? `฿${property.priceTHB.toLocaleString()}/month` : `฿${property.priceTHB.toLocaleString()}`;
                 const priceTextUSD = property.type === 'Rent' ? `$${(property.priceTHB / 36.5).toFixed(0).toLocaleString()}/month` : `$${(property.priceTHB / 36.5).toFixed(0).toLocaleString()}`;
@@ -1050,8 +1046,8 @@
                 `;
                 propertiesGrid.insertAdjacentHTML('beforeend', cardHTML);
             });
-            attachViewDetailsListeners(); // แนบ Event Listener อีกครั้งหลังจาก Render
-            updateCurrencyDisplay(); // ตรวจสอบให้แน่ใจว่าสกุลเงินถูกต้องสำหรับการ์ดใหม่
+            attachViewDetailsListeners();
+            updateCurrencyDisplay();
         }
 
         // ฟังก์ชันสำหรับอัปเดตการแสดงผลสกุลเงินสำหรับการ์ดทั้งหมด
@@ -1094,7 +1090,7 @@
             detailLocation.textContent = property.location;
             detailType.textContent = property.type;
             detailDescription.textContent = property.description;
-            detailAgentContact.textContent = property.agentContact || 'N/A'; // แสดง Agent Contact
+            detailAgentContact.textContent = property.agentContact || 'N/A';
 
             // Render รายการสิ่งอำนวยความสะดวก
             detailFacilities.innerHTML = '';
@@ -1120,7 +1116,7 @@
             // การแสดงสกุลเงินใน Modal จะถูกจัดการโดย updateCurrencyDisplay()
 
             // Logic แกลเลอรี่รูปภาพ
-            detailImageContainer.innerHTML = ''; // ล้างรูปภาพก่อนหน้า
+            detailImageContainer.innerHTML = '';
             currentDetailImages = property.images;
             currentImageIndex = 0;
 
@@ -1130,14 +1126,15 @@
                     img.src = imgSrc;
                     img.alt = `${property.title} image ${index + 1}`;
                     img.classList.add('w-full', 'h-full', 'absolute', 'transition-opacity', 'duration-500', 'ease-in-out');
+                    // Add onerror for fallback image in case of loading failure
+                    img.onerror = function() { this.onerror=null; this.src='https://placehold.co/800x600/cccccc/333333?text=Image+Unavailable'; };
                     if (index === 0) {
                         img.classList.add('active', 'opacity-100');
                     } else {
-                        img.classList.add('opacity-0'); // ซ่อนเริ่มต้น
+                        img.classList.add('opacity-0');
                     }
                     detailImageContainer.appendChild(img);
                 });
-                // ตรวจสอบให้แน่ใจว่าปุ่มนำทางมองเห็นได้ถ้ามีรูปภาพมากกว่าหนึ่ง
                 if (currentDetailImages.length > 1) {
                     galleryPrevBtn.style.display = 'block';
                     galleryNextBtn.style.display = 'block';
@@ -1157,7 +1154,7 @@
             
             propertyDetailModal.classList.add('active');
             propertyDetailModal.classList.remove('leaving');
-            updateCurrencyDisplay(); // อัปเดตการแสดงผลสกุลเงินใน Modal เมื่อเปิด
+            updateCurrencyDisplay();
         }
 
         function navigateGallery(direction) {
@@ -1183,7 +1180,7 @@
             propertyDetailModal.classList.add('leaving');
             propertyDetailModal.addEventListener('animationend', () => {
                 propertyDetailModal.classList.remove('active', 'leaving');
-                detailImageContainer.innerHTML = ''; // ล้างรูปภาพเมื่อ Modal ปิด
+                detailImageContainer.innerHTML = '';
             }, { once: true });
         }
 
@@ -1209,8 +1206,8 @@
         currencyToggleButton.addEventListener('click', updateCurrencyDisplay);
 
         addListingBtn.addEventListener('click', () => {
-            addListingForm.reset(); // ล้างฟอร์มเมื่อเปิด
-            imagePreviewContainer.innerHTML = ''; // ล้างตัวอย่างรูปภาพ
+            addListingForm.reset();
+            imagePreviewContainer.innerHTML = '';
             addListingModal.classList.add('active');
             addListingModal.classList.remove('leaving');
         });
@@ -1239,7 +1236,7 @@
                     reader.onload = (e) => {
                         const img = document.createElement('img');
                         img.src = e.target.result;
-                        img.classList.add('w-20', 'h-20', 'object-cover', 'rounded-md'); // คลาส Tailwind สำหรับตัวอย่าง
+                        img.classList.add('w-20', 'h-20', 'object-cover', 'rounded-md');
                         imagePreviewContainer.appendChild(img);
                     };
                     reader.readAsDataURL(file);
@@ -1260,14 +1257,33 @@
             const description = document.getElementById('property-description').value;
             const facilitiesText = document.getElementById('property-facilities').value;
             const facilities = facilitiesText ? facilitiesText.split(',').map(f => f.trim()) : [];
-            const agentContact = document.getElementById('agent-contact').value; // ดึงข้อมูล Agent Contact
+            const agentContact = document.getElementById('agent-contact').value;
 
-            // สำหรับอสังหาริมทรัพย์ที่เพิ่มใหม่ เราจะใช้รูปภาพ placeholder ไปก่อน
-            // ผู้ใช้จำเป็นต้องอัปโหลดรูปภาพไปยัง GitHub และอัปเดต propertiesData หรือ logic การส่งฟอร์มด้วยตนเอง
-            const newImages = ['https://placehold.co/800x600/8d6e63/ffffff?text=New+Property'];
+            const newImages = [];
+            if (propertyImageInput.files.length > 0) {
+                let filesProcessed = 0; // Counter for processed files
+                Array.from(propertyImageInput.files).forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        newImages.push(e.target.result);
+                        filesProcessed++;
+                        if (filesProcessed === propertyImageInput.files.length) {
+                             // All files processed, add property
+                             addPropertyToDataAndRender(title, location, propertyType, bedrooms, bathrooms, area, priceTHB, description, facilities, agentContact, newImages);
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                });
+            } else {
+                // If no images selected, use placeholder and add property immediately
+                newImages.push('https://placehold.co/800x600/8d6e63/ffffff?text=New+Property');
+                addPropertyToDataAndRender(title, location, propertyType, bedrooms, bathrooms, area, priceTHB, description, facilities, agentContact, newImages);
+            }
+        });
 
+        function addPropertyToDataAndRender(title, location, propertyType, bedrooms, bathrooms, area, priceTHB, description, facilities, agentContact, images) {
             const newProperty = {
-                id: `new-property-${Date.now()}`, // ID ที่ไม่ซ้ำกันง่ายๆ
+                id: `new-property-${Date.now()}`,
                 title,
                 location,
                 type: propertyType,
@@ -1277,18 +1293,19 @@
                 priceTHB,
                 description,
                 facilities,
-                images: newImages,
-                agentContact: agentContact // เพิ่ม Agent Contact เข้าไปในข้อมูล Property ใหม่
+                images: images,
+                agentContact: agentContact
             };
 
-            propertiesData.push(newProperty); // เพิ่มอสังหาริมทรัพย์ใหม่ลงใน Array ข้อมูลของเรา
-            renderPropertyCards(propertiesData); // Render การ์ดทั้งหมดใหม่เพื่อรวมการ์ดใหม่
-            filterProperties(); // ใช้ตัวกรองทันที
+            propertiesData.push(newProperty);
+            renderPropertyCards(propertiesData);
+            filterProperties(); // Apply filters immediately after adding a property
 
             addListingForm.reset();
             imagePreviewContainer.innerHTML = '';
             hideModal();
-        });
+        }
+
 
         // ฟังก์ชันสำหรับกรองอสังหาริมทรัพย์ (ตอนนี้กรองตาม propertiesData)
         function filterProperties() {
@@ -1318,15 +1335,15 @@
                 }
                 return match;
             });
-            renderPropertyCards(filtered); // Render เฉพาะการ์ดที่กรองแล้ว
+            renderPropertyCards(filtered);
         }
 
-        document.getElementById('apply-filter').addEventListener('click', filterProperties); // ปุ่ม Apply Filters จะเรียกใช้ฟังก์ชันนี้
-        document.getElementById('location-filter').addEventListener('change', filterProperties); // เมื่อเปลี่ยน Location ให้กรองทันที
-        document.getElementById('type-filter').addEventListener('change', filterProperties); // เมื่อเปลี่ยน Type ให้กรองทันที
-        document.getElementById('bedrooms-filter').addEventListener('input', filterProperties); // เมื่อพิมพ์ Beddrooms ให้กรองทันที
-        document.getElementById('min-area-filter').addEventListener('input', filterProperties); // เมื่อพิมพ์ Min Area ให้กรองทันที
-        document.getElementById('max-price-filter').addEventListener('input', filterProperties); // เมื่อพิมพ์ Max Price ให้กรองทันที
+        document.getElementById('apply-filter').addEventListener('click', filterProperties);
+        document.getElementById('location-filter').addEventListener('change', filterProperties);
+        document.getElementById('type-filter').addEventListener('change', filterProperties);
+        document.getElementById('bedrooms-filter').addEventListener('input', filterProperties);
+        document.getElementById('min-area-filter').addEventListener('input', filterProperties);
+        document.getElementById('max-price-filter').addEventListener('input', filterProperties);
 
 
         // แนบ Event Listener สำหรับปุ่ม "View Details"
@@ -1343,11 +1360,51 @@
             });
         }
 
+        // Live Chat functions
+        function toggleChat() {
+            const box = document.getElementById('live-chat-box');
+            box.classList.toggle('hidden');
+        }
+
+        function sendMessage(event) {
+            event.preventDefault();
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            if (message) {
+                const chat = document.getElementById('chat-messages');
+                const userMsg = document.createElement('div');
+                userMsg.className = 'text-right';
+                userMsg.innerHTML = `<span class='inline-block bg-beige-dark text-white px-3 py-1 rounded-full'>${message}</span>`;
+                chat.appendChild(userMsg);
+                chat.scrollTop = chat.scrollHeight;
+                input.value = '';
+
+                setTimeout(() => {
+                    const reply = document.createElement('div');
+                    reply.innerHTML = `<span class='inline-block bg-beige-primary text-beige-dark px-3 py-1 rounded-full'>Thanks for reaching out! We'll get back to you shortly.</span>`;
+                    chat.appendChild(reply);
+                    chat.scrollTop = chat.scrollHeight;
+                }, 1000);
+            }
+        }
+        // ตรวจสอบให้แน่ใจว่าฟังก์ชัน toggleChat และ sendMessage ถูกผูกกับ window object
+        window.toggleChat = toggleChat;
+        window.sendMessage = sendMessage;
+
+
         // การ Render การ์ดอสังหาริมทรัพย์ครั้งแรกเมื่อโหลดหน้าเว็บ
         document.addEventListener('DOMContentLoaded', () => {
-            renderPropertyCards(propertiesData); // Render อสังหาริมทรัพย์ทั้งหมดในตอนเริ่มต้น
-            filterProperties(); // ใช้ตัวกรองเริ่มต้นหากมีการตั้งค่า
-            updateCurrencyDisplay(); // ตรวจสอบให้แน่ใจว่าสกุลเงินเริ่มต้นถูกต้อง
+            renderPropertyCards(propertiesData);
+            filterProperties();
+            updateCurrencyDisplay();
+
+            // Load Google Maps script after DOM is ready
+            const googleMapsApiKey = 'YOUR_GOOGLE_MAPS_API_KEY'; // <--- เปลี่ยนตรงนี้!
+            const script = document.createElement('script');
+            script.src = `https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&libraries=places&callback=initMap`;
+            script.async = true;
+            script.defer = true;
+            document.head.appendChild(script);
         });
     </script>
 </body>
