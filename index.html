@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<index.html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -597,7 +597,7 @@
             <div class="flex space-x-6 overflow-x-auto scrollbar-hide pb-4">
                 <!-- Project Card 1: Anchan -->
                 <div class="relative min-w-[280px] max-w-xs bg-white rounded-2xl shadow-lg overflow-hidden flex-shrink-0">
-                    <img src="https://placehold.co/400x300/4db6ac/ffffff?text=Anchan+Villa" alt="Anchan Luxury Villas" class="w-full h-48 object-cover rounded-t-xl" />
+                    <img src="Anchan1 (1).jpg" alt="Anchan Luxury Villas" class="w-full h-48 object-cover rounded-t-xl" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/333333?text=Image+Unavailable';" />
                     <div class="absolute top-3 left-3 bg-white/70 rounded px-3 py-1 text-xs font-bold uppercase tracking-wide text-beige-dark">Anchan Luxury Villas</div>
                     <a href="#" class="absolute top-3 right-3 bg-white/80 p-2 rounded-full shadow hover:bg-white/90 transition-colors">
                         <svg class="h-5 w-5 text-beige-dark" fill="currentColor" viewBox="0 0 24 24">
@@ -857,7 +857,7 @@
             map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 12,
                 center: phuketCenter,
-                gestureHandling: 'cooperative' // Enable scrolling to zoom without Ctrl/Cmd key
+                gestureHandling: 'cooperative'
             });
 
             marker = new google.maps.Marker({
@@ -871,12 +871,10 @@
             const searchInput = document.getElementById('map-search-input');
             const searchButton = document.getElementById('map-search-button');
 
-            // Add event listener to the search button
             searchButton.addEventListener('click', () => {
                 handleSearch(map, searchInput.value);
             });
 
-            // Add event listener for Enter key in search input
             searchInput.addEventListener('keypress', (event) => {
                 if (event.key === 'Enter') {
                     handleSearch(map, searchInput.value);
@@ -886,12 +884,12 @@
 
         // Global function for handling map search
         function handleSearch(mapInstance, address) {
-            geocoder.geocode({ address: address + ", Phuket, Thailand" }, (results, status) => { // Force search in Phuket
+            geocoder.geocode({ address: address + ", Phuket, Thailand" }, (results, status) => {
                 if (status === 'OK' && results[0]) {
                     const location = results[0].geometry.location;
                     mapInstance.setCenter(location);
                     marker.setPosition(location);
-                    mapInstance.setZoom(15); // Zoom in a bit after search
+                    mapInstance.setZoom(15);
                 } else {
                     console.error('Geocode was not successful for the following reason: ' + status);
                     alert('Location not found or invalid. Please try a more specific address in Phuket.');
@@ -988,6 +986,23 @@
                 agentContact: 'agent.kata@mermaidhomes.com'
             },
             {
+                id: 'the-luxe-villa', // ID สำหรับ The Luxe Villa
+                title: 'The Luxe Villa', // ชื่อ The Luxe Villa
+                location: 'Cherngtalay', // เพิ่ม Location ตามที่ระบุ
+                type: 'Sale', // ตัวอย่างประเภท
+                bedrooms: 5, // ตัวอย่างจำนวนห้องนอน
+                bathrooms: 6, // ตัวอย่างจำนวนห้องน้ำ
+                area: 500, // ตัวอย่างพื้นที่
+                priceTHB: 50000000, // ตัวอย่างราคา
+                description: 'An exquisite villa offering unparalleled luxury and modern design in a prime location. Features expansive living spaces, high-end finishes, and stunning views.',
+                facilities: ['Private Infinity Pool', 'Smart Home System', 'Home Cinema', 'Fully Staffed', 'Gym', 'Sauna'],
+                images: [
+                    'https://placehold.co/800x600/5d4037/ffffff?text=The+Luxe+Villa+1', // Placeholder for actual image
+                    'https://placehold.co/800x600/5d4037/ffffff?text=The+Luxe+Villa+2', // Placeholder for actual image
+                ],
+                agentContact: 'agent.luxe@mermaidhomes.com'
+            },
+            {
                 id: 'villa-luxpride-3',
                 title: 'Luxpride 3 Villa',
                 location: 'Phuket',
@@ -1007,6 +1022,25 @@
                     'L2 (6).jpg',
                 ],
                 agentContact: '+66654765114'
+            },
+            {
+                id: 'anchan-villa-11012', // ID สำหรับ Anchan Villa
+                title: 'Anchan Luxury Villas No. 11012',
+                location: 'Phuket', // อัปเดต Location ตามที่ระบุ
+                type: 'Sale',
+                bedrooms: 3,
+                bathrooms: 4, // สมมติ
+                area: 473, // Living space
+                priceTHB: 32837000,
+                description: 'Experience ultimate luxury at Anchan Villa No. 11012, a beautifully designed property with spacious living areas and high-end finishes. Part of the prestigious Anchan luxury villas collection.',
+                facilities: ['Large Pool', 'Spacious Living Area', 'Modern Design', 'Private Parking'], // ตัวอย่างสิ่งอำนวยความสะดวก
+                images: [
+                    'Anchan1 (1).jpg', // รูปภาพจริงที่คุณอัปโหลด
+                    'Anchan2.jpg',    // รูปภาพจริงที่คุณอัปโหลด
+                    'Anchan3.jpg'     // รูปภาพจริงที่คุณอัปโหลด
+                ],
+                completionDate: 'II quarter, 2026', // เพิ่มข้อมูล Completion date
+                agentContact: 'agent.anchan@mermaidhomes.com'
             }
         ];
 
@@ -1261,21 +1295,19 @@
 
             const newImages = [];
             if (propertyImageInput.files.length > 0) {
-                let filesProcessed = 0; // Counter for processed files
+                let filesProcessed = 0;
                 Array.from(propertyImageInput.files).forEach(file => {
                     const reader = new FileReader();
                     reader.onload = (e) => {
                         newImages.push(e.target.result);
                         filesProcessed++;
                         if (filesProcessed === propertyImageInput.files.length) {
-                             // All files processed, add property
                              addPropertyToDataAndRender(title, location, propertyType, bedrooms, bathrooms, area, priceTHB, description, facilities, agentContact, newImages);
                         }
                     };
                     reader.readAsDataURL(file);
                 });
             } else {
-                // If no images selected, use placeholder and add property immediately
                 newImages.push('https://placehold.co/800x600/8d6e63/ffffff?text=New+Property');
                 addPropertyToDataAndRender(title, location, propertyType, bedrooms, bathrooms, area, priceTHB, description, facilities, agentContact, newImages);
             }
@@ -1299,7 +1331,7 @@
 
             propertiesData.push(newProperty);
             renderPropertyCards(propertiesData);
-            filterProperties(); // Apply filters immediately after adding a property
+            filterProperties();
 
             addListingForm.reset();
             imagePreviewContainer.innerHTML = '';
@@ -1399,7 +1431,7 @@
             updateCurrencyDisplay();
 
             // Load Google Maps script after DOM is ready
-            const googleMapsApiKey = 'YOUR_GOOGLE_MAPS_API_KEY'; // <--- เปลี่ยนตรงนี้!
+            const googleMapsApiKey = 'YOUR_GOOGLE_MAPS_API_KEY';
             const script = document.createElement('script');
             script.src = `https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&libraries=places&callback=initMap`;
             script.async = true;
