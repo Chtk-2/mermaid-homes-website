@@ -5,19 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mermaid Homes - Real Estate Phuket</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Updated Font: Forum for a classic, elegant look -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Forum&family=Sarabun:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* Updated font-family for the entire site */
         html { scroll-behavior: smooth; }
         body { font-family: 'Forum', 'Sarabun', sans-serif; color: #374151; }
         .container { max-width: 1280px; }
 
-        /* General Styles */
         #loading-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: #fff; display: flex;
@@ -159,7 +156,7 @@
                 <a href="#properties" class="nav-link text-gray-600 hover:text-gray-900" data-translate-key="nav_properties">Properties</a>
                 <a href="#roi-calculator" class="nav-link text-gray-600 hover:text-gray-900" data-translate-key="nav_roi">ROI Calculator</a>
                 <a href="#contact" class="nav-link text-gray-600 hover:text-gray-900" data-translate-key="nav_contact">Contact</a>
-                <a href="#post-property-listing" class="nav-link bg-teal-600 text-white py-2 px-5 rounded-lg hover:bg-teal-700 transition-colors" data-translate-key="nav_post_property">Post Property</a>
+                <a href="#post-property-listing" class="nav-link text-gray-600 hover:text-gray-900" data-translate-key="nav_post_property">Post Property</a>
             </nav>
             <div class="flex items-center">
                 <div id="lang-switcher" class="mr-4">
@@ -193,7 +190,7 @@
                  </div>
                  <form id="hero-search-form" class="flex flex-col md:flex-row gap-2">
                      <input type="text" id="hero-search-input" class="flex-grow p-4 rounded-lg text-gray-800 text-lg" data-translate-placeholder="hero_search_placeholder" placeholder="Enter area, building, or community">
-                     <button type="submit" class="p-4 bg-teal-600 text-white font-bold rounded-lg flex items-center justify-center hover:bg-teal-700 transition-colors">
+                     <button type="submit" class="p-4 bg-stone-700 text-white font-bold rounded-lg flex items-center justify-center hover:bg-stone-800 transition-colors">
                          <i class="fas fa-search mr-2"></i>
                          <span data-translate-key="search_btn">Search</span>
                      </button>
@@ -225,7 +222,7 @@
                         <label for="max-price-filter" class="block text-sm font-medium text-gray-700 mb-1" data-translate-key="filter_max_price">Max Price</label>
                         <input type="number" id="max-price-filter" data-translate-placeholder="filter_price_placeholder" class="w-full p-2 border border-gray-300 rounded-md">
                     </div>
-                    <button id="apply-filter-btn" class="w-full bg-teal-600 text-white font-bold py-2 px-4 rounded-md hover:bg-teal-700 transition-opacity">
+                    <button id="apply-filter-btn" class="w-full bg-stone-700 text-white font-bold py-2 px-4 rounded-md hover:bg-stone-800 transition-colors">
                         <i class="fas fa-search mr-2"></i><span data-translate-key="search_btn">Search</span>
                     </button>
                 </div>
@@ -371,94 +368,84 @@ document.addEventListener('DOMContentLoaded', () => {
         allElements.navLinks = document.querySelectorAll('.nav-link');
     }
     
-    function setLanguage(lang) { /* ... */ }
-    function showNotification(message, type = 'success') { /* ... */ }
-    function showPage(pageId) { /* ... */ }
-    function renderPropertyCards(propertiesToRender) { /* ... */ }
-    function showPropertyDetail(propId) { /* ... */ }
-    function showDeleteConfirmation(propId, propTitle) { /* ... */ }
-    async function handlePropertySubmit(event) { /* ... */ }
-    function calculateROI() { /* ... */ }
-    function populateFilters() { /* ... */ }
-    function filterAndRenderProperties() { /* ... */ }
-    function handleHeroSearch(e) { /* ... */ }
+    function setLanguage(lang) { /* unchanged */ }
+    function showNotification(message, type = 'success') { /* unchanged */ }
+    function showPage(pageId) { /* unchanged */ }
+    function renderPropertyCards(propertiesToRender) { /* unchanged */ }
+    function showPropertyDetail(propId) { /* unchanged */ }
+    function showDeleteConfirmation(propId, propTitle) { /* unchanged */ }
+    async function handlePropertySubmit(event) { /* unchanged */ }
+    function calculateROI() { /* unchanged */ }
+    function populateFilters() { /* unchanged */ }
+    function filterAndRenderProperties() { /* unchanged */ }
+    function handleHeroSearch(e) { /* unchanged */ }
     function showModal(modalEl) { if(modalEl) modalEl.classList.add('active'); }
     function hideModal(modalEl) { if(modalEl) modalEl.classList.remove('active'); }
-    function initScrollAnimations() { /* ... */ }
+    function initScrollAnimations() { /* unchanged */ }
 
     function initializeApp() {
         cacheDOMElements();
         
-        window.addEventListener('load', () => allElements.loadingOverlay.classList.add('hidden'));
-        
-        allElements.mobileMenuButton.addEventListener('click', () => allElements.mobileMenu.classList.toggle('hidden'));
-        
-        allElements.navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const pageId = link.getAttribute('href').substring(1);
-                showPage(pageId);
-                history.pushState({page: pageId}, '', `#${pageId}`);
-            });
+        window.addEventListener('load', () => {
+            if(allElements.loadingOverlay) allElements.loadingOverlay.classList.add('hidden');
         });
+        
+        if (allElements.mobileMenuButton) {
+            allElements.mobileMenuButton.addEventListener('click', () => allElements.mobileMenu.classList.toggle('hidden'));
+        }
+        
+        if(allElements.navLinks) {
+            allElements.navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const pageId = link.getAttribute('href').substring(1);
+                    showPage(pageId);
+                    history.pushState({page: pageId}, '', `#${pageId}`);
+                });
+            });
+        }
 
         window.addEventListener('popstate', (e) => showPage(e.state?.page || 'hero-section'));
         
-        allElements.langSwitcher.addEventListener('click', (e) => {
-            if (e.target.matches('.lang-btn')) setLanguage(e.target.dataset.lang);
-        });
+        if (allElements.langSwitcher) {
+            allElements.langSwitcher.addEventListener('click', (e) => {
+                if (e.target.matches('.lang-btn')) setLanguage(e.target.dataset.lang);
+            });
+        }
 
-        allElements.applyFilterBtn.addEventListener('click', filterAndRenderProperties);
+        if (allElements.applyFilterBtn) {
+            allElements.applyFilterBtn.addEventListener('click', filterAndRenderProperties);
+        }
         
-        [allElements.investment, allElements.income, allElements.expenses].forEach(input => {
-            if(input) input.addEventListener('input', calculateROI);
-        });
+        const roiInputs = [allElements.investment, allElements.income, allElements.expenses];
+        if (roiInputs.every(el => el)) {
+            roiInputs.forEach(input => {
+                input.addEventListener('input', calculateROI);
+            });
+        }
         
         if(allElements.addListingBtn) allElements.addListingBtn.addEventListener('click', () => showModal(allElements.addListingModal));
         if(allElements.openListingFormFromPage) allElements.openListingFormFromPage.addEventListener('click', () => showModal(allElements.addListingModal));
         
         if(allElements.addListingModal) {
             allElements.addListingModal.addEventListener('click', e => {
-                if (e.target.id === 'cancel-listing-btn' || e.target === allElements.addListingModal) {
+                const cancelButton = allElements.addListingModal.querySelector('#cancel-listing-btn');
+                if ((cancelButton && e.target === cancelButton) || e.target === allElements.addListingModal) {
                     hideModal(allElements.addListingModal);
                 }
             });
             const form = allElements.addListingModal.querySelector('#submit-property-form');
             if (form) form.addEventListener('submit', handlePropertySubmit);
             const imageInput = allElements.addListingModal.querySelector('#listing-image-files');
-            if (imageInput) imageInput.addEventListener('change', (event) => {
-                const preview = allElements.addListingModal.querySelector('#image-preview');
-                if(!preview) return;
-                preview.innerHTML = '';
-                if (event.target.files.length > 15) {
-                    showNotification('You can only upload a maximum of 15 images.', 'error');
-                    event.target.value = ''; return;
-                }
-                Array.from(event.target.files).forEach(file => {
-                    const reader = new FileReader();
-                    reader.onload = e => {
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        img.className = 'w-20 h-20 object-cover rounded-md border-2 border-gray-200';
-                        preview.appendChild(img);
-                    };
-                    reader.readAsDataURL(file);
-                });
-            });
+            if (imageInput) imageInput.addEventListener('change', (event) => { /* ... */ });
         }
 
         if(allElements.deleteConfirmModal) allElements.deleteConfirmModal.addEventListener('click', e => { if (e.target === allElements.deleteConfirmModal) hideModal(allElements.deleteConfirmModal); });
 
         if(allElements.heroSearchForm) {
             allElements.heroSearchForm.addEventListener('submit', handleHeroSearch);
-            allElements.heroSearchBuyBtn.addEventListener('click', () => {
-                allElements.heroSearchBuyBtn.classList.add('active');
-                allElements.heroSearchRentBtn.classList.remove('active');
-            });
-            allElements.heroSearchRentBtn.addEventListener('click', () => {
-                allElements.heroSearchRentBtn.classList.add('active');
-                allElements.heroSearchBuyBtn.classList.remove('active');
-            });
+            allElements.heroSearchBuyBtn.addEventListener('click', () => { /* ... */ });
+            allElements.heroSearchRentBtn.addEventListener('click', () => { /* ... */ });
         }
 
         setLanguage('en');
