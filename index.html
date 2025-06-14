@@ -5,45 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mermaid Homes - Find Your Dream House in Phuket</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Primary Font: Forum for headings -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Forum&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-    <!-- Chart.js for ROI Calculator -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             --primary-color: #8D6E63; /* Earthy Brown */
-            --secondary-color: #A1887F;
-            --text-dark: #374151;
-            --text-light: #6B7280;
             --accent-color: #5D4037; /* Darker Brown for buttons */
         }
         html { scroll-behavior: smooth; }
-        body { font-family: 'Poppins', sans-serif; color: var(--text-dark); }
+        body { font-family: 'Poppins', sans-serif; color: #374151; }
         .font-heading { font-family: 'Forum', serif; }
         .container { max-width: 1280px; }
         .page-content-section { display: none; }
         .page-content-section.active { display: block; animation: fadeIn 0.5s ease-out; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* --- Header --- */
         .header { position: sticky; top: 0; z-index: 50; background: white; }
         .header-top { background: var(--primary-color); color: white; padding: 0.5rem 0; font-size: 0.8rem; }
-        .header-top a { transition: color 0.3s; }
         .header-top a:hover { color: #e0e0e0; }
         .header-bottom { box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
-        /* --- Hero --- */
         .hero { position: relative; height: 85vh; min-height: 600px; display: flex; align-items: center; justify-content: center; text-align: center; color: white; overflow: hidden; }
         #hero-video { position: absolute; top: 50%; left: 50%; width: 100%; height: 100%; object-fit: cover; transform: translate(-50%, -50%); z-index: 1; }
         .hero .container { position: relative; z-index: 3; }
         .hero-subtitle { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.1); backdrop-filter: blur(5px); padding: 0.5rem 1rem; border-radius: 999px; }
         .hero-title { font-size: clamp(2.5rem, 6vw, 4.5rem); line-height: 1.1; }
-
-        /* --- Property Card (Homeverse Style) --- */
+        
         .property-card {
             background: #fff; border-radius: 0.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow: hidden; transition: all 0.3s ease;
         }
@@ -61,15 +51,12 @@
         .property-card:hover .delete-property-btn { opacity: 1; }
         .card-price { font-size: 1.5rem; font-weight: 700; color: var(--primary-color); }
         .card-list { display: flex; justify-content: space-around; padding-top: 1rem; border-top: 1px solid #e5e7eb; }
-        .card-item { display: flex; align-items: center; gap: 0.5rem; color: var(--text-light); }
-
-        /* --- Footer (Homeverse Style) --- */
+        .card-item { display: flex; align-items: center; gap: 0.5rem; color: #6B7280; }
+        
         .footer-top { background-color: #212529; color: #adb5bd; padding: 3rem 0; }
         .footer-list-title { font-family: 'Forum', serif; font-size: 1.5rem; color: white; margin-bottom: 1rem; }
-        .footer-link { transition: color 0.3s; }
         .footer-link:hover { color: white; }
         .footer-bottom { background-color: #121212; color: #6c757d; padding: 1.5rem 0; font-size: 0.9rem; }
-        .footer-bottom a { color: #adb5bd; }
     </style>
 </head>
 <body class="bg-gray-100">
@@ -122,7 +109,7 @@
                     <p class="hero-subtitle" data-translate-key="hero_agency">Real Estate Agency</p>
                     <h2 class="h1 hero-title font-heading" data-translate-key="hero_title">Find Your Dream House By Us</h2>
                     <p class="mt-4 text-lg text-gray-200" data-translate-key="hero_subtitle">Thailand best luxury homes | Sell and Rent 🏡</p>
-                    <button class="nav-link mt-8 bg-amber-800 hover:bg-amber-900 text-white font-bold py-3 px-8 rounded-full transition-colors" data-translate-key="browse_properties" href="#properties">Make An Enquiry</button>
+                    <a href="#properties" class="nav-link mt-8 bg-amber-800 hover:bg-amber-900 text-white font-bold py-3 px-8 rounded-full transition-colors" data-translate-key="browse_properties">Make An Enquiry</a>
                 </div>
             </div>
         </section>
@@ -271,7 +258,10 @@
 
             cacheDOMElements() {
                 const ids = ['loading-overlay', 'notification', 'mobile-menu-button', 'mobile-menu', 'lang-switcher', 'properties-grid', 'add-listing-btn', 'open-listing-form-from-page', 'add-listing-modal', 'property-detail-modal', 'delete-confirm-modal', 'investment', 'income', 'expenses', 'roi-result', 'roiChart'];
-                ids.forEach(id => this.elements[id.replace(/-(\w)/g, (_,l) => l.toUpperCase())] = document.getElementById(id));
+                ids.forEach(id => {
+                    const camelCaseId = id.replace(/-(\w)/g, (_, letter) => letter.toUpperCase());
+                    this.elements[camelCaseId] = document.getElementById(id);
+                });
                 this.elements.allPageSections = document.querySelectorAll('.page-content-section');
                 this.elements.navLinks = document.querySelectorAll('.nav-link');
             },
@@ -301,21 +291,42 @@
                         if(e.target.matches('.lang-btn')) this.setLanguage(e.target.dataset.lang);
                     });
                 }
+                
+                const roiInputs = [this.elements.investment, this.elements.income, this.elements.expenses];
+                 if (roiInputs.every(el => el)) {
+                    roiInputs.forEach(input => {
+                        input.addEventListener('input', () => this.calculateROI());
+                    });
+                }
+                
+                if(this.elements.addListingBtn) this.elements.addListingBtn.addEventListener('click', () => this.showModal(this.elements.addListingModal));
+                if(this.elements.openListingFormFromPage) this.elements.openListingFormFromPage.addEventListener('click', () => this.showModal(this.elements.addListingModal));
+
+                if(this.elements.addListingModal) {
+                    this.elements.addListingModal.addEventListener('click', (e) => {
+                        const cancelButton = this.elements.addListingModal.querySelector('#cancel-listing-btn');
+                        if ((cancelButton && e.target === cancelButton) || e.target === this.elements.addListingModal) {
+                            this.hideModal(this.elements.addListingModal);
+                        }
+                    });
+                    const form = this.elements.addListingModal.querySelector('#submit-property-form');
+                    if (form) form.addEventListener('submit', (e) => this.handlePropertySubmit(e));
+                }
             },
             
-            setLanguage(lang) { /* unchanged */ },
-            showNotification(message, type = 'success') { /* unchanged */ },
-            showPage(pageId) { /* unchanged */ },
-            renderPropertyCards(properties) { /* unchanged */ },
-            showPropertyDetail(propId) { /* unchanged */ },
-            showDeleteConfirmation(propId, propTitle) { /* unchanged */ },
-            async handlePropertySubmit(event) { /* unchanged */ },
-            calculateROI() { /* unchanged */ },
-            filterAndRenderProperties() { /* unchanged */ },
-            handleHeroSearch(e) { /* unchanged */ },
+            setLanguage(lang) { /* ... */ },
+            showNotification(message, type = 'success') { /* ... */ },
+            showPage(pageId) { /* ... */ },
+            renderPropertyCards(properties) { /* ... */ },
+            showPropertyDetail(propId) { /* ... */ },
+            showDeleteConfirmation(propId, propTitle) { /* ... */ },
+            async handlePropertySubmit(event) { /* ... */ },
+            calculateROI() { /* ... */ },
+            filterAndRenderProperties() { /* ... */ },
+            handleHeroSearch(e) { /* ... */ },
             showModal(modalEl) { if(modalEl) modalEl.classList.add('active'); },
             hideModal(modalEl) { if(modalEl) modalEl.classList.remove('active'); },
-            initScrollAnimations() { /* unchanged */ }
+            initScrollAnimations() { /* ... */ }
         };
 
         App.init();
