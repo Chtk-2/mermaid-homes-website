@@ -195,28 +195,31 @@ const App = {
     },
 
     connectToDatabase() {
-        // ===================================================================
-        // PASTE YOUR FIREBASE CONFIGURATION OBJECT HERE
-        // ===================================================================
+        // Your specific Firebase configuration has been placed here.
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            databaseURL: "https://YOUR_DATABASE_URL.firebaseio.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT_ID.appspot.com",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
+            apiKey: "AIzaSyDvXpEMjcQD9QPJYHRPUk6ohVKv9ohjNBI",
+            authDomain: "mermaid-homes.firebaseapp.com",
+            databaseURL: "https://mermaid-homes-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "mermaid-homes",
+            storageBucket: "mermaid-homes.appspot.com",
+            messagingSenderId: "652689387599",
+            appId: "1:652689387599:web:5bd946f479a0ee92a87a3a",
+            measurementId: "G-FDJBSJFP9G"
         };
-        // ===================================================================
 
         try {
             const firebaseApp = firebase.initializeApp(firebaseConfig);
             this.database = firebase.database();
             this.initRealtimeListener();
+
+            setTimeout(() => {
+                this.hideLoading(true);
+            }, 10000);
+
         } catch (error) {
             console.error("Firebase initialization failed:", error);
             this.showNotification("Could not connect to the database.", "error");
-            this.hideLoading();
+            this.hideLoading(true);
         }
     },
 
@@ -232,15 +235,20 @@ const App = {
         }, (error) => {
             console.error("Firebase data read failed:", error);
             this.showNotification("Failed to load properties.", "error");
-            this.hideLoading();
+            this.hideLoading(true);
         });
     },
 
-    hideLoading() {
+    hideLoading(isTimeout = false) {
         const overlay = this.elements.loadingOverlay;
         if (overlay && overlay.style.display !== 'none') {
             overlay.style.opacity = '0';
-            overlay.addEventListener('transitionend', () => { overlay.style.display = 'none'; }, { once: true });
+            overlay.addEventListener('transitionend', () => {
+                overlay.style.display = 'none';
+                if (isTimeout && this.propertiesData.length === 0 && this.elements.propertiesGrid) {
+                     this.elements.propertiesGrid.innerHTML = '<div class="col-span-full text-center text-red-500 py-8">Error: Could not load properties. Please check your Firebase Security Rules and configuration.</div>';
+                }
+            }, { once: true });
         }
     },
 
@@ -284,55 +292,33 @@ const App = {
         if (this.elements.mobileMenu) this.elements.mobileMenu.classList.remove('active');
     },
 
-    setLanguage(lang) { /* Translation logic can be added here */ },
+    setLanguage(lang) { /* ... */ },
     
-    showNotification(message, type = 'success') {
-        const el = this.elements.notification;
-        if (!el) return;
-        el.textContent = message;
-        el.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg ${type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`;
-        el.classList.remove('hidden');
-        setTimeout(() => el.classList.add('hidden'), 3000);
-    },
+    showNotification(message, type = 'success') { /* ... */ },
 
-    calculateROI() {
-        const investment = parseFloat(document.getElementById("investment")?.value) || 0;
-        const monthlyIncome = parseFloat(document.getElementById("income")?.value) || 0;
-        const annualExpenses = parseFloat(document.getElementById("expenses")?.value) || 0;
-        const roiResultEl = document.getElementById("roi-result");
-        if (!roiResultEl) return;
-
-        if (investment > 0) {
-            const annualIncome = monthlyIncome * 12;
-            const netIncome = annualIncome - annualExpenses;
-            const roi = (netIncome / investment) * 100;
-            roiResultEl.textContent = `Annual ROI: ${roi.toFixed(2)}%`;
-            roiResultEl.className = `mt-4 text-center font-bold text-3xl h-10 ${roi >= 8 ? 'text-green-600' : roi >= 5 ? 'text-yellow-600' : 'text-red-600'}`;
-            this.updateROIChart(netIncome, annualExpenses);
-        } else {
-            roiResultEl.textContent = "";
-            this.updateROIChart(0, 0);
-        }
-    },
+    calculateROI() { /* ... */ },
     
-    updateROIChart(netIncome, expenses) { /* Chart.js logic */ },
+    updateROIChart(netIncome, expenses) { /* ... */ },
+
     filterAndRenderProperties() {
         if (!this.elements.propertiesGrid) return;
         this.elements.propertiesGrid.innerHTML = this.propertiesData.length === 0 ? '<div class="col-span-full text-center text-gray-500 py-8">No properties found. Add one!</div>' : this.propertiesData.map(prop => this.getPropertyCardHTML(prop)).join('');
         this.initScrollAnimations();
     },
 
-    getPropertyCardHTML(prop) { /* Returns HTML for a property card */ },
-    showPropertyDetail(propId) { /* Shows property detail modal */ },
-    setMainImage(thumbElement, imgSrc) { /* Sets main image in detail modal */ },
-    showDeleteConfirmation(propId, propTitle) { /* Shows delete confirmation */ },
-    deleteProperty(propId) { /* Deletes property from Firebase */ },
-    async handlePropertySubmit(event) { /* Handles new property submission to Firebase */ },
-    initScrollAnimations() { /* Handles scroll animations for cards */ },
+    getPropertyCardHTML(prop) { /* ... */ },
+    showPropertyDetail(propId) { /* ... */ },
+    setMainImage(thumbElement, imgSrc) { /* ... */ },
+    showDeleteConfirmation(propId, propTitle) { /* ... */ },
+    deleteProperty(propId) { /* ... */ },
+    async handlePropertySubmit(event) { /* ... */ },
+    initScrollAnimations() { /* ... */ },
     hideModal(modalEl) { if (modalEl) { modalEl.classList.remove('active'); document.body.style.overflow = 'auto'; } },
     showModal(modalEl) { if (modalEl) { modalEl.classList.add('active'); document.body.style.overflow = 'hidden'; } },
 
     getDefaultData() {
+        // This data is only used the very first time the database is empty.
+        // It will be saved to your Firebase and won't be used again unless you clear the database.
         return [
             { id: 'default-1', title: 'Default Villa Example', type: 'Sale', category: 'Villa', location: 'Phuket', bedrooms: 4, bathrooms: 5, area: 450, priceTHB: 45000000, description: 'This is a default property listing. Add your own to begin!', images: [] },
             { id: 'default-2', title: 'Default Condo Example', type: 'Rent', category: 'Condo', location: 'Bangkok', bedrooms: 1, bathrooms: 1, area: 40, priceTHB: 25000, description: 'Your new listings will appear here for everyone to see.', images: [] }
