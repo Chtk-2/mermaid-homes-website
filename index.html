@@ -32,7 +32,6 @@
         .header-top a:hover { color: #f3e5e0; }
         .header-bottom { background-color: rgba(250, 247, 240, 0.8); backdrop-filter: blur(10px); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .hero { position: relative; height: 85vh; min-height: 600px; display: flex; align-items: center; justify-content: center; text-align: center; color: white; overflow: hidden; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-        /* FIXED: Ensure hero content is perfectly centered */
         .hero .container { display: flex; justify-content: center; align-items: center; }
         #hero-video { position: absolute; top: 50%; left: 50%; width: 100%; height: 100%; object-fit: cover; transform: translate(-50%, -50%); z-index: 1; }
         .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 2; }
@@ -83,10 +82,19 @@
         .modal-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #999; }
         .thumbnail-img { cursor: pointer; border: 2px solid transparent; transition: border-color 0.2s; }
         .thumbnail-img:hover, .thumbnail-img.active { border-color: var(--primary-color); }
-        /* NEW: Style for the active navigation link */
-        .nav-link.nav-active {
-            color: var(--primary-color);
-            font-weight: 700;
+        .nav-link.nav-active { color: var(--primary-color); font-weight: 700; }
+        #mobile-menu {
+            opacity: 0;
+            max-height: 0;
+            transform: translateY(-10px);
+            overflow: hidden;
+            transition: all 0.3s ease-out;
+            display: block !important;
+        }
+        #mobile-menu.active {
+            opacity: 1;
+            max-height: 500px;
+            transform: translateY(0);
         }
     </style>
 </head>
@@ -129,7 +137,7 @@
                 <button id="mobile-menu-button" class="lg:hidden text-gray-600"><i class="fas fa-bars text-2xl"></i></button>
             </div>
         </div>
-        <div id="mobile-menu" class="hidden lg:hidden bg-white border-t">
+        <div id="mobile-menu" class="lg:hidden bg-white border-t">
              <a href="#properties" class="nav-link block text-center py-3 text-gray-700 hover:bg-gray-100 font-heading" data-translate-key="nav_properties">Properties</a>
              <a href="#roi-calculator" class="nav-link block text-center py-3 text-gray-700 hover:bg-gray-100 font-heading" data-translate-key="nav_roi">ROI Calculator</a>
              <a href="#contact" class="nav-link block text-center py-3 text-gray-700 hover:bg-gray-100 font-heading" data-translate-key="nav_contact">Contact</a>
@@ -189,21 +197,72 @@
     </main>
     
     <footer class="footer">
-        </footer>
+        <div class="footer-top">
+            <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="footer-brand">
+                    <a href="#hero-section" class="nav-link inline-block mb-4"><img src="Ui1.png" alt="Mermaid Homes Logo" class="h-12"></a>
+                    <p class="section-text" data-translate-key="footer_desc">Your gateway to finding the perfect property in Phuket.</p>
+                </div>
+                <div class="footer-link-box">
+                    <h3 class="footer-list-title" data-translate-key="footer_quick_links">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#properties" class="footer-link nav-link" data-translate-key="nav_properties">Properties</a></li>
+                        <li><a href="#roi-calculator" class="footer-link nav-link" data-translate-key="nav_roi">ROI Calculator</a></li>
+                        <li><a href="#post-property-listing" class="footer-link nav-link" data-translate-key="nav_post_property">Post Property</a></li>
+                        <li><a href="#contact" class="footer-link nav-link" data-translate-key="nav_contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-link-box">
+                    <h3 class="footer-list-title" data-translate-key="nav_contact">Contact Us</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start"><i class="fas fa-phone-alt mt-1 mr-3"></i><span>+66 65 476 5114</span></li>
+                        <li class="flex items-start"><i class="fas fa-envelope mt-1 mr-3"></i><span>contact@mermaidhomes.com</span></li>
+                    </ul>
+                </div>
+                <div class="footer-link-box">
+                     <h3 class="footer-list-title" data-translate-key="footer_social">Follow Us</h3>
+                     <div class="flex space-x-4">
+                        <a href="https://www.facebook.com/profile.php?id=61551898026585" target="_blank" class="hover:text-[var(--primary-color)] text-2xl transition-colors"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://www.instagram.com/merm.homes" target="_blank" class="hover:text-[var(--primary-color)] text-2xl transition-colors"><i class="fab fa-instagram"></i></a>
+                        <a href="https://wa.me/66654765114" target="_blank" class="hover:text-[var(--primary-color)] text-2xl transition-colors"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container mx-auto px-4 text-center"><p>&copy; 2025 Mermaid Homes. All Rights Reserved.</p></div>
+        </div>
+    </footer>
 
     <button id="add-listing-btn" class="add-listing-btn"><i class="fas fa-plus"></i></button>
     <a href="https://wa.me/66654765114" target="_blank" class="whatsapp-float"><i class="fab fa-whatsapp"></i></a>
 
-    <div id="add-listing-modal" class="modal">...</div>
-    <div id="property-detail-modal" class="modal">...</div>
-    <div id="delete-confirm-modal" class="modal">...</div>
+    <div id="add-listing-modal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="App.hideModal(App.elements.addListingModal)">&times;</button>
+            <h3 class="text-2xl font-bold mb-4">Add New Property</h3>
+            <form id="property-form" class="space-y-4"></form>
+        </div>
+    </div>
+    <div id="property-detail-modal" class="modal">
+        <div class="modal-content max-w-4xl">
+            <button class="modal-close" onclick="App.hideModal(App.elements.propertyDetailModal)">&times;</button>
+            <div id="property-detail-content"></div>
+        </div>
+    </div>
+    <div id="delete-confirm-modal" class="modal">
+        <div class="modal-content max-w-md">
+            <button class="modal-close" onclick="App.hideModal(App.elements.deleteConfirmModal)">&times;</button>
+            <div id="delete-confirm-content"></div>
+        </div>
+    </div>
 
 <script>
-// Main Application Logic
 const App = {
     PROPERTIES_KEY: 'mermaid_homes_properties_v2',
     elements: {},
     propertiesData: [],
+    translations: {}, // Add translations if needed
 
     init() {
         this.cacheDOMElements();
@@ -258,7 +317,38 @@ const App = {
     },
 
     injectContent() {
-        // ... injects static HTML to keep body clean ...
+        if (this.elements.roiCalculatorContent) {
+             this.elements.roiCalculatorContent.innerHTML = `
+                <div class="space-y-4">
+                    <div><label for="investment" class="block text-lg font-medium text-gray-700 mb-1" data-translate-key="roi_investment">Total Investment (THB)</label><input id="investment" type="number" placeholder="Enter total investment" class="w-full p-3 border border-gray-300 rounded-md text-lg"/></div>
+                    <div><label for="income" class="block text-lg font-medium text-gray-700 mb-1" data-translate-key="roi_income">Monthly Rental Income (THB)</label><input id="income" type="number" placeholder="Enter monthly rental income" class="w-full p-3 border border-gray-300 rounded-md text-lg"/></div>
+                    <div><label for="expenses" class="block text-lg font-medium text-gray-700 mb-1" data-translate-key="roi_expenses">Annual Expenses (THB)</label><input id="expenses" type="number" placeholder="Enter annual expenses" class="w-full p-3 border border-gray-300 rounded-md text-lg" /></div>
+                    <div id="roi-result" class="mt-4 text-center font-bold text-gray-800 text-3xl h-10"></div>
+                    <div id="roiChartContainer" class="h-64 md:h-80 mt-6"><canvas id="roiChart"></canvas></div>
+                </div>`;
+        }
+        if (this.elements.contactContent) {
+            this.elements.contactContent.innerHTML = `
+                <a href="tel:+66654765114" class="bg-white p-8 rounded-lg shadow-sm text-center transition-transform hover:-translate-y-2"><div class="text-5xl text-[var(--primary-color)] mb-4"><i class="fas fa-phone-alt"></i></div><h3 class="text-2xl font-semibold text-gray-800" data-translate-key="contact_phone">Phone</h3><p class="text-gray-500 mt-2 text-lg">+66 65 476 5114</p></a>
+                <a href="https://wa.me/66654765114" target="_blank" class="bg-white p-8 rounded-lg shadow-sm text-center transition-transform hover:-translate-y-2"><div class="text-5xl text-green-500 mb-4"><i class="fab fa-whatsapp"></i></div><h3 class="text-2xl font-semibold text-gray-800" data-translate-key="contact_whatsapp">WhatsApp</h3><p class="text-gray-500 mt-2 text-lg" data-translate-key="contact_whatsapp_text">Chat with us</p></a>
+                <a href="mailto:contact@mermaidhomes.com" class="bg-white p-8 rounded-lg shadow-sm text-center transition-transform hover:-translate-y-2"><div class="text-5xl text-blue-500 mb-4"><i class="fas fa-envelope"></i></div><h3 class="text-2xl font-semibold text-gray-800" data-translate-key="contact_email">Email</h3><p class="text-gray-500 mt-2 text-lg">contact@mermaidhomes.com</p></a>`;
+        }
+        if (this.elements.propertyForm) {
+            this.elements.propertyForm.innerHTML = `
+                <div><label class="block text-sm font-medium text-gray-700">Property Title</label><input type="text" name="title" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div>
+                <div><label class="block text-sm font-medium text-gray-700">Type</label><select name="type" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"><option value="Sale">Sale</option><option value="Rent">Rent</option></select></div>
+                <div><label class="block text-sm font-medium text-gray-700">Category</label><select name="category" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"><option value="Villa">Villa</option><option value="Condo">Condo</option><option value="House">House</option></select></div>
+                <div><label class="block text-sm font-medium text-gray-700">Location</label><input type="text" name="location" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div>
+                <div class="grid grid-cols-3 gap-4">
+                    <div><label class="block text-sm font-medium text-gray-700">Bedrooms</label><input type="number" name="bedrooms" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div>
+                    <div><label class="block text-sm font-medium text-gray-700">Bathrooms</label><input type="number" name="bathrooms" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div>
+                    <div><label class="block text-sm font-medium text-gray-700">Area (sqm)</label><input type="number" name="area" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div>
+                </div>
+                <div><label class="block text-sm font-medium text-gray-700">Price (THB)</label><input type="number" name="priceTHB" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div>
+                <div><label class="block text-sm font-medium text-gray-700">Description</label><textarea name="description" rows="3" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></textarea></div>
+                <div><label class="block text-sm font-medium text-gray-700">Property Images (Max 15)</label><input type="file" name="images" multiple accept="image/*" required class="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-rose-50 file:text-[var(--primary-color)] hover:file:bg-rose-100"/></div>
+                <button type="submit" class="w-full action-button py-2 px-4 rounded-md">Add Property</button>`;
+        }
     },
 
     bindEvents() {
@@ -267,7 +357,11 @@ const App = {
             const targetId = link.getAttribute('href')?.substring(1);
             if (targetId) this.showPage(targetId);
         }));
-        if (this.elements.mobileMenuButton) this.elements.mobileMenuButton.addEventListener('click', () => this.elements.mobileMenu.classList.toggle('hidden'));
+        if (this.elements.mobileMenuButton) {
+            this.elements.mobileMenuButton.addEventListener('click', () => {
+                this.elements.mobileMenu.classList.toggle('active');
+            });
+        }
         if (this.elements.addListingBtn) this.elements.addListingBtn.addEventListener('click', () => this.showModal(this.elements.addListingModal));
         if (this.elements.openListingFormFromPage) this.elements.openListingFormFromPage.addEventListener('click', () => this.showModal(this.elements.addListingModal));
         if (this.elements.propertyForm) this.elements.propertyForm.addEventListener('submit', (e) => this.handlePropertySubmit(e));
@@ -284,20 +378,16 @@ const App = {
             }
             history.pushState({ page: pageId }, '', `#${pageId}`);
             
-            // NEW: Highlight active navigation link
             this.elements.navLinks.forEach(link => {
-                link.classList.remove('nav-active');
-                if (link.getAttribute('href') === `#${pageId}`) {
-                    link.classList.add('nav-active');
-                }
+                link.classList.toggle('nav-active', link.getAttribute('href') === `#${pageId}`);
             });
         }
-        if (this.elements.mobileMenu) this.elements.mobileMenu.classList.add('hidden');
+        if (this.elements.mobileMenu) {
+            this.elements.mobileMenu.classList.remove('active');
+        }
     },
 
-    setLanguage(lang) {
-        // ... (translation logic) ...
-    },
+    setLanguage(lang) { /* ... Translation logic ... */ },
     
     showNotification(message, type = 'success') {
         const el = this.elements.notification;
@@ -315,19 +405,33 @@ const App = {
     },
 
     getPropertyCardHTML(prop) {
-        // ... returns HTML for a single property card ...
+        const formatPrice = price => new Intl.NumberFormat('th-TH').format(price);
+        const mainImage = prop.images?.[0] || `https://placehold.co/800x600/FAF7F0/B17457?text=${encodeURIComponent(prop.title)}`;
+        return `<article class="property-card cursor-pointer" onclick="App.showPropertyDetail('${prop.id}')"><div class="card-banner"><img src="${mainImage}" alt="${prop.title}" class="w-full h-full object-cover" loading="lazy" onerror="this.src='https://placehold.co/800x600/f0f0f0/ccc?text=Image+Not+Found'"><div class="card-badge ${prop.type.toLowerCase()}">${prop.type}</div><button class="delete-property-btn" onclick="event.stopPropagation(); App.showDeleteConfirmation('${prop.id}', '${prop.title}')" title="Delete Property"><i class="fas fa-trash"></i></button></div><div class="card-content"><h3 class="text-xl font-semibold text-gray-800 mb-2 truncate">${prop.title}</h3><p class="text-gray-600 mb-3 text-sm h-10 overflow-hidden">${prop.description}</p><div class="card-price">฿${formatPrice(prop.priceTHB)} ${prop.type === 'Rent' ? '/month' : ''}</div><div class="card-list"><div class="card-item"><i class="fas fa-bed text-[var(--primary-color)]"></i><span>${prop.bedrooms}</span></div><div class="card-item"><i class="fas fa-bath text-[var(--primary-color)]"></i><span>${prop.bathrooms}</span></div><div class="card-item"><i class="fas fa-ruler-combined text-[var(--primary-color)]"></i><span>${prop.area} sqm</span></div><div class="card-item"><i class="fas fa-map-marker-alt text-[var(--primary-color)]"></i><span class="truncate">${prop.location}</span></div></div></div></article>`;
     },
     
     showPropertyDetail(propId) {
-        // ... shows the property detail modal ...
+        const property = this.propertiesData.find(p => p.id === propId);
+        if (!property) return;
+        const contentEl = document.getElementById('property-detail-content');
+        if (!contentEl) return;
+        const formatPrice = price => new Intl.NumberFormat('th-TH').format(price);
+        const thumbnailsHTML = property.images.map((imgSrc, index) => `<img src="${imgSrc}" alt="Thumbnail ${index + 1}" class="thumbnail-img h-16 w-24 object-cover rounded-md ${index === 0 ? 'active' : ''}" onclick="App.setMainImage(this, '${imgSrc}')" onerror="this.style.display='none'">`).join('');
+        contentEl.innerHTML = `<div class="grid grid-cols-1 lg:grid-cols-2 gap-8"><div class="space-y-4"><img id="main-property-image" src="${property.images[0]}" alt="${property.title}" class="w-full h-96 object-cover rounded-lg" onerror="this.src='https://placehold.co/800x600/f0f0f0/ccc?text=Image+Not+Found'"><div class="flex gap-2 flex-wrap">${thumbnailsHTML}</div></div><div class="space-y-4"><h2 class="text-3xl font-bold text-gray-800">${property.title}</h2><div class="text-3xl font-bold text-[var(--primary-color)]">฿${formatPrice(property.priceTHB)} ${property.type === 'Rent' ? '/month' : ''}</div><div class="grid grid-cols-2 gap-4 py-4 border-y"><div class="flex items-center gap-2"><i class="fas fa-bed text-[var(--primary-color)]"></i><span>${property.bedrooms} Bedrooms</span></div><div class="flex items-center gap-2"><i class="fas fa-bath text-[var(--primary-color)]"></i><span>${property.bathrooms} Bathrooms</span></div><div class="flex items-center gap-2"><i class="fas fa-ruler-combined text-[var(--primary-color)]"></i><span>${property.area} sqm</span></div><div class="flex items-center gap-2"><i class="fas fa-map-marker-alt text-[var(--primary-color)]"></i><span>${property.location}</span></div></div><div><h3 class="text-xl font-semibold mb-2">Description</h3><p class="text-gray-700 leading-relaxed">${property.description}</p></div><div class="flex gap-4"><a href="https://wa.me/66654765114?text=I'm interested in ${property.title}" target="_blank" class="flex-1 bg-green-500 text-white py-3 px-6 rounded-lg text-center hover:bg-green-600 transition-colors"><i class="fab fa-whatsapp mr-2"></i>WhatsApp</a><a href="tel:+66654765114" class="flex-1 action-button py-3 px-6 rounded-lg text-center"><i class="fas fa-phone mr-2"></i>Call Now</a></div></div></div>`;
+        this.showModal(this.elements.propertyDetailModal);
     },
 
     setMainImage(thumbElement, imgSrc) {
-        // ... changes the main image in the detail modal ...
+        document.getElementById('main-property-image').src = imgSrc;
+        document.querySelectorAll('.thumbnail-img').forEach(el => el.classList.remove('active'));
+        thumbElement.classList.add('active');
     },
     
     showDeleteConfirmation(propId, propTitle) {
-        // ... shows the delete confirmation modal ...
+        const contentEl = document.getElementById('delete-confirm-content');
+        if (!contentEl) return;
+        contentEl.innerHTML = `<h3 class="text-xl font-bold mb-4 text-red-600">Delete Property</h3><p class="mb-6">Are you sure you want to delete "${propTitle}"?</p><div class="flex gap-4"><button onclick="App.hideModal(App.elements.deleteConfirmModal)" class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400">Cancel</button><button onclick="App.deleteProperty('${propId}')" class="flex-1 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600">Delete</button></div>`;
+        this.showModal(this.elements.deleteConfirmModal);
     },
     
     deleteProperty(propId) {
