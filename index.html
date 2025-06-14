@@ -23,6 +23,10 @@
         body { font-family: 'Poppins', sans-serif; background-color: var(--bg-main); color: var(--text-dark); }
         .font-heading { font-family: 'Forum', serif; }
         .container { max-width: 1280px; }
+        #loading-overlay {
+            /* This is now visible by default and hidden by JS */
+            transition: opacity 0.5s ease-out;
+        }
         .page-content-section { display: none; }
         .page-content-section.active { display: block; animation: fadeIn 0.5s ease-out; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -84,7 +88,7 @@
 </head>
 <body>
 
-    <div id="loading-overlay" class="fixed top-0 left-0 w-full h-full bg-white flex flex-col items-center justify-center z-50 transition-opacity duration-500">
+    <div id="loading-overlay" class="fixed top-0 left-0 w-full h-full bg-white flex flex-col items-center justify-center z-50">
         <div class="text-center mb-4">
             <img src="Ui1.png" alt="Mermaid Homes Logo" class="h-20 mx-auto">
             <div class="text-lg mt-2" style="color: var(--primary-color);">Your Gateway to Luxury Properties</div>
@@ -257,35 +261,46 @@ document.addEventListener('DOMContentLoaded', function() {
             this.injectContent();
             this.bindEvents();
             this.setLanguage('en');
-            this.showLoadingWithDelay();
             this.showPage(window.location.hash.substring(1) || 'hero-section');
             this.filterAndRenderProperties();
             this.initScrollAnimations();
+            this.hideLoading(); // NEW: Hide loading screen after everything is ready
         },
 
-        // FIXED: ลดเวลาหน่วงจาก 2000ms เหลือ 300ms เพื่อให้หน้าโหลดหายไปเร็วขึ้น
-        showLoadingWithDelay() {
-            setTimeout(() => {
-                const overlay = this.elements.loadingOverlay;
-                if (overlay) {
-                    overlay.style.opacity = '0';
-                    setTimeout(() => overlay.style.display = 'none', 500);
-                }
-            }, 300);
+        // NEW: Function to hide the loading screen
+        hideLoading() {
+            const overlay = this.elements.loadingOverlay;
+            if (overlay) {
+                overlay.style.opacity = '0';
+                // Wait for fade out animation to finish before hiding
+                overlay.addEventListener('transitionend', () => {
+                    overlay.style.display = 'none';
+                }, { once: true });
+            }
         },
         
         loadProperties() {
-            const savedData = localStorage.getItem(this.PROPERTIES_KEY);
-            if (savedData && savedData !== '[]') {
-                this.propertiesData = JSON.parse(savedData);
-            } else {
+            try {
+                const savedData = localStorage.getItem(this.PROPERTIES_KEY);
+                if (savedData && savedData !== '[]') {
+                    this.propertiesData = JSON.parse(savedData);
+                } else {
+                    this.propertiesData = this.getDefaultData();
+                    this.saveProperties();
+                }
+            } catch (e) {
+                console.error("Error loading properties from localStorage:", e);
                 this.propertiesData = this.getDefaultData();
-                this.saveProperties();
             }
         },
 
         saveProperties() {
-            localStorage.setItem(this.PROPERTIES_KEY, JSON.stringify(this.propertiesData));
+            try {
+                localStorage.setItem(this.PROPERTIES_KEY, JSON.stringify(this.propertiesData));
+            } catch (e) {
+                console.error("Error saving properties to localStorage:", e);
+                this.showNotification("Could not save properties. Storage may be full.", "error");
+            }
         },
         
         cacheDOMElements() {
@@ -362,7 +377,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         filterAndRenderProperties() {
             if (!this.elements.propertiesGrid) return;
-            this.elements.propertiesGrid.innerHTML = this.propertiesData.length === 0 ? '<div class="col-span-full text-center text-gray-500 py-8">No properties found.</div>' : this.propertiesData.map(prop => this.getPropertyCardHTML(prop)).join('');
+            this.elements.propertiesGrid.innerHTML = this.propertiesData.length === 0 ? '<div class="col-span-full text-center text-gray-500 py-8">No properties found. Add one!</div>' : this.propertiesData.map(prop => this.getPropertyCardHTML(prop)).join('');
         },
 
         getPropertyCardHTML(prop) {
@@ -419,6 +434,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 reader.onerror = error => reject(error);
             });
             
+            this.showNotification('Uploading images...', 'success');
             const imagePromises = Array.from(files).map(fileToBase64);
             const base64Images = await Promise.all(imagePromises);
 
@@ -472,6 +488,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
     
+    // Fallback for translations and other dynamic content
+    App.setLanguage = App.setLanguage || function() {};
+    App.showPage = App.showPage || function() {};
+
     App.init();
     window.App = App;
 });
