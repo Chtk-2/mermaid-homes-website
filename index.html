@@ -195,7 +195,6 @@ const App = {
     },
 
     connectToDatabase() {
-        // Your specific Firebase configuration has been placed here.
         const firebaseConfig = {
             apiKey: "AIzaSyDvXpEMjcQD9QPJYHRPUk6ohVKv9ohjNBI",
             authDomain: "mermaid-homes.firebaseapp.com",
@@ -234,7 +233,7 @@ const App = {
             this.hideLoading();
         }, (error) => {
             console.error("Firebase data read failed:", error);
-            this.showNotification("Failed to load properties.", "error");
+            this.showNotification("Failed to load properties. Check Firebase Rules.", "error");
             this.hideLoading(true);
         });
     },
@@ -266,7 +265,7 @@ const App = {
         if (this.elements.roiCalculatorContent) {
              this.elements.roiCalculatorContent.innerHTML = `<div class="space-y-4"><div><label for="investment" class="block text-lg font-medium text-gray-700 mb-1">Total Investment (THB)</label><input id="investment" type="number" placeholder="e.g., 5000000" class="w-full p-3 border border-gray-300 rounded-md text-lg"/></div><div><label for="income" class="block text-lg font-medium text-gray-700 mb-1">Monthly Rental Income (THB)</label><input id="income" type="number" placeholder="e.g., 30000" class="w-full p-3 border border-gray-300 rounded-md text-lg"/></div><div><label for="expenses" class="block text-lg font-medium text-gray-700 mb-1">Annual Expenses (THB)</label><input id="expenses" type="number" placeholder="e.g., 25000" class="w-full p-3 border border-gray-300 rounded-md text-lg" /></div><div id="roi-result" class="mt-4 text-center font-bold text-gray-800 text-3xl h-10"></div><div id="roiChartContainer" class="h-64 md:h-80 mt-6"><canvas id="roiChart"></canvas></div></div>`;
         }
-        if (this.elements.contactContent) { this.elements.contactContent.innerHTML = `<a href="tel:+66654765114" class="bg-white p-8 rounded-lg shadow-sm text-center transition-transform hover:-translate-y-2"><div class="text-5xl text-[var(--primary-color)] mb-4"><i class="fas fa-phone-alt"></i></div><h3 class="text-2xl font-semibold text-gray-800" data-translate-key="contact_phone">Phone</h3><p class="text-gray-500 mt-2 text-lg">+66 65 476 5114</p></a><a href="https://wa.me/66654765114" target="_blank" class="bg-white p-8 rounded-lg shadow-sm text-center transition-transform hover:-translate-y-2"><div class="text-5xl text-green-500 mb-4"><i class="fab fa-whatsapp"></i></div><h3 class="text-2xl font-semibold text-gray-800" data-translate-key="contact_whatsapp">WhatsApp</h3><p class="text-gray-500 mt-2 text-lg" data-translate-key="contact_whatsapp_text">Chat with us</p></a><a href="mailto:contact@mermaidhomes.com" class="bg-white p-8 rounded-lg shadow-sm text-center transition-transform hover:-translate-y-2"><div class="text-5xl text-blue-500 mb-4"><i class="fas fa-envelope"></i></div><h3 class="text-2xl font-semibold text-gray-800" data-translate-key="contact_email">Email</h3><p class="text-gray-500 mt-2 text-lg">contact@mermaidhomes.com</p></a>`; }
+        if (this.elements.contactContent) { this.elements.contactContent.innerHTML = `<a href="tel:+66654765114" class="bg-white p-8 rounded-lg shadow-sm text-center transition-transform hover:-translate-y-2"><div class="text-5xl text-[var(--primary-color)] mb-4"><i class="fas fa-phone-alt"></i></div><h3 class="text-2xl font-semibold text-gray-800">Phone</h3><p class="text-gray-500 mt-2 text-lg">+66 65 476 5114</p></a><a href="https://wa.me/66654765114" target="_blank" class="bg-white p-8 rounded-lg shadow-sm text-center transition-transform hover:-translate-y-2"><div class="text-5xl text-green-500 mb-4"><i class="fab fa-whatsapp"></i></div><h3 class="text-2xl font-semibold text-gray-800">WhatsApp</h3><p class="text-gray-500 mt-2 text-lg">Chat with us</p></a><a href="mailto:contact@mermaidhomes.com" class="bg-white p-8 rounded-lg shadow-sm text-center transition-transform hover:-translate-y-2"><div class="text-5xl text-blue-500 mb-4"><i class="fas fa-envelope"></i></div><h3 class="text-2xl font-semibold text-gray-800">Email</h3><p class="text-gray-500 mt-2 text-lg">contact@mermaidhomes.com</p></a>`; }
         if (this.elements.propertyForm) { this.elements.propertyForm.innerHTML = `<div><label class="block text-sm font-medium text-gray-700">Property Title</label><input type="text" name="title" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div><div><label class="block text-sm font-medium text-gray-700">Type</label><select name="type" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"><option value="Sale">Sale</option><option value="Rent">Rent</option></select></div><div><label class="block text-sm font-medium text-gray-700">Category</label><select name="category" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"><option value="Villa">Villa</option><option value="Condo">Condo</option><option value="House">House</option></select></div><div><label class="block text-sm font-medium text-gray-700">Location</label><input type="text" name="location" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div><div class="grid grid-cols-3 gap-4"><div><label class="block text-sm font-medium text-gray-700">Bedrooms</label><input type="number" name="bedrooms" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div><div><label class="block text-sm font-medium text-gray-700">Bathrooms</label><input type="number" name="bathrooms" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div><div><label class="block text-sm font-medium text-gray-700">Area (sqm)</label><input type="number" name="area" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div></div><div><label class="block text-sm font-medium text-gray-700">Price (THB)</label><input type="number" name="priceTHB" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div><div><label class="block text-sm font-medium text-gray-700">Description</label><textarea name="description" rows="3" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></textarea></div><div><label class="block text-sm font-medium text-gray-700">Property Images (Max 15)</label><input type="file" name="images" multiple accept="image/*" required class="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-rose-50 file:text-[var(--primary-color)] hover:file:bg-rose-100"/></div><button type="submit" class="w-full action-button py-2 px-4 rounded-md">Add Property</button>`; }
     },
 
@@ -296,33 +295,67 @@ const App = {
     
     showNotification(message, type = 'success') { /* ... */ },
 
-    calculateROI() { /* ... */ },
+    calculateROI() {
+        const investment = parseFloat(document.getElementById("investment")?.value) || 0;
+        const monthlyIncome = parseFloat(document.getElementById("income")?.value) || 0;
+        const annualExpenses = parseFloat(document.getElementById("expenses")?.value) || 0;
+        const roiResultEl = document.getElementById("roi-result");
+        if (!roiResultEl) return;
+        if (investment > 0) {
+            const annualIncome = monthlyIncome * 12;
+            const netIncome = annualIncome - annualExpenses;
+            const roi = (netIncome / investment) * 100;
+            roiResultEl.textContent = `Annual ROI: ${roi.toFixed(2)}%`;
+            roiResultEl.className = `mt-4 text-center font-bold text-3xl h-10 ${roi >= 8 ? 'text-green-600' : roi >= 5 ? 'text-yellow-600' : 'text-red-600'}`;
+            this.updateROIChart(netIncome, annualExpenses);
+        } else {
+            roiResultEl.textContent = "";
+            this.updateROIChart(0, 0);
+        }
+    },
     
-    updateROIChart(netIncome, expenses) { /* ... */ },
-
+    updateROIChart(netIncome, expenses) { /* Chart.js logic */ },
     filterAndRenderProperties() {
         if (!this.elements.propertiesGrid) return;
-        this.elements.propertiesGrid.innerHTML = this.propertiesData.length === 0 ? '<div class="col-span-full text-center text-gray-500 py-8">No properties found. Add one!</div>' : this.propertiesData.map(prop => this.getPropertyCardHTML(prop)).join('');
+        this.elements.propertiesGrid.innerHTML = this.propertiesData.length === 0 ? '<div class="col-span-full text-center text-gray-500 py-8">No properties found. Add one to get started!</div>' : this.propertiesData.map(prop => this.getPropertyCardHTML(prop)).join('');
         this.initScrollAnimations();
     },
 
-    getPropertyCardHTML(prop) { /* ... */ },
-    showPropertyDetail(propId) { /* ... */ },
-    setMainImage(thumbElement, imgSrc) { /* ... */ },
-    showDeleteConfirmation(propId, propTitle) { /* ... */ },
-    deleteProperty(propId) { /* ... */ },
-    async handlePropertySubmit(event) { /* ... */ },
+    getPropertyCardHTML(prop) { /* Returns HTML for a property card */ },
+    showPropertyDetail(propId) { /* Shows property detail modal */ },
+    setMainImage(thumbElement, imgSrc) { /* Sets main image in detail modal */ },
+    showDeleteConfirmation(propId, propTitle) { /* Shows delete confirmation */ },
+    deleteProperty(propId) {
+        this.database.ref('properties/' + propId).remove()
+            .then(() => { this.hideModal(this.elements.deleteConfirmModal); this.showNotification('Property deleted successfully!'); })
+            .catch(error => { console.error("Error deleting property: ", error); this.showNotification("Failed to delete property.", "error"); });
+    },
+
+    async handlePropertySubmit(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const files = event.target.images.files;
+        if (files.length === 0) return this.showNotification('Please select at least one image.', 'error');
+        if (files.length > 15) return this.showNotification('You can select a maximum of 15 images.', 'error');
+        const fileToBase64 = file => new Promise((resolve, reject) => { const reader = new FileReader(); reader.readAsDataURL(file); reader.onload = () => resolve(reader.result); reader.onerror = error => reject(error); });
+        this.showNotification('Uploading images...', 'success');
+        const base64Images = await Promise.all(Array.from(files).map(fileToBase64));
+        const newProperty = {
+            title: formData.get('title'), type: formData.get('type'), category: formData.get('category'), location: formData.get('location'), 
+            bedrooms: parseInt(formData.get('bedrooms')), bathrooms: parseInt(formData.get('bathrooms')), area: parseInt(formData.get('area')),
+            priceTHB: parseInt(formData.get('priceTHB')), description: formData.get('description'), agentCode: 'USR-' + Date.now().toString().slice(-6), images: base64Images
+        };
+        this.database.ref('properties').push(newProperty)
+            .then(() => { this.hideModal(this.elements.addListingModal); event.target.reset(); this.showNotification('Property added successfully!'); })
+            .catch(error => { console.error("Error adding property: ", error); this.showNotification("Failed to add property.", "error"); });
+    },
+    
     initScrollAnimations() { /* ... */ },
     hideModal(modalEl) { if (modalEl) { modalEl.classList.remove('active'); document.body.style.overflow = 'auto'; } },
     showModal(modalEl) { if (modalEl) { modalEl.classList.add('active'); document.body.style.overflow = 'hidden'; } },
 
     getDefaultData() {
-        // This data is only used the very first time the database is empty.
-        // It will be saved to your Firebase and won't be used again unless you clear the database.
-        return [
-            { id: 'default-1', title: 'Default Villa Example', type: 'Sale', category: 'Villa', location: 'Phuket', bedrooms: 4, bathrooms: 5, area: 450, priceTHB: 45000000, description: 'This is a default property listing. Add your own to begin!', images: [] },
-            { id: 'default-2', title: 'Default Condo Example', type: 'Rent', category: 'Condo', location: 'Bangkok', bedrooms: 1, bathrooms: 1, area: 40, priceTHB: 25000, description: 'Your new listings will appear here for everyone to see.', images: [] }
-        ];
+        return [];
     }
 };
 
