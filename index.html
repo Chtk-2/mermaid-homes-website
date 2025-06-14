@@ -147,8 +147,9 @@
 
     <main id="main-content">
         <section id="hero-section" class="page-content-section hero">
-            <video autoplay loop muted playsinline id="hero-video" poster="https://assets.codepen.io/6093409/river.jpg">
-               <source src="https://assets.codepen.io/6093409/river.mp4" type="video/mp4">
+            <video autoplay loop muted playsinline id="hero-video">
+               <source src="Video opening.mp4" type="video/mp4">
+               Your browser does not support the video tag.
             </video>
             <div class="hero-overlay"></div>
             <div class="container mx-auto px-4">
@@ -262,7 +263,7 @@ const App = {
     PROPERTIES_KEY: 'mermaid_homes_properties_v2',
     elements: {},
     propertiesData: [],
-    translations: {}, // Add translations if needed
+    translations: {},
 
     init() {
         this.cacheDOMElements();
