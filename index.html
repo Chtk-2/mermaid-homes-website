@@ -28,8 +28,9 @@
         .header-top a:hover { color: #e0e0e0; }
         .header-bottom { box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
-        .hero { position: relative; height: 85vh; min-height: 600px; display: flex; align-items: center; justify-content: center; text-align: center; color: white; overflow: hidden; }
+        .hero { position: relative; height: 85vh; min-height: 600px; display: flex; align-items: center; justify-content: center; text-align: center; color: white; overflow: hidden; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
         #hero-video { position: absolute; top: 50%; left: 50%; width: 100%; height: 100%; object-fit: cover; transform: translate(-50%, -50%); z-index: 1; }
+        .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 2; }
         .hero .container { position: relative; z-index: 3; }
         .hero-subtitle { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.1); backdrop-filter: blur(5px); padding: 0.5rem 1rem; border-radius: 999px; }
         .hero-title { font-size: clamp(2.5rem, 6vw, 4.5rem); line-height: 1.1; }
@@ -38,7 +39,8 @@
             background: #fff; border-radius: 0.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow: hidden; transition: all 0.3s ease;
         }
         .property-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .card-banner { position: relative; }
+        .card-banner { position: relative; height: 250px; overflow: hidden; }
+        .card-banner img { width: 100%; height: 100%; object-fit: cover; }
         .card-badge { position: absolute; top: 1rem; left: 1rem; background-color: var(--accent-color); color: white; padding: 0.25rem 0.75rem; border-radius: 0.25rem; font-size: 0.8rem; font-weight: 500; }
         .card-badge.rent { background-color: #38a169; }
         .delete-property-btn {
@@ -49,22 +51,68 @@
             border: none; cursor: pointer; transition: all 0.2s; opacity: 0; z-index: 5;
         }
         .property-card:hover .delete-property-btn { opacity: 1; }
+        .card-content { padding: 1.5rem; }
         .card-price { font-size: 1.5rem; font-weight: 700; color: var(--primary-color); }
-        .card-list { display: flex; justify-content: space-around; padding-top: 1rem; border-top: 1px solid #e5e7eb; }
+        .card-list { display: flex; justify-content: space-around; padding-top: 1rem; border-top: 1px solid #e5e7eb; margin-top: 1rem; }
         .card-item { display: flex; align-items: center; gap: 0.5rem; color: #6B7280; }
         
         .footer-top { background-color: #212529; color: #adb5bd; padding: 3rem 0; }
         .footer-list-title { font-family: 'Forum', serif; font-size: 1.5rem; color: white; margin-bottom: 1rem; }
         .footer-link:hover { color: white; }
         .footer-bottom { background-color: #121212; color: #6c757d; padding: 1.5rem 0; font-size: 0.9rem; }
+
+        .add-listing-btn {
+            position: fixed; bottom: 2rem; right: 2rem; width: 60px; height: 60px;
+            background: var(--accent-color); color: white; border: none; border-radius: 50%;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15); cursor: pointer; z-index: 40;
+            display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .add-listing-btn:hover { transform: scale(1.1); }
+
+        .whatsapp-float {
+            position: fixed; bottom: 6rem; right: 2rem; width: 60px; height: 60px;
+            background: #25D366; color: white; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 40;
+            transition: all 0.3s ease; text-decoration: none;
+        }
+        .whatsapp-float:hover { transform: scale(1.1); color: white; }
+
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 60; align-items: center; justify-content: center;
+        }
+        .modal.active { display: flex; }
+        .modal-content {
+            background: white; border-radius: 0.5rem; padding: 2rem; max-width: 90vw; max-height: 90vh;
+            overflow-y: auto; position: relative;
+        }
+        .modal-close {
+            position: absolute; top: 1rem; right: 1rem; background: none; border: none;
+            font-size: 1.5rem; cursor: pointer; color: #666;
+        }
+
+        .section-subtitle { color: var(--primary-color); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+        .h2 { font-size: 2.5rem; font-weight: 700; margin-bottom: 2rem; }
+        .section-title { color: #1f2937; }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2.5rem; }
+            .add-listing-btn, .whatsapp-float { width: 50px; height: 50px; font-size: 1.2rem; }
+            .whatsapp-float { bottom: 5rem; }
+        }
     </style>
 </head>
 <body class="bg-gray-100">
 
     <div id="loading-overlay" class="fixed top-0 left-0 w-full h-full bg-white flex flex-col items-center justify-center z-50">
-        <img src="Textt1.png" alt="Mermaid Homes Logo" class="max-w-[200px]">
+        <div class="text-4xl font-bold text-gray-800 mb-4">Mermaid Homes</div>
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-800"></div>
     </div>
-    <div id="notification"></div>
+
+    <div id="notification" class="fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg hidden"></div>
 
     <header class="header">
         <div class="header-top">
@@ -74,15 +122,17 @@
                     <li><a href="tel:+66654765114" class="flex items-center"><i class="fas fa-phone-alt mr-2"></i><span>+66 65 476 5114</span></a></li>
                 </ul>
                 <div id="lang-switcher">
-                    <button data-lang="en" class="lang-btn font-semibold p-1">EN</button>
-                    <span class="text-gray-500">|</span>
+                    <button data-lang="en" class="lang-btn font-semibold p-1 text-white">EN</button>
+                    <span class="text-gray-300">|</span>
                     <button data-lang="th" class="lang-btn text-gray-400 p-1">TH</button>
                 </div>
             </div>
         </div>
         <div class="header-bottom bg-white shadow-md">
            <div class="container mx-auto px-4 flex justify-between items-center py-2">
-                <a href="#hero-section" class="nav-link"><img src="Textt1.png" alt="Mermaid Homes Logo" class="h-16 w-auto"></a>
+                <a href="#hero-section" class="nav-link">
+                    <div class="text-2xl font-bold text-amber-800">Mermaid Homes</div>
+                </a>
                 <nav class="hidden md:flex items-center space-x-8 text-lg font-heading">
                     <a href="#properties" class="nav-link text-gray-600 hover:text-gray-900" data-translate-key="nav_properties">Properties</a>
                     <a href="#roi-calculator" class="nav-link text-gray-600 hover:text-gray-900" data-translate-key="nav_roi">ROI Calculator</a>
@@ -101,15 +151,18 @@
     </header>
 
     <main id="main-content">
-        <section id="hero-section" class="page-content-section hero">
-             <video autoplay loop muted playsinline id="hero-video" poster="https://placehold.co/1920x1080/?text=Loading+Video..."><source src="Video opening.mp4" type="video/mp4"></video>
+        <section id="hero-section" class="page-content-section hero active">
+             <video autoplay loop muted playsinline id="hero-video" poster="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyMCIgaGVpZ2h0PSIxMDgwIiB2aWV3Qm94PSIwIDAgMTkyMCAxMDgwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTkyMCIgaGVpZ2h0PSIxMDgwIiBmaWxsPSIjNjY3ZWVhIi8+Cjx0ZXh0IHg9Ijk2MCIgeT0iNTQwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iNDgiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+TG9hZGluZyBWaWRlby4uLjwvdGV4dD4KPHN2Zz4=">
+                <source src="Video opening.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+             </video>
              <div class="hero-overlay"></div>
              <div class="container">
                 <div class="hero-content">
                     <p class="hero-subtitle" data-translate-key="hero_agency">Real Estate Agency</p>
                     <h2 class="h1 hero-title font-heading" data-translate-key="hero_title">Find Your Dream House By Us</h2>
                     <p class="mt-4 text-lg text-gray-200" data-translate-key="hero_subtitle">Thailand best luxury homes | Sell and Rent 🏡</p>
-                    <a href="#properties" class="nav-link mt-8 bg-amber-800 hover:bg-amber-900 text-white font-bold py-3 px-8 rounded-full transition-colors" data-translate-key="browse_properties">Make An Enquiry</a>
+                    <a href="#properties" class="nav-link inline-block mt-8 bg-amber-800 hover:bg-amber-900 text-white font-bold py-3 px-8 rounded-full transition-colors" data-translate-key="browse_properties">Make An Enquiry</a>
                 </div>
             </div>
         </section>
@@ -138,19 +191,21 @@
                 <div class="max-w-xl mx-auto bg-white rounded-2xl shadow-lg p-8">
                     <div class="space-y-4">
                         <div>
-                            <label for="investment" class="block text-lg font-medium text-gray-700 mb-1" data-translate-key="roi_investment">Total Investment</label>
-                            <input id="investment" type="number" data-translate-placeholder="roi_investment_placeholder" class="w-full p-3 border border-gray-300 rounded-md text-lg"/>
+                            <label for="investment" class="block text-lg font-medium text-gray-700 mb-1" data-translate-key="roi_investment">Total Investment (THB)</label>
+                            <input id="investment" type="number" placeholder="Enter total investment amount" class="w-full p-3 border border-gray-300 rounded-md text-lg"/>
                         </div>
                         <div>
-                            <label for="income" class="block text-lg font-medium text-gray-700 mb-1" data-translate-key="roi_income">Monthly Rental Income</label>
-                            <input id="income" type="number" data-translate-placeholder="roi_income_placeholder" class="w-full p-3 border border-gray-300 rounded-md text-lg"/>
+                            <label for="income" class="block text-lg font-medium text-gray-700 mb-1" data-translate-key="roi_income">Monthly Rental Income (THB)</label>
+                            <input id="income" type="number" placeholder="Enter monthly rental income" class="w-full p-3 border border-gray-300 rounded-md text-lg"/>
                         </div>
                         <div>
-                            <label for="expenses" class="block text-lg font-medium text-gray-700 mb-1" data-translate-key="roi_expenses">Annual Expenses</label>
-                            <input id="expenses" type="number" data-translate-placeholder="roi_expenses_placeholder" class="w-full p-3 border border-gray-300 rounded-md text-lg" />
+                            <label for="expenses" class="block text-lg font-medium text-gray-700 mb-1" data-translate-key="roi_expenses">Annual Expenses (THB)</label>
+                            <input id="expenses" type="number" placeholder="Enter annual expenses" class="w-full p-3 border border-gray-300 rounded-md text-lg" />
                         </div>
-                         <p id="roi-result" class="mt-4 text-center font-bold text-gray-800 text-3xl h-10"></p>
-                         <div id="roiChartContainer" class="h-64 md:h-80"><canvas id="roiChart"></canvas></div>
+                         <div id="roi-result" class="mt-4 text-center font-bold text-gray-800 text-3xl h-10"></div>
+                         <div id="roiChartContainer" class="h-64 md:h-80 mt-6">
+                            <canvas id="roiChart"></canvas>
+                         </div>
                     </div>
                 </div>
             </div>
@@ -183,18 +238,18 @@
 
     <footer class="footer">
         <div class="footer-top">
-            <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div class="footer-brand">
-                    <a href="#" class="logo mb-4 inline-block"><img src="Textt1.png" alt="Mermaid Homes logo" class="h-16 brightness-0 invert"></a>
+                    <div class="text-2xl font-bold text-white mb-4">Mermaid Homes</div>
                     <p class="section-text" data-translate-key="footer_desc">Your gateway to finding the perfect property in Phuket.</p>
                 </div>
                 <div class="footer-link-box">
                     <p class="footer-list-title" data-translate-key="footer_quick_links">Quick Links</p>
                     <ul class="space-y-2">
-                        <li><a href="#properties" class="footer-link nav-link" data-translate-key="nav_properties">Properties</a></li>
-                        <li><a href="#roi-calculator" class="footer-link nav-link" data-translate-key="nav_roi">ROI Calculator</a></li>
-                        <li><a href="#post-property-listing" class="footer-link nav-link" data-translate-key="nav_post_property">Post Property</a></li>
-                        <li><a href="#contact" class="footer-link nav-link" data-translate-key="nav_contact">Contact</a></li>
+                        <li><a href="#properties" class="footer-link nav-link hover:text-white transition-colors" data-translate-key="nav_properties">Properties</a></li>
+                        <li><a href="#roi-calculator" class="footer-link nav-link hover:text-white transition-colors" data-translate-key="nav_roi">ROI Calculator</a></li>
+                        <li><a href="#post-property-listing" class="footer-link nav-link hover:text-white transition-colors" data-translate-key="nav_post_property">Post Property</a></li>
+                        <li><a href="#contact" class="footer-link nav-link hover:text-white transition-colors" data-translate-key="nav_contact">Contact</a></li>
                     </ul>
                 </div>
                 <div class="footer-link-box">
@@ -207,131 +262,111 @@
                 <div class="footer-link-box">
                      <p class="footer-list-title" data-translate-key="footer_social">Follow Us</p>
                      <div class="flex space-x-4">
-                        <a href="https://www.facebook.com/profile.php?id=61551898026585" target="_blank" class="text-gray-400 hover:text-white text-2xl"><i class="fab fa-facebook-f"></i></a>
-                        <a href="https://www.instagram.com/merm.homes" target="_blank" class="text-gray-400 hover:text-white text-2xl"><i class="fab fa-instagram"></i></a>
-                        <a href="https://wa.me/66654765114" target="_blank" class="text-gray-400 hover:text-white text-2xl"><i class="fab fa-whatsapp"></i></a>
+                        <a href="https://www.facebook.com/profile.php?id=61551898026585" target="_blank" class="text-gray-400 hover:text-white text-2xl transition-colors"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://www.instagram.com/merm.homes" target="_blank" class="text-gray-400 hover:text-white text-2xl transition-colors"><i class="fab fa-instagram"></i></a>
+                        <a href="https://wa.me/66654765114" target="_blank" class="text-gray-400 hover:text-white text-2xl transition-colors"><i class="fab fa-whatsapp"></i></a>
                     </div>
                 </div>
             </div>
         </div>
         <div class="footer-bottom">
-            <div class="container mx-auto text-center"><p>&copy; 2024 Mermaid Homes. All Rights Reserved.</p></div>
+            <div class="container mx-auto px-4 text-center"><p>&copy; 2024 Mermaid Homes. All Rights Reserved.</p></div>
         </div>
     </footer>
 
     <button id="add-listing-btn" class="add-listing-btn" title="Add Listing"><i class="fas fa-plus"></i></button>
     <a href="https://wa.me/66654765114" target="_blank" class="whatsapp-float" title="Contact via WhatsApp"><i class="fab fa-whatsapp"></i></a>
     
-    <div id="add-listing-modal" class="modal"></div>
-    <div id="property-detail-modal" class="modal property-detail-modal"></div>
-    <div id="delete-confirm-modal" class="modal"></div>
+    <div id="add-listing-modal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="document.getElementById('add-listing-modal').classList.remove('active')">&times;</button>
+            <h3 class="text-2xl font-bold mb-4">Add New Property</h3>
+            <form id="property-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Property Title</label>
+                    <input type="text" name="title" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Type</label>
+                    <select name="type" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">
+                        <option value="Sale">Sale</option>
+                        <option value="Rent">Rent</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Category</label>
+                    <select name="category" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">
+                        <option value="Villa">Villa</option>
+                        <option value="Condo">Condo</option>
+                        <option value="House">House</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Location</label>
+                    <input type="text" name="location" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">
+                </div>
+                <div class="grid grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Bedrooms</label>
+                        <input type="number" name="bedrooms" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Bathrooms</label>
+                        <input type="number" name="bathrooms" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Area (sqm)</label>
+                        <input type="number" name="area" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Price (THB)</label>
+                    <input type="number" name="priceTHB" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Description</label>
+                    <textarea name="description" rows="3" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Image URL</label>
+                    <input type="url" name="imageUrl" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border">
+                </div>
+                <button type="submit" class="w-full bg-amber-800 text-white py-2 px-4 rounded-md hover:bg-amber-900 transition-colors">Add Property</button>
+            </form>
+        </div>
+    </div>
+    
+    <div id="property-detail-modal" class="modal">
+        <div class="modal-content max-w-4xl">
+            <button class="modal-close" onclick="document.getElementById('property-detail-modal').classList.remove('active')">&times;</button>
+            <div id="property-detail-content"></div>
+        </div>
+    </div>
+    
+    <div id="delete-confirm-modal" class="modal">
+        <div class="modal-content max-w-md">
+            <button class="modal-close" onclick="document.getElementById('delete-confirm-modal').classList.remove('active')">&times;</button>
+            <div id="delete-confirm-content"></div>
+        </div>
+    </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const App = {
-            ADMIN_PASSWORD: 'mermaid2024',
-            elements: {},
-            currentLang: 'en',
-            roiChartInstance: null,
-            notificationTimeout: null,
-            propertiesData: [
-                { id: 'anchan-11012', title: 'Anchan Luxury Villas', type: 'Sale', category: 'Villa', location: 'Thalang', bedrooms: 3, bathrooms: 4, area: 473, priceTHB: 32837000, description: 'Experience ultimate luxury...', agentCode: 'AG-PROJ-01', images: ['https://raw.githubusercontent.com/wix-media/wix-media-entries/main/wix-media-entries/Anchan1%20(1).jpg'] },
-                { id: 'trichada-rent', title: 'Trichada Pool Villa', type: 'Rent', category: 'Villa', location: 'Bangtao Beach', bedrooms: 3, bathrooms: 2, area: 200, priceTHB: 170000, description: 'Spacious 3-bedroom pool villa...', agentCode: 'AG-RENT-02', images: ['https://raw.githubusercontent.com/wix-media/wix-media-entries/main/wix-media-entries/T0.jpg'] },
-                { id: 'luxe-villa-cherngtalay', title: 'The Luxe Villa', type: 'Sale', category: 'Villa', location: 'Cherngtalay', bedrooms: 5, bathrooms: 6, area: 500, priceTHB: 50000000, description: 'An exquisite villa offering unparalleled luxury...', agentCode: 'AG-LUXE-06', images: ['https://placehold.co/800x600/5d4037/ffffff?text=Luxe+Villa'] },
-                { id: 'botanica-grand', title: 'Botanica Grand Avenue', type: 'Sale', category: 'Villa', location: 'Cherngtalay', bedrooms: 4, bathrooms: 5, area: 520, priceTHB: 58100000, description: 'The epitome of opulence...', agentCode: 'AG-PROJ-03', images: ['https://placehold.co/800x600/a1887f/ffffff?text=Botanica+1'] },
-                { id: 'the-base-height', title: 'The Base Height Condo', type: 'Sale', category: 'Condo', location: 'Phuket Town', bedrooms: 1, bathrooms: 1, area: 34, priceTHB: 2500000, description: 'Modern condo in the heart of Phuket Town.', agentCode: 'AG-SALE-05', images: ['https://placehold.co/800x600/455a64/ffffff?text=Condo+1'] }
-            ],
-            translations: {
-                en: { nav_contact: 'Contact', contact_title: 'Get In Touch', contact_subtitle: 'We are here to help you. Contact us via phone, email, or our social media channels.', contact_phone: 'Phone', contact_whatsapp: 'WhatsApp', contact_whatsapp_text: 'Chat with us', contact_email: 'Email', footer_desc: 'Your gateway to finding the perfect property in Phuket. We specialize in luxury villas, modern condos, and unique investment opportunities.', footer_quick_links: 'Quick Links', footer_social: 'Follow Us', loading: 'Loading...', nav_properties: 'Properties', nav_roi: 'ROI Calculator', nav_post_property: 'Post Property', hero_search_placeholder: 'Enter area, building, or community', search_btn: 'Search', properties_title: 'Featured Listings', properties_subtitle: 'Properties', filter_location: 'Location', filter_all_areas: 'All Areas', filter_category: 'Category', filter_all_categories: 'All Categories', filter_type: 'Type', filter_all_types: 'All Types', filter_for_sale: 'For Sale', filter_for_rent: 'For Rent', filter_bedrooms: 'Bedrooms', filter_any: 'Any', filter_max_price: 'Max Price', post_property_title: 'Post Your Property', post_property_desc: "Ready to list your property? Click the floating '+' button...", open_listing_form_btn: 'Open Listing Form', roi_title: 'ROI Calculator', roi_investment: 'Total Investment', roi_investment_placeholder: 'e.g. 10,000,000', roi_income: 'Monthly Rental Income', roi_income_placeholder: 'e.g. 50,000', roi_expenses: 'Annual Expenses', roi_expenses_placeholder: 'e.g. 60,000', modal_add_listing_title: 'Post a Property', form_title: 'Title', form_title_placeholder: 'e.g., Luxury Sea View Villa', form_description: 'Description', form_description_placeholder: 'e.g., A beautiful villa with a stunning ocean view...', form_price: 'Price (THB)', form_price_placeholder: '25000000', form_agent_code: 'Agent Code', form_agent_code_placeholder: 'e.g., AG-12345', form_images: 'Images (Max 15)', cancel_btn: 'Cancel', submit_btn: 'Submit Listing', delete_confirm_title: 'Confirm Deletion', delete_confirm_text: 'Are you sure you want to delete this property? Enter password to confirm.', password_label: 'Password', confirm_delete_btn: 'Confirm Delete', beds: "Beds", baths: "Baths", roi_label: 'ROI', net_profit_label: 'Net Profit', expenses_label: 'Expenses', no_properties_found: 'No properties match your criteria.', month_short: 'mo', hero_agency: 'Real Estate Agency', hero_title: 'Find Your Dream House By Us', browse_properties: 'Make An Enquiry' },
-                th: { nav_contact: 'ติดต่อเรา', contact_title: 'ติดต่อเรา', contact_subtitle: 'เราพร้อมที่จะช่วยเหลือคุณ ติดต่อเราผ่านทางโทรศัพท์ อีเมล หรือช่องทางโซเชียลมีเดียของเรา', contact_phone: 'โทรศัพท์', contact_whatsapp: 'WhatsApp', contact_whatsapp_text: 'แชทกับเรา', contact_email: 'อีเมล', footer_desc: 'ประตูสู่การค้นหาอสังหาริมทรัพย์ที่สมบูรณ์แบบในภูเก็ต เราเชี่ยวชาญด้านวิลล่าสุดหรู คอนโดทันสมัย และโอกาสในการลงทุนที่ไม่เหมือนใคร', footer_quick_links: 'ลิงก์ด่วน', footer_social: 'ติดตามเรา', loading: 'กำลังโหลด...', nav_properties: 'รายการอสังหาฯ', nav_roi: 'คำนวณ ROI', nav_post_property: 'ลงประกาศ', hero_search_placeholder: 'ค้นหาจากพื้นที่...', search_btn: 'ค้นหา', properties_title: 'รายการเด่น', properties_subtitle: 'อสังหาริมทรัพย์', filter_location: 'ทำเล', filter_all_areas: 'ทุกพื้นที่', filter_category: 'หมวดหมู่', filter_all_categories: 'ทุกหมวดหมู่', filter_type: 'ประเภท', filter_all_types: 'ทุกประเภท', filter_for_sale: 'สำหรับขาย', filter_for_rent: 'สำหรับเช่า', filter_bedrooms: 'ห้องนอน', filter_any: 'ทั้งหมด', filter_max_price: 'ราคาสูงสุด', post_property_title: 'ลงประกาศของคุณ', post_property_desc: "พร้อมลงประกาศทรัพย์สินของคุณ? คลิกปุ่ม '+' เพื่อเปิดฟอร์ม", open_listing_form_btn: 'เปิดฟอร์มลงประกาศ', roi_title: 'คำนวณผลตอบแทน (ROI)', roi_investment: 'เงินลงทุนทั้งหมด', roi_investment_placeholder: 'เช่น 10,000,000', roi_income: 'รายได้ค่าเช่าต่อเดือน', roi_income_placeholder: 'เช่น 50,000', roi_expenses: 'ค่าใช้จ่ายต่อปี', roi_expenses_placeholder: 'เช่น 60,000', modal_add_listing_title: 'ลงประกาศอสังหาริมทรัพย์', form_title: 'ชื่อประกาศ', form_title_placeholder: 'เช่น วิลล่าสุดหรูวิวทะเล', form_description: 'รายละเอียด', form_description_placeholder: 'เช่น วิลล่าที่สวยงามพร้อมวิวทะเล...', form_price: 'ราคา (บาท)', form_price_placeholder: '25000000', form_agent_code: 'รหัสตัวแทน', form_agent_code_placeholder: 'เช่น AG-12345', form_images: 'รูปภาพ (สูงสุด 15 รูป)', cancel_btn: 'ยกเลิก', submit_btn: 'ลงประกาศ', delete_confirm_title: 'ยืนยันการลบ', delete_confirm_text: 'คุณแน่ใจหรือไม่ว่าต้องการลบรายการนี้? กรุณาใส่รหัสผ่านเพื่อยืนยัน', password_label: 'รหัสผ่าน', confirm_delete_btn: 'ยืนยันการลบ', beds: "ห้องนอน", baths: "ห้องน้ำ", roi_label: 'ผลตอบแทน', net_profit_label: 'กำไรสุทธิ', expenses_label: 'ค่าใช้จ่าย', no_properties_found: 'ไม่พบรายการที่ตรงกับเงื่อนไข', month_short: 'ด', hero_agency: 'ตัวแทนอสังหาริมทรัพย์', hero_title: 'ค้นหาบ้านในฝันของคุณกับเรา', browse_properties: 'สอบถามข้อมูล' }
-            },
-            
-            init() {
-                this.cacheDOMElements();
-                this.bindEvents();
-                this.setLanguage('en');
-                this.showPage(window.location.hash.substring(1) || 'hero-section');
-                this.filterAndRenderProperties();
-                this.calculateROI();
-                this.initScrollAnimations();
-            },
-
-            cacheDOMElements() {
-                const ids = ['loading-overlay', 'notification', 'mobile-menu-button', 'mobile-menu', 'lang-switcher', 'properties-grid', 'add-listing-btn', 'open-listing-form-from-page', 'add-listing-modal', 'property-detail-modal', 'delete-confirm-modal', 'investment', 'income', 'expenses', 'roi-result', 'roiChart'];
-                ids.forEach(id => {
-                    const camelCaseId = id.replace(/-(\w)/g, (_, letter) => letter.toUpperCase());
-                    this.elements[camelCaseId] = document.getElementById(id);
-                });
-                this.elements.allPageSections = document.querySelectorAll('.page-content-section');
-                this.elements.navLinks = document.querySelectorAll('.nav-link');
-            },
-
-            bindEvents() {
-                if(this.elements.loadingOverlay) window.addEventListener('load', () => this.elements.loadingOverlay.classList.add('hidden'));
-                
-                if(this.elements.mobileMenuButton) {
-                    this.elements.mobileMenuButton.addEventListener('click', () => {
-                        if(this.elements.mobileMenu) this.elements.mobileMenu.classList.toggle('hidden');
-                    });
-                }
-                
-                if(this.elements.navLinks) {
-                    this.elements.navLinks.forEach(link => {
-                        link.addEventListener('click', (e) => {
-                            e.preventDefault();
-                            this.showPage(link.getAttribute('href').substring(1));
-                        });
-                    });
-                }
-
-                window.addEventListener('popstate', (e) => this.showPage(e.state?.page || 'hero-section'));
-
-                if(this.elements.langSwitcher) {
-                    this.elements.langSwitcher.addEventListener('click', (e) => {
-                        if(e.target.matches('.lang-btn')) this.setLanguage(e.target.dataset.lang);
-                    });
-                }
-                
-                const roiInputs = [this.elements.investment, this.elements.income, this.elements.expenses];
-                 if (roiInputs.every(el => el)) {
-                    roiInputs.forEach(input => {
-                        input.addEventListener('input', () => this.calculateROI());
-                    });
-                }
-                
-                if(this.elements.addListingBtn) this.elements.addListingBtn.addEventListener('click', () => this.showModal(this.elements.addListingModal));
-                if(this.elements.openListingFormFromPage) this.elements.openListingFormFromPage.addEventListener('click', () => this.showModal(this.elements.addListingModal));
-
-                if(this.elements.addListingModal) {
-                    this.elements.addListingModal.addEventListener('click', (e) => {
-                        const cancelButton = this.elements.addListingModal.querySelector('#cancel-listing-btn');
-                        if ((cancelButton && e.target === cancelButton) || e.target === this.elements.addListingModal) {
-                            this.hideModal(this.elements.addListingModal);
-                        }
-                    });
-                    const form = this.elements.addListingModal.querySelector('#submit-property-form');
-                    if (form) form.addEventListener('submit', (e) => this.handlePropertySubmit(e));
-                }
-            },
-            
-            setLanguage(lang) { /* ... */ },
-            showNotification(message, type = 'success') { /* ... */ },
-            showPage(pageId) { /* ... */ },
-            renderPropertyCards(properties) { /* ... */ },
-            showPropertyDetail(propId) { /* ... */ },
-            showDeleteConfirmation(propId, propTitle) { /* ... */ },
-            async handlePropertySubmit(event) { /* ... */ },
-            calculateROI() { /* ... */ },
-            filterAndRenderProperties() { /* ... */ },
-            handleHeroSearch(e) { /* ... */ },
-            showModal(modalEl) { if(modalEl) modalEl.classList.add('active'); },
-            hideModal(modalEl) { if(modalEl) modalEl.classList.remove('active'); },
-            initScrollAnimations() { /* ... */ }
-        };
-
-        App.init();
-    });
-</script>
-
-</body>
-</html>
+document.addEventListener('DOMContentLoaded', function() {
+    const App = {
+        ADMIN_PASSWORD: 'mermaid2024',
+        elements: {},
+        currentLang: 'en',
+        roiChartInstance: null,
+        notificationTimeout: null,
+        propertiesData: [
+            { 
+                id: 'anchan-11012', 
+                title: 'Anchan Luxury Villas', 
+                type: 'Sale', 
+                category: 'Villa', 
+                location: 'Thalang', 
+                bedrooms: 3, 
+                bathrooms: 4, 
+                area: 473, 
+                priceTHB: 32837000, 
+                description: 'Experience ultimate luxury in this stunning villa
