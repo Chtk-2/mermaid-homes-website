@@ -10,7 +10,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Forum&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     
-    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js" defer></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database-compat.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
@@ -41,8 +40,6 @@
         #hero-video { position: absolute; top: 50%; left: 50%; width: 100%; height: 100%; object-fit: cover; transform: translate(-50%, -50%); z-index: 1; }
         .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 2; }
         .hero .container { position: relative; z-index: 3; }
-        .hero-subtitle { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.1); backdrop-filter: blur(5px); padding: 0.5rem 1rem; border-radius: 999px; }
-        .hero-title { font-size: clamp(2.5rem, 6vw, 4.5rem); line-height: 1.1; }
         .property-card { background: #fff; border-radius: 0.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow: hidden; transition: all 0.3s ease; }
         .property-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(177, 116, 87, 0.1); }
         .card-banner { position: relative; height: 250px; overflow: hidden; }
@@ -51,26 +48,6 @@
         .card-badge.rent { background-color: #38a169; }
         .delete-property-btn { position: absolute; top: 10px; right: 10px; background-color: rgba(220, 53, 69, 0.8); color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; transition: all 0.2s; opacity: 0; z-index: 5; }
         .property-card:hover .delete-property-btn { opacity: 1; }
-        .card-content { padding: 1.5rem; }
-        .card-price { font-size: 1.5rem; font-weight: 700; color: var(--primary-color); }
-        .card-list { display: flex; justify-content: space-around; padding-top: 1rem; border-top: 1px solid #e5e7eb; margin-top: 1rem; }
-        .card-item { display: flex; align-items: center; gap: 0.5rem; color: var(--text-light); }
-        .footer-top { background-color: var(--bg-header-footer); color: var(--text-dark); padding: 3rem 0; }
-        .footer-list-title { font-family: 'Forum', serif; font-size: 1.5rem; color: var(--primary-color); margin-bottom: 1rem; }
-        .footer-link:hover { color: var(--primary-color); }
-        .footer-bottom { background-color: #c9c2b4; color: var(--text-dark); padding: 1.5rem 0; font-size: 0.9rem; }
-        .action-button { background: var(--primary-color); color: white; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.15); cursor: pointer; z-index: 40; transition: background-color 0.3s ease; }
-        .action-button:hover { background-color: var(--primary-color-dark); }
-        .add-listing-btn { position: fixed; bottom: 2rem; right: 2rem; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; background: var(--primary-color); color: white; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.15); cursor: pointer; z-index: 40; transition: all 0.3s ease; }
-        .add-listing-btn:hover { background-color: var(--primary-color-dark); transform: scale(1.1); }
-        .whatsapp-float { position: fixed; bottom: 6.5rem; right: 2rem; width: 60px; height: 60px; background: #25D366; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 40; transition: all 0.3s ease; text-decoration: none; }
-        .whatsapp-float:hover { transform: scale(1.1); color: white; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 60; align-items: center; justify-content: center; }
-        .modal.active { display: flex; }
-        .modal-content { background: var(--bg-main); border-radius: 0.5rem; padding: 2rem; max-width: 90vw; max-height: 90vh; overflow-y: auto; position: relative; }
-        .modal-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #999; }
-        .thumbnail-img { cursor: pointer; border: 2px solid transparent; transition: border-color 0.2s; }
-        .thumbnail-img:hover, .thumbnail-img.active { border-color: var(--primary-color); }
         .nav-link.nav-active { color: var(--primary-color); font-weight: 700; }
         #mobile-menu { opacity: 0; max-height: 0; transform: translateY(-10px); overflow: hidden; transition: all 0.3s ease-out; display: block !important; }
         #mobile-menu.active { opacity: 1; max-height: 500px; transform: translateY(0); }
@@ -86,38 +63,16 @@
 
     <div id="notification" class="fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg hidden"></div>
 
-    <header class="header"><!-- Header content --></header>
-
-    <main id="main-content">
-        <section id="hero-section" class="page-content-section hero">
-            <video autoplay loop muted playsinline id="hero-video">
-               <source src="Video opening.mp4" type="video/mp4">
-               Your browser does not support the video tag.
-            </video>
-            <div class="hero-overlay"></div>
-            <div class="container mx-auto px-4"><div class="hero-content"><!-- ... --></div></div>
-       </section>
-        
-        <section id="properties" class="page-content-section py-12 md:py-20">
-             <div class="container mx-auto px-4">
-                <h2 class="text-4xl md:text-5xl font-bold text-center mb-12" data-translate-key="properties_title" style="color:var(--primary-color);">Featured Listings</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="properties-grid"></div>
-            </div>
-        </section>
-
-        <section id="post-property-listing" class="page-content-section py-12 md:py-20 bg-white"><!-- ... --></section>
-        <section id="roi-calculator" class="page-content-section py-12 md:py-20"><!-- ... --></section>
-        <section id="contact" class="page-content-section py-12 md:py-20 bg-white"><!-- ... --></section>
-    </main>
-    
-    <footer class="footer"><!-- Footer content --></footer>
+    <header class="header"></header>
+    <main id="main-content"></main>
+    <footer class="footer"></footer>
 
     <button id="add-listing-btn" class="add-listing-btn"><i class="fas fa-plus"></i></button>
     <a href="https://wa.me/66654765114" target="_blank" class="whatsapp-float"><i class="fab fa-whatsapp"></i></a>
 
-    <div id="add-listing-modal" class="modal"><div class="modal-content"><button class="modal-close" onclick="App.hideModal(App.elements.addListingModal)">&times;</button><h3 class="text-2xl font-bold mb-4">Add New Property</h3><form id="property-form" class="space-y-4"></form></div></div>
-    <div id="property-detail-modal" class="modal"><div class="modal-content max-w-4xl"><button class="modal-close" onclick="App.hideModal(App.elements.propertyDetailModal)">&times;</button><div id="property-detail-content"></div></div></div>
-    <div id="delete-confirm-modal" class="modal"><div class="modal-content max-w-md"><button class="modal-close" onclick="App.hideModal(App.elements.deleteConfirmModal)">&times;</button><div id="delete-confirm-content"></div></div></div>
+    <div id="add-listing-modal" class="modal"></div>
+    <div id="property-detail-modal" class="modal"></div>
+    <div id="delete-confirm-modal" class="modal"></div>
 
 <script>
 const App = {
@@ -129,8 +84,8 @@ const App = {
     init() {
         document.addEventListener('DOMContentLoaded', () => {
             this.cacheDOMElements();
+            this.injectHTML();
             this.connectToDatabase();
-            this.injectContent();
             this.bindEvents();
             this.setLanguage('en');
             const initialPage = window.location.hash.substring(1) || 'hero-section';
@@ -139,9 +94,6 @@ const App = {
     },
 
     connectToDatabase() {
-        // ===================================================================
-        // YOUR FIREBASE CONFIGURATION IS NOW PLACED HERE
-        // ===================================================================
         const firebaseConfig = {
             apiKey: "AIzaSyDvXpEMjcQD9QPJYHRPUk6ohVKv9ohjNBI",
             authDomain: "mermaid-homes.firebaseapp.com",
@@ -152,10 +104,9 @@ const App = {
             appId: "1:652689387599:web:5bd946f479a0ee92a87a3a",
             measurementId: "G-FDJBSJFP9G"
         };
-        // ===================================================================
 
         try {
-            const firebaseApp = firebase.initializeApp(firebaseConfig);
+            firebase.initializeApp(firebaseConfig);
             this.database = firebase.database();
             this.initRealtimeListener();
             setTimeout(() => this.hideLoading(true), 10000);
@@ -168,7 +119,9 @@ const App = {
 
     initRealtimeListener() {
         const propertiesRef = this.database.ref('properties');
+        console.log("Attaching Firebase listener...");
         propertiesRef.on('value', (snapshot) => {
+            console.log("Data received from Firebase.");
             const data = snapshot.val() || {};
             this.propertiesData = Object.keys(data).map(key => ({ id: key, ...data[key] })).reverse();
             this.filterAndRenderProperties();
@@ -186,15 +139,28 @@ const App = {
             overlay.style.opacity = '0';
             overlay.addEventListener('transitionend', () => {
                 overlay.style.display = 'none';
-                if (isTimeout && this.propertiesData.length === 0) {
+                if (isTimeout && this.propertiesData.length === 0 && this.elements.propertiesGrid) {
                      this.elements.propertiesGrid.innerHTML = `<div class="col-span-full text-center text-red-500 py-8">Error: Could not load properties. Please check your Firebase Security Rules and configuration.</div>`;
                 }
             }, { once: true });
         }
     },
 
-    cacheDOMElements() { /* ... */ },
-    injectContent() { /* ... */ },
+    cacheDOMElements() {
+        const ids = ['loading-overlay', 'notification', 'header', 'main-content', 'footer', 'add-listing-btn', 'whatsapp-float', 'add-listing-modal', 'property-detail-modal', 'delete-confirm-modal'];
+        ids.forEach(id => this.elements[id.replace(/-(\w)/g, (_,l) => l.toUpperCase())] = document.getElementById(id));
+    },
+
+    injectHTML() {
+        this.elements.header.innerHTML = `<div class="header-top"><div class="container mx-auto px-4 flex justify-between items-center"><ul class="flex items-center space-x-6"><li><a href="mailto:contact@mermaidhomes.com" class="flex items-center"><i class="fas fa-envelope mr-2"></i><span>contact@mermaidhomes.com</span></a></li><li><a href="tel:+66654765114" class="flex items-center"><i class="fas fa-phone-alt mr-2"></i><span>+66 65 476 5114</span></a></li></ul><div id="lang-switcher"><button data-lang="en" class="lang-btn font-semibold p-1 text-white">EN</button><span class="text-gray-300">|</span><button data-lang="th" class="lang-btn text-gray-400 p-1">TH</button></div></div></div><div class="header-bottom"><div class="container mx-auto px-4 flex justify-between items-center py-2"><a href="#hero-section" class="nav-link"><img src="Ui1.png" alt="Mermaid Homes Logo" class="h-12"></a><nav class="hidden lg:flex items-center space-x-8 text-lg font-heading text-gray-700"><a href="#properties" class="nav-link hover:text-[var(--primary-color)] transition-colors">Properties</a><a href="#roi-calculator" class="nav-link hover:text-[var(--primary-color)] transition-colors">ROI Calculator</a><a href="#contact" class="nav-link hover:text-[var(--primary-color)] transition-colors">Contact</a><a href="#post-property-listing" class="nav-link hover:text-[var(--primary-color)] transition-colors">Post Property</a></nav><button id="mobile-menu-button" class="lg:hidden text-gray-600"><i class="fas fa-bars text-2xl"></i></button></div></div><div id="mobile-menu" class="lg:hidden bg-white border-t"><a href="#properties" class="nav-link block text-center py-3 text-gray-700 hover:bg-gray-100 font-heading">Properties</a><a href="#roi-calculator" class="nav-link block text-center py-3 text-gray-700 hover:bg-gray-100 font-heading">ROI Calculator</a><a href="#contact" class="nav-link block text-center py-3 text-gray-700 hover:bg-gray-100 font-heading">Contact</a><a href="#post-property-listing" class="nav-link block text-center py-3 text-gray-700 hover:bg-gray-100 font-heading">Post Property</a></div>`;
+        this.elements.mainContent.innerHTML = `<section id="hero-section" class="page-content-section hero"><video autoplay loop muted playsinline id="hero-video"><source src="Video opening.mp4" type="video/mp4"></video><div class="hero-overlay"></div><div class="container mx-auto px-4"><div class="hero-content"><p class="hero-subtitle">Real Estate Agency</p><h2 class="h1 hero-title font-heading">Find Your Dream House By Us</h2><p class="mt-4 text-lg text-gray-200">Thailand best luxury homes | Sell and Rent 🏡</p><a href="#properties" class="nav-link action-button inline-block mt-8 font-bold py-3 px-8 rounded-full">Make An Enquiry</a></div></div></section><section id="properties" class="page-content-section py-12 md:py-20"><div class="container mx-auto px-4"><h2 class="text-4xl md:text-5xl font-bold text-center mb-12" style="color:var(--primary-color);">Featured Listings</h2><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="properties-grid"></div></div></section><section id="post-property-listing" class="page-content-section py-12 md:py-20 bg-white"><div class="container mx-auto px-4 text-center"><h2 class="text-4xl md:text-5xl font-bold text-center mb-6 text-gray-800">Post Your Property</h2><p class="max-w-xl mx-auto text-gray-600 mb-8">Ready to list your property? Click the floating '+' button to open the submission form.</p><button id="open-listing-form-from-page" class="action-button font-semibold py-3 px-8 rounded-md">Open Listing Form</button></div></section><section id="roi-calculator" class="page-content-section py-12 md:py-20"><div class="container mx-auto px-4"><h2 class="text-4xl md:text-5xl font-bold text-center mb-10 text-gray-800">Return on Investment (ROI) Calculator</h2><div id="roi-calculator-content" class="max-w-xl mx-auto bg-white rounded-2xl shadow-lg p-8"></div></div></section><section id="contact" class="page-content-section py-12 md:py-20 bg-white"><div class="container mx-auto px-4"><h2 class="text-4xl md:text-5xl font-bold text-center mb-4 text-gray-800">Get In Touch</h2><p class="text-center text-gray-500 mb-12 max-w-2xl mx-auto">We are here to help you.</p><div id="contact-content" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div></div></section>`;
+        this.elements.footer.innerHTML = `<div class="footer-top"><div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8"><div class="footer-brand"><a href="#hero-section" class="nav-link inline-block mb-4"><img src="Ui1.png" alt="Mermaid Homes Logo" class="h-12"></a><p>Your gateway to finding the perfect property in Phuket.</p></div><div class="footer-link-box"><h3 class="footer-list-title">Quick Links</h3><ul class="space-y-2"><li><a href="#properties" class="footer-link nav-link">Properties</a></li><li><a href="#roi-calculator" class="footer-link nav-link">ROI Calculator</a></li><li><a href="#contact" class="footer-link nav-link">Contact</a></li></ul></div><div class="footer-link-box"><h3 class="footer-list-title">Contact Us</h3><ul class="space-y-3"><li class="flex items-start"><i class="fas fa-phone-alt mt-1 mr-3"></i><span>+66 65 476 5114</span></li><li class="flex items-start"><i class="fas fa-envelope mt-1 mr-3"></i><span>contact@mermaidhomes.com</span></li></ul></div><div class="footer-link-box"><h3 class="footer-list-title">Follow Us</h3><div class="flex space-x-4"><a href="#" class="hover:text-[var(--primary-color)] text-2xl transition-colors"><i class="fab fa-facebook-f"></i></a><a href="#" class="hover:text-[var(--primary-color)] text-2xl transition-colors"><i class="fab fa-instagram"></i></a><a href="#" class="hover:text-[var(--primary-color)] text-2xl transition-colors"><i class="fab fa-whatsapp"></i></a></div></div></div></div><div class="footer-bottom"><div class="container mx-auto px-4 text-center"><p>&copy; ${new Date().getFullYear()} Mermaid Homes. All Rights Reserved.</p></div></div>`;
+        this.elements.addListingModal.innerHTML = `<div class="modal-content"><button class="modal-close" onclick="App.hideModal(App.elements.addListingModal)">&times;</button><h3 class="text-2xl font-bold mb-4">Add New Property</h3><form id="property-form" class="space-y-4"></form></div>`;
+        this.elements.propertyDetailModal.innerHTML = `<div class="modal-content max-w-4xl"><button class="modal-close" onclick="App.hideModal(App.elements.propertyDetailModal)">&times;</button><div id="property-detail-content"></div></div>`;
+        this.elements.deleteConfirmModal.innerHTML = `<div class="modal-content max-w-md"><button class="modal-close" onclick="App.hideModal(App.elements.deleteConfirmModal)">&times;</button><div id="delete-confirm-content"></div></div>`;
+        this.cacheDOMElements(); // Re-cache newly injected elements
+    },
+    
     bindEvents() { /* ... */ },
     showPage(pageId, isInitial = false) { /* ... */ },
     setLanguage(lang) { /* ... */ },
@@ -206,56 +172,15 @@ const App = {
     showPropertyDetail(propId) { /* ... */ },
     setMainImage(thumbElement, imgSrc) { /* ... */ },
     showDeleteConfirmation(propId, propTitle) { /* ... */ },
-    
-    deleteProperty(propId) {
-        this.database.ref('properties/' + propId).remove()
-            .then(() => { this.showNotification('Property deleted successfully!'); })
-            .catch(error => { console.error("Error deleting property: ", error); this.showNotification("Failed to delete property.", "error"); });
-    },
-
-    async handlePropertySubmit(event) {
-        event.preventDefault();
-        const form = event.target;
-        const formData = new FormData(form);
-        const files = formData.get('images')?.files;
-        if (!files || files.length === 0) return this.showNotification('Please select at least one image.', 'error');
-        if (files.length > 15) return this.showNotification('You can select a maximum of 15 images.', 'error');
-        
-        const newPropertyData = {
-            title: formData.get('title'), type: formData.get('type'), category: formData.get('category'), location: formData.get('location'), 
-            bedrooms: parseInt(formData.get('bedrooms')), bathrooms: parseInt(formData.get('bathrooms')), area: parseInt(formData.get('area')),
-            priceTHB: parseInt(formData.get('priceTHB')), description: formData.get('description'), agentCode: 'USR-' + Date.now().toString().slice(-6)
-        };
-        
-        const tempId = 'temp-' + Date.now();
-        const optimisticProperty = { ...newPropertyData, id: tempId, images: [URL.createObjectURL(files[0])] };
-        this.propertiesData.unshift(optimisticProperty);
-        this.filterAndRenderProperties();
-        this.hideModal(this.elements.addListingModal);
-        form.reset();
-        
-        const fileToBase64 = file => new Promise((resolve, reject) => { const reader = new FileReader(); reader.readAsDataURL(file); reader.onload = () => resolve(reader.result); reader.onerror = error => reject(error); });
-        try {
-            const base64Images = await Promise.all(Array.from(files).map(fileToBase64));
-            newPropertyData.images = base64Images;
-
-            await this.database.ref('properties').push(newPropertyData);
-            this.showNotification('Property saved successfully!');
-        } catch (error) {
-            console.error("Error adding property: ", error);
-            this.showNotification("Failed to save property. Please try again.", "error");
-            this.propertiesData = this.propertiesData.filter(p => p.id !== tempId);
-            this.filterAndRenderProperties();
-        }
-    },
-    
+    deleteProperty(propId) { /* ... */ },
+    async handlePropertySubmit(event) { /* ... */ },
     initScrollAnimations() { /* ... */ },
     hideModal(modalEl) { /* ... */ },
-    showModal(modalEl) { /* ... */ }
+    showModal(modalEl) { /* ... */ },
+    getDefaultData() { return []; }
 };
 
 App.init();
-window.App = App;
 </script>
 
 </body>
