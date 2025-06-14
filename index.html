@@ -166,7 +166,7 @@
         <section id="roi-calculator" class="page-content-section py-12 md:py-20">
              <div class="container mx-auto px-4">
                 <h2 class="text-4xl md:text-5xl font-bold text-center mb-10 text-gray-800" data-translate-key="roi_title">Return on Investment (ROI) Calculator</h2>
-                <div class="max-w-xl mx-auto bg-white rounded-2xl shadow-lg p-8">
+                <div id="roi-calculator-content" class="max-w-xl mx-auto bg-white rounded-2xl shadow-lg p-8">
                     </div>
             </div>
         </section>
@@ -175,7 +175,9 @@
             <div class="container mx-auto px-4">
                 <h2 class="text-4xl md:text-5xl font-bold text-center mb-4 text-gray-800" data-translate-key="contact_title">Get In Touch</h2>
                 <p class="text-center text-gray-500 mb-12 max-w-2xl mx-auto" data-translate-key="contact_subtitle">We are here to help you. Contact us via phone, email, or our social media channels.</p>
-                </div>
+                <div id="contact-content" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    </div>
+            </div>
         </section>
     </main>
     
@@ -243,31 +245,16 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const App = {
-        PROPERTIES_KEY: 'mermaid_homes_properties_v2', // NEW: Key for localStorage
+        PROPERTIES_KEY: 'mermaid_homes_properties_v2',
         imageBasePath: 'https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/images/',
         elements: {},
         currentLang: 'en',
         propertiesData: [],
 
-        // NEW: Load properties from localStorage or set default
-        loadProperties() {
-            const savedData = localStorage.getItem(this.PROPERTIES_KEY);
-            if (savedData) {
-                this.propertiesData = JSON.parse(savedData);
-            } else {
-                this.propertiesData = this.getDefaultData();
-                this.saveProperties();
-            }
-        },
-
-        // NEW: Save properties to localStorage
-        saveProperties() {
-            localStorage.setItem(this.PROPERTIES_KEY, JSON.stringify(this.propertiesData));
-        },
-        
         init() {
             this.loadProperties();
             this.cacheDOMElements();
+            this.injectContent();
             this.bindEvents();
             this.setLanguage('en');
             this.showLoadingWithDelay();
@@ -275,15 +262,95 @@ document.addEventListener('DOMContentLoaded', function() {
             this.filterAndRenderProperties();
             this.initScrollAnimations();
         },
-        
-        // ... (cacheDOMElements, setLanguage, showPage, etc)
 
-        bindEvents() {
-            // ... (mobile menu, nav links, modals) ...
-            const propertyForm = document.getElementById('property-form');
-            if (propertyForm) propertyForm.addEventListener('submit', (e) => this.handlePropertySubmit(e));
+        // FIXED: ลดเวลาหน่วงจาก 2000ms เหลือ 300ms เพื่อให้หน้าโหลดหายไปเร็วขึ้น
+        showLoadingWithDelay() {
+            setTimeout(() => {
+                const overlay = this.elements.loadingOverlay;
+                if (overlay) {
+                    overlay.style.opacity = '0';
+                    setTimeout(() => overlay.style.display = 'none', 500);
+                }
+            }, 300);
+        },
+        
+        loadProperties() {
+            const savedData = localStorage.getItem(this.PROPERTIES_KEY);
+            if (savedData && savedData !== '[]') {
+                this.propertiesData = JSON.parse(savedData);
+            } else {
+                this.propertiesData = this.getDefaultData();
+                this.saveProperties();
+            }
         },
 
+        saveProperties() {
+            localStorage.setItem(this.PROPERTIES_KEY, JSON.stringify(this.propertiesData));
+        },
+        
+        cacheDOMElements() {
+            const ids = ['loading-overlay', 'notification', 'mobile-menu-button', 'mobile-menu', 'lang-switcher', 'properties-grid', 'add-listing-btn', 'open-listing-form-from-page', 'add-listing-modal', 'property-detail-modal', 'delete-confirm-modal', 'roi-calculator-content', 'contact-content', 'property-form'];
+            ids.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) this.elements[id.replace(/-(\w)/g, (_, l) => l.toUpperCase())] = el;
+            });
+            this.elements.allPageSections = document.querySelectorAll('.page-content-section');
+            this.elements.navLinks = document.querySelectorAll('.nav-link');
+        },
+
+        injectContent() {
+            // This function injects repeatable HTML to keep the body clean
+            if (this.elements.roiCalculatorContent) {
+                 this.elements.roiCalculatorContent.innerHTML = `
+                    <div class="space-y-4">
+                        <div><label for="investment" class="block text-lg font-medium text-gray-700 mb-1" data-translate-key="roi_investment">Total Investment (THB)</label><input id="investment" type="number" placeholder="Enter total investment" class="w-full p-3 border border-gray-300 rounded-md text-lg"/></div>
+                        <div><label for="income" class="block text-lg font-medium text-gray-700 mb-1" data-translate-key="roi_income">Monthly Rental Income (THB)</label><input id="income" type="number" placeholder="Enter monthly rental income" class="w-full p-3 border border-gray-300 rounded-md text-lg"/></div>
+                        <div><label for="expenses" class="block text-lg font-medium text-gray-700 mb-1" data-translate-key="roi_expenses">Annual Expenses (THB)</label><input id="expenses" type="number" placeholder="Enter annual expenses" class="w-full p-3 border border-gray-300 rounded-md text-lg" /></div>
+                        <div id="roi-result" class="mt-4 text-center font-bold text-gray-800 text-3xl h-10"></div>
+                        <div id="roiChartContainer" class="h-64 md:h-80 mt-6"><canvas id="roiChart"></canvas></div>
+                    </div>`;
+            }
+            if (this.elements.contactContent) {
+                this.elements.contactContent.innerHTML = `
+                    <a href="tel:+66654765114" class="bg-white p-8 rounded-lg shadow-sm text-center transition-transform hover:-translate-y-2"><div class="text-5xl text-[var(--primary-color)] mb-4"><i class="fas fa-phone-alt"></i></div><h3 class="text-2xl font-semibold text-gray-800" data-translate-key="contact_phone">Phone</h3><p class="text-gray-500 mt-2 text-lg">+66 65 476 5114</p></a>
+                    <a href="https://wa.me/66654765114" target="_blank" class="bg-white p-8 rounded-lg shadow-sm text-center transition-transform hover:-translate-y-2"><div class="text-5xl text-green-500 mb-4"><i class="fab fa-whatsapp"></i></div><h3 class="text-2xl font-semibold text-gray-800" data-translate-key="contact_whatsapp">WhatsApp</h3><p class="text-gray-500 mt-2 text-lg" data-translate-key="contact_whatsapp_text">Chat with us</p></a>
+                    <a href="mailto:contact@mermaidhomes.com" class="bg-white p-8 rounded-lg shadow-sm text-center transition-transform hover:-translate-y-2"><div class="text-5xl text-blue-500 mb-4"><i class="fas fa-envelope"></i></div><h3 class="text-2xl font-semibold text-gray-800" data-translate-key="contact_email">Email</h3><p class="text-gray-500 mt-2 text-lg">contact@mermaidhomes.com</p></a>`;
+            }
+            if (this.elements.propertyForm) {
+                this.elements.propertyForm.innerHTML = `
+                    <div><label class="block text-sm font-medium text-gray-700">Property Title</label><input type="text" name="title" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div>
+                    <div><label class="block text-sm font-medium text-gray-700">Type</label><select name="type" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"><option value="Sale">Sale</option><option value="Rent">Rent</option></select></div>
+                    <div><label class="block text-sm font-medium text-gray-700">Category</label><select name="category" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"><option value="Villa">Villa</option><option value="Condo">Condo</option><option value="House">House</option></select></div>
+                    <div><label class="block text-sm font-medium text-gray-700">Location</label><input type="text" name="location" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div><label class="block text-sm font-medium text-gray-700">Bedrooms</label><input type="number" name="bedrooms" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div>
+                        <div><label class="block text-sm font-medium text-gray-700">Bathrooms</label><input type="number" name="bathrooms" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div>
+                        <div><label class="block text-sm font-medium text-gray-700">Area (sqm)</label><input type="number" name="area" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div>
+                    </div>
+                    <div><label class="block text-sm font-medium text-gray-700">Price (THB)</label><input type="number" name="priceTHB" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div>
+                    <div><label class="block text-sm font-medium text-gray-700">Description</label><textarea name="description" rows="3" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></textarea></div>
+                    <div><label class="block text-sm font-medium text-gray-700">Property Images (Max 15)</label><input type="file" name="images" multiple accept="image/*" required class="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-rose-50 file:text-[var(--primary-color)] hover:file:bg-rose-100"/></div>
+                    <button type="submit" class="w-full action-button py-2 px-4 rounded-md">Add Property</button>`;
+            }
+        },
+
+        bindEvents() {
+            if (this.elements.mobileMenuButton) this.elements.mobileMenuButton.addEventListener('click', () => this.elements.mobileMenu.classList.toggle('hidden'));
+            this.elements.navLinks.forEach(link => link.addEventListener('click', e => {
+                e.preventDefault();
+                const target = link.getAttribute('href');
+                if (target?.startsWith('#')) {
+                    this.showPage(target.substring(1));
+                    if (this.elements.mobileMenu) this.elements.mobileMenu.classList.add('hidden');
+                }
+            }));
+            if (this.elements.langSwitcher) this.elements.langSwitcher.addEventListener('click', e => e.target.matches('.lang-btn') && this.setLanguage(e.target.dataset.lang));
+            if (this.elements.addListingBtn) this.elements.addListingBtn.addEventListener('click', () => this.showModal(this.elements.addListingModal));
+            if (this.elements.openListingFormFromPage) this.elements.openListingFormFromPage.addEventListener('click', () => this.showModal(this.elements.addListingModal));
+            if (this.elements.propertyForm) this.elements.propertyForm.addEventListener('submit', (e) => this.handlePropertySubmit(e));
+            window.addEventListener('popstate', e => this.showPage(e.state?.page || 'hero-section'));
+        },
+        
         showNotification(message, type = 'success') {
             const el = this.elements.notification;
             if (!el) return;
@@ -292,7 +359,7 @@ document.addEventListener('DOMContentLoaded', function() {
             el.classList.remove('hidden');
             setTimeout(() => el.classList.add('hidden'), 3000);
         },
-        
+
         filterAndRenderProperties() {
             if (!this.elements.propertiesGrid) return;
             this.elements.propertiesGrid.innerHTML = this.propertiesData.length === 0 ? '<div class="col-span-full text-center text-gray-500 py-8">No properties found.</div>' : this.propertiesData.map(prop => this.getPropertyCardHTML(prop)).join('');
@@ -300,46 +367,50 @@ document.addEventListener('DOMContentLoaded', function() {
 
         getPropertyCardHTML(prop) {
             const formatPrice = price => new Intl.NumberFormat('th-TH').format(price);
-            const mainImage = prop.images?.[0] || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop&crop=center';
-            // ... (HTML for property card) ...
-            return `<article class="property-card cursor-pointer" onclick="App.showPropertyDetail('${prop.id}')">...</article>`;
+            const mainImage = prop.images?.[0] || `https://via.placeholder.com/800x600.png/FAF7F0/B17457?text=${encodeURIComponent(prop.title)}`;
+            return `<article class="property-card cursor-pointer" onclick="App.showPropertyDetail('${prop.id}')"><div class="card-banner"><img src="${mainImage}" alt="${prop.title}" class="w-full h-full object-cover" loading="lazy" onerror="this.src='https://via.placeholder.com/800x600.png/f0f0f0/ccc?text=Image+Not+Found'"><div class="card-badge ${prop.type.toLowerCase()}">${prop.type}</div><button class="delete-property-btn" onclick="event.stopPropagation(); App.showDeleteConfirmation('${prop.id}', '${prop.title}')" title="Delete Property"><i class="fas fa-trash"></i></button></div><div class="card-content"><h3 class="text-xl font-semibold text-gray-800 mb-2 truncate">${prop.title}</h3><p class="text-gray-600 mb-3 text-sm h-10 overflow-hidden">${prop.description}</p><div class="card-price">฿${formatPrice(prop.priceTHB)} ${prop.type === 'Rent' ? '/month' : ''}</div><div class="card-list"><div class="card-item"><i class="fas fa-bed text-[var(--primary-color)]"></i><span>${prop.bedrooms}</span></div><div class="card-item"><i class="fas fa-bath text-[var(--primary-color)]"></i><span>${prop.bathrooms}</span></div><div class="card-item"><i class="fas fa-ruler-combined text-[var(--primary-color)]"></i><span>${prop.area} sqm</span></div><div class="card-item"><i class="fas fa-map-marker-alt text-[var(--primary-color)]"></i><span class="truncate">${prop.location}</span></div></div></div></article>`;
         },
         
-        showPropertyDetail(propId) { /* ... same as before ... */ },
-        setMainImage(thumbElement, imgSrc) { /* ... same as before ... */ },
+        showPropertyDetail(propId) {
+            const property = this.propertiesData.find(p => p.id === propId);
+            if (!property) return;
+            const contentEl = document.getElementById('property-detail-content');
+            if (!contentEl) return;
+            const formatPrice = price => new Intl.NumberFormat('th-TH').format(price);
+            const thumbnailsHTML = property.images.map((imgSrc, index) => `<img src="${imgSrc}" alt="Thumbnail ${index + 1}" class="thumbnail-img h-16 w-24 object-cover rounded-md ${index === 0 ? 'active' : ''}" onclick="App.setMainImage(this, '${imgSrc}')" onerror="this.style.display='none'">`).join('');
+            contentEl.innerHTML = `<div class="grid grid-cols-1 lg:grid-cols-2 gap-8"><div class="space-y-4"><img id="main-property-image" src="${property.images[0]}" alt="${property.title}" class="w-full h-96 object-cover rounded-lg" onerror="this.src='https://via.placeholder.com/800x600.png/f0f0f0/ccc?text=Image+Not+Found'"><div class="flex gap-2 flex-wrap">${thumbnailsHTML}</div></div><div class="space-y-4"><h2 class="text-3xl font-bold text-gray-800">${property.title}</h2><div class="text-3xl font-bold text-[var(--primary-color)]">฿${formatPrice(property.priceTHB)} ${property.type === 'Rent' ? '/month' : ''}</div><div class="grid grid-cols-2 gap-4 py-4 border-y"><div class="flex items-center gap-2"><i class="fas fa-bed text-[var(--primary-color)]"></i><span>${property.bedrooms} Bedrooms</span></div><div class="flex items-center gap-2"><i class="fas fa-bath text-[var(--primary-color)]"></i><span>${property.bathrooms} Bathrooms</span></div><div class="flex items-center gap-2"><i class="fas fa-ruler-combined text-[var(--primary-color)]"></i><span>${property.area} sqm</span></div><div class="flex items-center gap-2"><i class="fas fa-map-marker-alt text-[var(--primary-color)]"></i><span>${property.location}</span></div></div><div><h3 class="text-xl font-semibold mb-2">Description</h3><p class="text-gray-700 leading-relaxed">${property.description}</p></div><div class="flex gap-4"><a href="https://wa.me/66654765114?text=I'm interested in ${property.title}" target="_blank" class="flex-1 bg-green-500 text-white py-3 px-6 rounded-lg text-center hover:bg-green-600 transition-colors"><i class="fab fa-whatsapp mr-2"></i>WhatsApp</a><a href="tel:+66654765114" class="flex-1 action-button py-3 px-6 rounded-lg text-center"><i class="fas fa-phone mr-2"></i>Call Now</a></div></div></div>`;
+            this.showModal(this.elements.propertyDetailModal);
+        },
+
+        setMainImage(thumbElement, imgSrc) {
+            document.getElementById('main-property-image').src = imgSrc;
+            document.querySelectorAll('.thumbnail-img').forEach(el => el.classList.remove('active'));
+            thumbElement.classList.add('active');
+        },
         
         showDeleteConfirmation(propId, propTitle) {
             const contentEl = document.getElementById('delete-confirm-content');
             if (!contentEl) return;
-            contentEl.innerHTML = `
-                <h3 class="text-xl font-bold mb-4 text-red-600">Delete Property</h3>
-                <p class="mb-6">Are you sure you want to delete "${propTitle}"?</p>
-                <div class="flex gap-4">
-                    <button onclick="App.hideModal(App.elements.deleteConfirmModal)" class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400">Cancel</button>
-                    <button onclick="App.deleteProperty('${propId}')" class="flex-1 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600">Delete</button>
-                </div>`;
+            contentEl.innerHTML = `<h3 class="text-xl font-bold mb-4 text-red-600">Delete Property</h3><p class="mb-6">Are you sure you want to delete "${propTitle}"?</p><div class="flex gap-4"><button onclick="App.hideModal(App.elements.deleteConfirmModal)" class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400">Cancel</button><button onclick="App.deleteProperty('${propId}')" class="flex-1 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600">Delete</button></div>`;
             this.showModal(this.elements.deleteConfirmModal);
         },
         
-        // CHANGED: Simplified deletion without password
         deleteProperty(propId) {
             this.propertiesData = this.propertiesData.filter(prop => prop.id !== propId);
-            this.saveProperties(); // Save the change
+            this.saveProperties();
             this.filterAndRenderProperties();
-            this.initScrollAnimations(); // Re-apply animations
+            this.initScrollAnimations();
             this.hideModal(this.elements.deleteConfirmModal);
             this.showNotification('Property deleted successfully!');
         },
 
-        // CHANGED: Async function with Base64 conversion for persistent images
         async handlePropertySubmit(event) {
             event.preventDefault();
             const formData = new FormData(event.target);
             const files = event.target.images.files;
             
-            if (files.length > 15) {
-                return this.showNotification('You can select a maximum of 15 images.', 'error');
-            }
+            if (files.length > 15) { return this.showNotification('You can select a maximum of 15 images.', 'error'); }
+            if (files.length === 0) { return this.showNotification('Please select at least one image.', 'error'); }
 
             const fileToBase64 = file => new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -357,8 +428,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 location: formData.get('location'), bedrooms: parseInt(formData.get('bedrooms')),
                 bathrooms: parseInt(formData.get('bathrooms')), area: parseInt(formData.get('area')),
                 priceTHB: parseInt(formData.get('priceTHB')), description: formData.get('description'),
-                agentCode: 'USR-' + Date.now().toString().slice(-6),
-                images: base64Images
+                agentCode: 'USR-' + Date.now().toString().slice(-6), images: base64Images
             };
             
             this.propertiesData.unshift(newProperty);
@@ -391,23 +461,14 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         },
         
-        hideModal(modalEl) {
-            if (modalEl) {
-                modalEl.classList.remove('active');
-                document.body.style.overflow = 'auto';
-            }
-        },
-
-        showModal(modalEl) {
-            if (modalEl) {
-                modalEl.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
-        },
+        hideModal(modalEl) { if (modalEl) { modalEl.classList.remove('active'); document.body.style.overflow = 'auto'; } },
+        showModal(modalEl) { if (modalEl) { modalEl.classList.add('active'); document.body.style.overflow = 'hidden'; } },
 
         getDefaultData() {
-            // ... same default data as before ...
-            return []; // Return empty array or your default listings
+             return [
+                { id: 'anchan-11012', title: 'Anchan Luxury Villas', type: 'Sale', category: 'Villa', location: 'Thalang', bedrooms: 3, bathrooms: 4, area: 473, priceTHB: 32837000, description: 'Experience ultimate luxury in this stunning villa.', agentCode: 'AG-PROJ-01', images: [] },
+                { id: 'trichada-rent', title: 'Trichada Pool Villa', type: 'Rent', category: 'Villa', location: 'Bangtao Beach', bedrooms: 3, bathrooms: 2, area: 200, priceTHB: 170000, description: 'Spacious 3-bedroom pool villa in prime Bangtao Beach.', agentCode: 'AG-RENT-02', images: [] }
+            ];
         }
     };
     
