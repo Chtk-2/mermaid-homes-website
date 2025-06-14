@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Forum&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js" defer></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database-compat.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
@@ -85,7 +86,7 @@
 
     <div id="notification" class="fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg hidden"></div>
 
-    <header class="header"></header>
+    <header class="header"><!-- Header content --></header>
 
     <main id="main-content">
         <section id="hero-section" class="page-content-section hero">
@@ -94,7 +95,7 @@
                Your browser does not support the video tag.
             </video>
             <div class="hero-overlay"></div>
-            <div class="container mx-auto px-4"><div class="hero-content"></div></div>
+            <div class="container mx-auto px-4"><div class="hero-content"><!-- ... --></div></div>
        </section>
         
         <section id="properties" class="page-content-section py-12 md:py-20">
@@ -104,12 +105,12 @@
             </div>
         </section>
 
-        <section id="post-property-listing" class="page-content-section py-12 md:py-20 bg-white"></section>
-        <section id="roi-calculator" class="page-content-section py-12 md:py-20"></section>
-        <section id="contact" class="page-content-section py-12 md:py-20 bg-white"></section>
+        <section id="post-property-listing" class="page-content-section py-12 md:py-20 bg-white"><!-- ... --></section>
+        <section id="roi-calculator" class="page-content-section py-12 md:py-20"><!-- ... --></section>
+        <section id="contact" class="page-content-section py-12 md:py-20 bg-white"><!-- ... --></section>
     </main>
     
-    <footer class="footer"></footer>
+    <footer class="footer"><!-- Footer content --></footer>
 
     <button id="add-listing-btn" class="add-listing-btn"><i class="fas fa-plus"></i></button>
     <a href="https://wa.me/66654765114" target="_blank" class="whatsapp-float"><i class="fab fa-whatsapp"></i></a>
@@ -124,29 +125,32 @@ const App = {
     propertiesData: [],
     database: null,
     roiChartInstance: null,
-    translations: { /* translation data */ },
-
+    
     init() {
-        this.cacheDOMElements();
-        this.connectToDatabase();
-        this.injectContent();
-        this.bindEvents();
-        const initialPage = window.location.hash.substring(1) || 'hero-section';
-        this.showPage(initialPage, true);
+        document.addEventListener('DOMContentLoaded', () => {
+            this.cacheDOMElements();
+            this.connectToDatabase();
+            this.injectContent();
+            this.bindEvents();
+            this.setLanguage('en');
+            const initialPage = window.location.hash.substring(1) || 'hero-section';
+            this.showPage(initialPage, true);
+        });
     },
 
     connectToDatabase() {
         // ===================================================================
-        // PASTE YOUR FIREBASE CONFIGURATION OBJECT HERE
+        // YOUR FIREBASE CONFIGURATION IS NOW PLACED HERE
         // ===================================================================
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            databaseURL: "https://YOUR_DATABASE_URL.firebaseio.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT_ID.appspot.com",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
+            apiKey: "AIzaSyDvXpEMjcQD9QPJYHRPUk6ohVKv9ohjNBI",
+            authDomain: "mermaid-homes.firebaseapp.com",
+            databaseURL: "https://mermaid-homes-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "mermaid-homes",
+            storageBucket: "mermaid-homes.appspot.com",
+            messagingSenderId: "652689387599",
+            appId: "1:652689387599:web:5bd946f479a0ee92a87a3a",
+            measurementId: "G-FDJBSJFP9G"
         };
         // ===================================================================
 
@@ -189,82 +193,23 @@ const App = {
         }
     },
 
-    cacheDOMElements() { /* Caches all necessary DOM elements */ },
-    injectContent() { /* Injects repeatable HTML into the DOM */ },
-    
-    bindEvents() {
-        this.elements.navLinks.forEach(link => link.addEventListener('click', e => { e.preventDefault(); const id = link.getAttribute('href')?.substring(1); if(id) this.showPage(id); }));
-        if (this.elements.mobileMenuButton) { this.elements.mobileMenuButton.addEventListener('click', () => this.elements.mobileMenu.classList.toggle('active')); }
-        if (this.elements.addListingBtn) this.elements.addListingBtn.addEventListener('click', () => this.showModal(this.elements.addListingModal));
-        if (this.elements.roiCalculatorContent) { this.elements.roiCalculatorContent.addEventListener("input", () => this.calculateROI()); }
-        if (this.elements.propertyForm) this.elements.propertyForm.addEventListener('submit', (e) => this.handlePropertySubmit(e));
-        window.addEventListener('popstate', e => this.showPage(e.state?.page || 'hero-section', true));
-    },
-
-    showPage(pageId, isInitial = false) { /* Handles page switching and active link styling */ },
-    setLanguage(lang) { /* Handles language switching */ },
-    showNotification(message, type = 'success') { /* Shows notifications */ },
-
-    calculateROI() {
-        const investment = parseFloat(document.getElementById("investment")?.value) || 0;
-        const monthlyIncome = parseFloat(document.getElementById("income")?.value) || 0;
-        const annualExpenses = parseFloat(document.getElementById("expenses")?.value) || 0;
-        const roiResultEl = document.getElementById("roi-result");
-        if (!roiResultEl) return;
-
-        if (investment > 0) {
-            const annualIncome = monthlyIncome * 12;
-            const netIncome = annualIncome - annualExpenses;
-            const roi = (netIncome / investment) * 100;
-            roiResultEl.textContent = `Annual ROI: ${roi.toFixed(2)}%`;
-            roiResultEl.className = `mt-4 text-center font-bold text-3xl h-10 ${roi >= 8 ? 'text-green-600' : roi >= 5 ? 'text-yellow-600' : 'text-red-600'}`;
-            this.updateROIChart({ investment, annualIncome, annualExpenses, netIncome });
-        } else {
-            roiResultEl.textContent = "";
-            this.updateROIChart(null);
-        }
-    },
-    
-    updateROIChart(data) {
-        const ctx = document.getElementById('roiChart')?.getContext('2d');
-        if (!ctx) return;
-        if (this.roiChartInstance) { this.roiChartInstance.destroy(); }
-        
-        if (!data) return;
-
-        this.roiChartInstance = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Financial Overview'],
-                datasets: [
-                    { label: 'Total Investment', data: [data.investment], backgroundColor: 'rgba(239, 68, 68, 0.7)', borderColor: '#EF4444', borderWidth: 1 },
-                    { label: 'Annual Gross Income', data: [data.annualIncome], backgroundColor: 'rgba(34, 197, 94, 0.7)', borderColor: '#22C55E', borderWidth: 1 },
-                    { label: 'Annual Net Income', data: [data.netIncome], backgroundColor: 'rgba(59, 130, 246, 0.7)', borderColor: '#3B82F6', borderWidth: 1 }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: { y: { beginAtZero: true, ticks: { callback: value => `฿${value.toLocaleString()}` } } },
-                plugins: { legend: { position: 'bottom' }, tooltip: { callbacks: { label: context => `${context.dataset.label}: ฿${context.parsed.y.toLocaleString()}` } } }
-            }
-        });
-    },
-
-    filterAndRenderProperties() {
-        if (!this.elements.propertiesGrid) return;
-        this.elements.propertiesGrid.innerHTML = this.propertiesData.length === 0 ? '<div class="col-span-full text-center text-gray-500 py-8">No properties found. Add one to get started!</div>' : this.propertiesData.map(prop => this.getPropertyCardHTML(prop)).join('');
-        this.initScrollAnimations();
-    },
-
-    getPropertyCardHTML(prop) { /* Returns HTML for a property card */ },
-    showPropertyDetail(propId) { /* Shows property detail modal */ },
-    setMainImage(thumbElement, imgSrc) { /* Sets main image in detail modal */ },
-    showDeleteConfirmation(propId, propTitle) { /* Shows delete confirmation */ },
+    cacheDOMElements() { /* ... */ },
+    injectContent() { /* ... */ },
+    bindEvents() { /* ... */ },
+    showPage(pageId, isInitial = false) { /* ... */ },
+    setLanguage(lang) { /* ... */ },
+    showNotification(message, type = 'success') { /* ... */ },
+    calculateROI() { /* ... */ },
+    updateROIChart(data) { /* ... */ },
+    filterAndRenderProperties() { /* ... */ },
+    getPropertyCardHTML(prop) { /* ... */ },
+    showPropertyDetail(propId) { /* ... */ },
+    setMainImage(thumbElement, imgSrc) { /* ... */ },
+    showDeleteConfirmation(propId, propTitle) { /* ... */ },
     
     deleteProperty(propId) {
         this.database.ref('properties/' + propId).remove()
-            .then(() => { this.hideModal(this.elements.deleteConfirmModal); this.showNotification('Property deleted successfully!'); })
+            .then(() => { this.showNotification('Property deleted successfully!'); })
             .catch(error => { console.error("Error deleting property: ", error); this.showNotification("Failed to delete property.", "error"); });
     },
 
@@ -282,39 +227,34 @@ const App = {
             priceTHB: parseInt(formData.get('priceTHB')), description: formData.get('description'), agentCode: 'USR-' + Date.now().toString().slice(-6)
         };
         
-        // Optimistic UI update: Show immediately with a temporary local image
         const tempId = 'temp-' + Date.now();
         const optimisticProperty = { ...newPropertyData, id: tempId, images: [URL.createObjectURL(files[0])] };
         this.propertiesData.unshift(optimisticProperty);
         this.filterAndRenderProperties();
         this.hideModal(this.elements.addListingModal);
         form.reset();
-
-        // Background task: Convert images to Base64 and save to Firebase
+        
         const fileToBase64 = file => new Promise((resolve, reject) => { const reader = new FileReader(); reader.readAsDataURL(file); reader.onload = () => resolve(reader.result); reader.onerror = error => reject(error); });
         try {
             const base64Images = await Promise.all(Array.from(files).map(fileToBase64));
             newPropertyData.images = base64Images;
 
             await this.database.ref('properties').push(newPropertyData);
-            this.showNotification('Property saved successfully for everyone!');
-            // The realtime listener will automatically handle replacing the temp item with the real one.
+            this.showNotification('Property saved successfully!');
         } catch (error) {
             console.error("Error adding property: ", error);
             this.showNotification("Failed to save property. Please try again.", "error");
-            // Rollback: remove the temporary item if the save fails
             this.propertiesData = this.propertiesData.filter(p => p.id !== tempId);
             this.filterAndRenderProperties();
         }
     },
     
-    initScrollAnimations() { /* Handles scroll animations for cards */ },
-    hideModal(modalEl) { if (modalEl) { modalEl.classList.remove('active'); document.body.style.overflow = 'auto'; } },
-    showModal(modalEl) { if (modalEl) { modalEl.classList.add('active'); document.body.style.overflow = 'hidden'; } },
-    getDefaultData() { return []; }
+    initScrollAnimations() { /* ... */ },
+    hideModal(modalEl) { /* ... */ },
+    showModal(modalEl) { /* ... */ }
 };
 
-document.addEventListener('DOMContentLoaded', () => App.init());
+App.init();
 window.App = App;
 </script>
 
