@@ -1,3 +1,4 @@
+
 <index.html>
 <html lang="en">
 <head>
@@ -22,19 +23,16 @@
         .page-content-section { display: none; }
         .page-content-section.active { display: block; animation: fadeIn 0.5s ease-out; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
         .header { position: sticky; top: 0; z-index: 50; background: white; }
         .header-top { background: var(--primary-color); color: white; padding: 0.5rem 0; font-size: 0.8rem; }
         .header-top a:hover { color: #e0e0e0; }
         .header-bottom { box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-
         .hero { position: relative; height: 85vh; min-height: 600px; display: flex; align-items: center; justify-content: center; text-align: center; color: white; overflow: hidden; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
         #hero-video { position: absolute; top: 50%; left: 50%; width: 100%; height: 100%; object-fit: cover; transform: translate(-50%, -50%); z-index: 1; }
         .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 2; }
         .hero .container { position: relative; z-index: 3; }
         .hero-subtitle { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.1); backdrop-filter: blur(5px); padding: 0.5rem 1rem; border-radius: 999px; }
         .hero-title { font-size: clamp(2.5rem, 6vw, 4.5rem); line-height: 1.1; }
-        
         .property-card {
             background: #fff; border-radius: 0.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow: hidden; transition: all 0.3s ease;
         }
@@ -55,12 +53,10 @@
         .card-price { font-size: 1.5rem; font-weight: 700; color: var(--primary-color); }
         .card-list { display: flex; justify-content: space-around; padding-top: 1rem; border-top: 1px solid #e5e7eb; margin-top: 1rem; }
         .card-item { display: flex; align-items: center; gap: 0.5rem; color: #6B7280; }
-        
         .footer-top { background-color: #212529; color: #adb5bd; padding: 3rem 0; }
         .footer-list-title { font-family: 'Forum', serif; font-size: 1.5rem; color: white; margin-bottom: 1rem; }
         .footer-link:hover { color: white; }
         .footer-bottom { background-color: #121212; color: #6c757d; padding: 1.5rem 0; font-size: 0.9rem; }
-
         .add-listing-btn {
             position: fixed; bottom: 2rem; right: 2rem; width: 60px; height: 60px;
             background: var(--accent-color); color: white; border: none; border-radius: 50%;
@@ -69,7 +65,6 @@
             transition: all 0.3s ease;
         }
         .add-listing-btn:hover { transform: scale(1.1); }
-
         .whatsapp-float {
             position: fixed; bottom: 6rem; right: 2rem; width: 60px; height: 60px;
             background: #25D366; color: white; border-radius: 50%;
@@ -78,7 +73,6 @@
             transition: all 0.3s ease; text-decoration: none;
         }
         .whatsapp-float:hover { transform: scale(1.1); color: white; }
-
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.5); z-index: 60; align-items: center; justify-content: center;
@@ -92,11 +86,9 @@
             position: absolute; top: 1rem; right: 1rem; background: none; border: none;
             font-size: 1.5rem; cursor: pointer; color: #666;
         }
-
         .section-subtitle { color: var(--primary-color); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
         .h2 { font-size: 2.5rem; font-weight: 700; margin-bottom: 2rem; }
         .section-title { color: #1f2937; }
-
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .hero-title { font-size: 2.5rem; }
@@ -173,7 +165,7 @@
                 </div>
             </div>
         </section>
-        
+
         <section id="properties" class="page-content-section py-12 md:py-20 bg-gray-50">
              <div class="container mx-auto px-4">
                 <p class="section-subtitle text-center" data-translate-key="properties_subtitle">Properties</p>
@@ -191,7 +183,7 @@
                  </button>
             </div>
         </section>
-        
+
         <section id="roi-calculator" class="page-content-section py-12 md:py-20 bg-gray-50">
              <div class="container mx-auto px-4">
                 <h2 class="text-4xl md:text-5xl font-bold text-center mb-10 text-gray-800" data-translate-key="roi_title">Return on Investment (ROI) Calculator</h2>
@@ -283,7 +275,7 @@
 
     <button id="add-listing-btn" class="add-listing-btn" title="Add Listing"><i class="fas fa-plus"></i></button>
     <a href="https://wa.me/66654765114" target="_blank" class="whatsapp-float" title="Contact via WhatsApp"><i class="fab fa-whatsapp"></i></a>
-    
+
     <div id="add-listing-modal" class="modal">
         <div class="modal-content">
             <button class="modal-close" onclick="document.getElementById('add-listing-modal').classList.remove('active')">&times;</button>
@@ -342,14 +334,14 @@
             </form>
         </div>
     </div>
-    
+
     <div id="property-detail-modal" class="modal">
         <div class="modal-content max-w-4xl">
             <button class="modal-close" onclick="document.getElementById('property-detail-modal').classList.remove('active')">&times;</button>
             <div id="property-detail-content"></div>
         </div>
     </div>
-    
+
     <div id="delete-confirm-modal" class="modal">
         <div class="modal-content max-w-md">
             <button class="modal-close" onclick="document.getElementById('delete-confirm-modal').classList.remove('active')">&times;</button>
@@ -366,90 +358,90 @@ document.addEventListener('DOMContentLoaded', function() {
         roiChartInstance: null,
         notificationTimeout: null,
         propertiesData: [
-            { 
-                id: 'anchan-11012', 
-                title: 'Anchan Luxury Villas', 
-                type: 'Sale', 
-                category: 'Villa', 
-                location: 'Thalang', 
-                bedrooms: 3, 
-                bathrooms: 4, 
-                area: 473, 
-                priceTHB: 32837000, 
-                description: 'Experience ultimate luxury in this stunning villa with modern amenities and beautiful views.', 
-                agentCode: 'AG-PROJ-01', 
-                images: ['https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&h=600&fit=crop&crop=center'] 
-            },
-            { 
-                id: 'trichada-rent', 
-                title: 'Trichada Pool Villa', 
-                type: 'Rent', 
-                category: 'Villa', 
-                location: 'Bangtao Beach', 
-                bedrooms: 3, 
-                bathrooms: 2, 
-                area: 200, 
-                priceTHB: 170000, 
-                description: 'Spacious 3-bedroom pool villa in prime Bangtao Beach location with private pool and garden.', 
-                agentCode: 'AG-RENT-02', 
-                images: ['https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=800&h=600&fit=crop&crop=center'] 
-            },
-            { 
-                id: 'luxe-villa-cherngtalay', 
-                title: 'The Luxe Villa', 
-                type: 'Sale', 
-                category: 'Villa', 
-                location: 'Cherngtalay', 
-                bedrooms: 5, 
-                bathrooms: 6, 
-                area: 500, 
-                priceTHB: 50000000, 
-                description: 'An exquisite villa offering unparalleled luxury with panoramic ocean views and premium finishes.', 
-                agentCode: 'AG-LUXE-06', 
-                images: ['https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop&crop=center'] 
-            },
-            { 
-                id: 'botanica-grand', 
-                title: 'Botanica Grand Avenue', 
-                type: 'Sale', 
-                category: 'Villa', 
-                location: 'Cherngtalay', 
-                bedrooms: 4, 
-                bathrooms: 5, 
-                area: 520, 
-                priceTHB: 58100000, 
-                description: 'The epitome of opulence in this grand villa featuring elegant architecture and world-class amenities.', 
-                agentCode: 'AG-PROJ-03', 
-                images: ['https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=600&fit=crop&crop=center'] 
-            },
-            { 
-                id: 'the-base-height', 
-                title: 'The Base Height Condo', 
-                type: 'Sale', 
-                category: 'Condo', 
-                location: 'Phuket Town', 
-                bedrooms: 1, 
-                bathrooms: 1, 
-                area: 34, 
-                priceTHB: 2500000, 
-                description: 'Modern condo in the heart of Phuket Town with city views and contemporary design.', 
-                agentCode: 'AG-SALE-05', 
-                images: ['https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop&crop=center'] 
-            },
-            { 
-                id: 'sea-view-villa', 
-                title: 'Sea View Paradise Villa', 
-                type: 'Rent', 
-                category: 'Villa', 
-                location: 'Kata Beach', 
-                bedrooms: 4, 
-                bathrooms: 3, 
-                area: 350, 
-                priceTHB: 250000, 
-                description: 'Stunning sea view villa just minutes from Kata Beach with infinity pool and tropical gardens.', 
-                agentCode: 'AG-RENT-07', 
-                images: ['https://images.unsplash.com/photo-1613977257363-707ba9348227?w=800&h=600&fit=crop&crop=center'] 
-            }
+            {
+                 id: 'anchan-11012',
+                 title: 'Anchan Luxury Villas',
+                 type: 'Sale',
+                 category: 'Villa',
+                 location: 'Thalang',
+                 bedrooms: 3,
+                 bathrooms: 4,
+                 area: 473,
+                 priceTHB: 32837000,
+                 description: 'Experience ultimate luxury in this stunning villa with modern amenities and beautiful views.',
+                 agentCode: 'AG-PROJ-01',
+                 images: ['https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&h=600&fit=crop&crop=center']
+             },
+            {
+                 id: 'trichada-rent',
+                 title: 'Trichada Pool Villa',
+                 type: 'Rent',
+                 category: 'Villa',
+                 location: 'Bangtao Beach',
+                 bedrooms: 3,
+                 bathrooms: 2,
+                 area: 200,
+                 priceTHB: 170000,
+                 description: 'Spacious 3-bedroom pool villa in prime Bangtao Beach location with private pool and garden.',
+                 agentCode: 'AG-RENT-02',
+                 images: ['https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=800&h=600&fit=crop&crop=center']
+             },
+            {
+                 id: 'luxe-villa-cherngtalay',
+                 title: 'The Luxe Villa',
+                 type: 'Sale',
+                 category: 'Villa',
+                 location: 'Cherngtalay',
+                 bedrooms: 5,
+                 bathrooms: 6,
+                 area: 500,
+                 priceTHB: 50000000,
+                 description: 'An exquisite villa offering unparalleled luxury with panoramic ocean views and premium finishes.',
+                 agentCode: 'AG-LUXE-06',
+                 images: ['https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop&crop=center']
+             },
+            {
+                 id: 'botanica-grand',
+                 title: 'Botanica Grand Avenue',
+                 type: 'Sale',
+                 category: 'Villa',
+                 location: 'Cherngtalay',
+                 bedrooms: 4,
+                 bathrooms: 5,
+                 area: 520,
+                 priceTHB: 58100000,
+                 description: 'The epitome of opulence in this grand villa featuring elegant architecture and world-class amenities.',
+                 agentCode: 'AG-PROJ-03',
+                 images: ['https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=600&fit=crop&crop=center']
+             },
+            {
+                 id: 'the-base-height',
+                 title: 'The Base Height Condo',
+                 type: 'Sale',
+                 category: 'Condo',
+                 location: 'Phuket Town',
+                 bedrooms: 1,
+                 bathrooms: 1,
+                 area: 34,
+                 priceTHB: 2500000,
+                 description: 'Modern condo in the heart of Phuket Town with city views and contemporary design.',
+                 agentCode: 'AG-SALE-05',
+                 images: ['https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop&crop=center']
+             },
+            {
+                 id: 'sea-view-villa',
+                 title: 'Sea View Paradise Villa',
+                 type: 'Rent',
+                 category: 'Villa',
+                 location: 'Kata Beach',
+                 bedrooms: 4,
+                 bathrooms: 3,
+                 area: 350,
+                 priceTHB: 250000,
+                 description: 'Stunning sea view villa just minutes from Kata Beach with infinity pool and tropical gardens.',
+                 agentCode: 'AG-RENT-07',
+                 images: ['https://images.unsplash.com/photo-1613977257363-707ba9348227?w=800&h=600&fit=crop&crop=center']
+             }
         ],
         translations: {
             en: {
@@ -509,7 +501,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 footer_social: 'ติดตามเรา'
             }
         },
-
         init() {
             this.cacheDOMElements();
             this.bindEvents();
@@ -520,7 +511,6 @@ document.addEventListener('DOMContentLoaded', function() {
             this.calculateROI();
             this.initScrollAnimations();
         },
-
         showLoadingWithDelay() {
             // Show loading for 2 seconds then hide smoothly
             setTimeout(() => {
@@ -532,7 +522,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }, 2000);
         },
-
         cacheDOMElements() {
             const ids = ['loading-overlay', 'notification', 'mobile-menu-button', 'mobile-menu', 'lang-switcher', 'properties-grid', 'add-listing-btn', 'open-listing-form-from-page', 'add-listing-modal', 'property-detail-modal', 'delete-confirm-modal', 'investment', 'income', 'expenses', 'roi-result', 'roiChart'];
             ids.forEach(id => {
@@ -544,7 +533,6 @@ document.addEventListener('DOMContentLoaded', function() {
             this.elements.allPageSections = document.querySelectorAll('.page-content-section');
             this.elements.navLinks = document.querySelectorAll('.nav-link');
         },
-
         bindEvents() {
             // Mobile menu toggle
             if (this.elements.mobileMenuButton && this.elements.mobileMenu) {
@@ -552,7 +540,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     this.elements.mobileMenu.classList.toggle('hidden');
                 });
             }
-
             // Navigation links
             if (this.elements.navLinks) {
                 this.elements.navLinks.forEach(link => {
@@ -569,7 +556,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
                 });
             }
-
             // Language switcher
             if (this.elements.langSwitcher) {
                 this.elements.langSwitcher.addEventListener('click', e => {
@@ -578,7 +564,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 });
             }
-
             // ROI Calculator inputs
             const roiInputs = [this.elements.investment, this.elements.income, this.elements.expenses];
             roiInputs.forEach(input => {
@@ -586,7 +571,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     input.addEventListener('input', () => this.calculateROI());
                 }
             });
-
             // Modal triggers
             if (this.elements.addListingBtn) {
                 this.elements.addListingBtn.addEventListener('click', () => this.showModal(this.elements.addListingModal));
@@ -594,20 +578,16 @@ document.addEventListener('DOMContentLoaded', function() {
             if (this.elements.openListingFormFromPage) {
                 this.elements.openListingFormFromPage.addEventListener('click', () => this.showModal(this.elements.addListingModal));
             }
-
             // Property form submission
             const propertyForm = document.getElementById('property-form');
             if (propertyForm) {
                 propertyForm.addEventListener('submit', (e) => this.handlePropertySubmit(e));
             }
-
             // Window events
             window.addEventListener('popstate', e => this.showPage(e.state?.page || 'hero-section'));
         },
-
         setLanguage(lang) {
             this.currentLang = lang;
-            
             // Update language buttons
             document.querySelectorAll('.lang-btn').forEach(btn => {
                 if (btn.dataset.lang === lang) {
@@ -618,7 +598,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     btn.classList.add('text-gray-400');
                 }
             });
-
             // Update translations
             document.querySelectorAll('[data-translate-key]').forEach(element => {
                 const key = element.getAttribute('data-translate-key');
@@ -631,28 +610,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         },
-
         showNotification(message, type = 'success') {
             if (!this.elements.notification) return;
-            
             // Clear existing timeout
             if (this.notificationTimeout) {
                 clearTimeout(this.notificationTimeout);
             }
-
             // Set notification content and style
             this.elements.notification.textContent = message;
             this.elements.notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg ${
                 type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
             }`;
             this.elements.notification.classList.remove('hidden');
-
             // Auto hide after 3 seconds
             this.notificationTimeout = setTimeout(() => {
                 this.elements.notification.classList.add('hidden');
             }, 3000);
         },
-
         showPage(pageId) {
             // Hide all sections
             if (this.elements.allPageSections) {
@@ -660,7 +634,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     section.classList.remove('active');
                 });
             }
-
             // Show target section
             const targetSection = document.getElementById(pageId);
             if (targetSection) {
@@ -669,25 +642,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 history.pushState({page: pageId}, '', `#${pageId}`);
             }
         },
-
         renderPropertyCards(properties) {
             if (!this.elements.propertiesGrid) return;
-
             if (properties.length === 0) {
                 this.elements.propertiesGrid.innerHTML = '<div class="col-span-full text-center text-gray-500 py-8">No properties found matching your criteria.</div>';
                 return;
             }
-
             this.elements.propertiesGrid.innerHTML = properties.map(prop => this.getPropertyCardHTML(prop)).join('');
         },
-
         getPropertyCardHTML(prop) {
             const formatPrice = (price) => {
                 return new Intl.NumberFormat('th-TH').format(price);
             };
-
             const mainImage = Array.isArray(prop.images) ? prop.images[0] : prop.images;
-
             return `
                 <article class="property-card cursor-pointer" onclick="App.showPropertyDetail('${prop.id}')">
                     <div class="card-banner">
@@ -723,14 +690,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 </article>
             `;
         },
-
         showPropertyDetail(propId) {
             const property = this.propertiesData.find(p => p.id === propId);
             if (!property || !this.elements.propertyDetailModal) return;
-
             const formatPrice = (price) => new Intl.NumberFormat('th-TH').format(price);
             const mainImage = Array.isArray(property.images) ? property.images[0] : property.images;
-
             const modalContent = `
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <div class="space-y-4">
@@ -776,17 +740,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 </div>
             `;
-
             const detailContent = document.getElementById('property-detail-content');
             if (detailContent) {
                 detailContent.innerHTML = modalContent;
             }
             this.showModal(this.elements.propertyDetailModal);
         },
-
         showDeleteConfirmation(propId, propTitle) {
             if (!this.elements.deleteConfirmModal) return;
-
             const modalContent = `
                 <h3 class="text-xl font-bold mb-4 text-red-600">Delete Property</h3>
                 <p class="mb-6">Are you sure you want to delete "${propTitle}"? This action cannot be undone.</p>
@@ -795,31 +756,26 @@ document.addEventListener('DOMContentLoaded', function() {
                     <button onclick="App.deleteProperty('${propId}')" class="flex-1 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 transition-colors">Delete</button>
                 </div>
             `;
-
             const deleteContent = document.getElementById('delete-confirm-content');
             if (deleteContent) {
                 deleteContent.innerHTML = modalContent;
             }
             this.showModal(this.elements.deleteConfirmModal);
         },
-
         deleteProperty(propId) {
             const password = prompt('Enter admin password to delete this property:');
             if (password !== this.ADMIN_PASSWORD) {
                 this.showNotification('Invalid password!', 'error');
                 return;
             }
-
             this.propertiesData = this.propertiesData.filter(prop => prop.id !== propId);
             this.filterAndRenderProperties();
             this.hideModal(this.elements.deleteConfirmModal);
             this.showNotification('Property deleted successfully!');
         },
-
         handlePropertySubmit(event) {
             event.preventDefault();
             const formData = new FormData(event.target);
-            
             const newProperty = {
                 id: 'prop-' + Date.now(),
                 title: formData.get('title'),
@@ -834,45 +790,37 @@ document.addEventListener('DOMContentLoaded', function() {
                 agentCode: 'USR-' + Date.now().toString().slice(-6),
                 images: [formData.get('imageUrl')]
             };
-
             this.propertiesData.unshift(newProperty);
             this.filterAndRenderProperties();
             this.hideModal(this.elements.addListingModal);
             event.target.reset();
             this.showNotification('Property added successfully!');
         },
-
         calculateROI() {
             const investment = parseFloat(this.elements.investment?.value || 0);
             const monthlyIncome = parseFloat(this.elements.income?.value || 0);
             const annualExpenses = parseFloat(this.elements.expenses?.value || 0);
-
             if (investment > 0 && monthlyIncome > 0) {
                 const annualIncome = monthlyIncome * 12;
                 const netAnnualIncome = annualIncome - annualExpenses;
                 const roi = (netAnnualIncome / investment) * 100;
-
                 if (this.elements.roiResult) {
                     this.elements.roiResult.textContent = `ROI: ${roi.toFixed(2)}%`;
                     this.elements.roiResult.className = `mt-4 text-center font-bold text-3xl h-10 ${
                         roi >= 8 ? 'text-green-600' : roi >= 5 ? 'text-yellow-600' : 'text-red-600'
                     }`;
                 }
-
                 this.updateROIChart(roi, annualIncome, annualExpenses);
             } else if (this.elements.roiResult) {
                 this.elements.roiResult.textContent = '';
             }
         },
-
         updateROIChart(roi, income, expenses) {
             const ctx = this.elements.roiChart?.getContext('2d');
             if (!ctx) return;
-
             if (this.roiChartInstance) {
                 this.roiChartInstance.destroy();
             }
-
             this.roiChartInstance = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
@@ -898,31 +846,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         },
-
         filterAndRenderProperties() {
             this.renderPropertyCards(this.propertiesData);
         },
-
         showModal(modalEl) {
             if (modalEl) {
                 modalEl.classList.add('active');
                 document.body.style.overflow = 'hidden';
             }
         },
-
         hideModal(modalEl) {
             if (modalEl) {
                 modalEl.classList.remove('active');
                 document.body.style.overflow = 'auto';
             }
         },
-
         initScrollAnimations() {
             const observerOptions = {
                 threshold: 0.1,
                 rootMargin: '0px 0px -50px 0px'
             };
-
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -931,7 +874,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 });
             }, observerOptions);
-
             document.querySelectorAll('.property-card').forEach(card => {
                 card.style.opacity = '0';
                 card.style.transform = 'translateY(20px)';
@@ -940,21 +882,11 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     };
-
     // Initialize the app
     App.init();
-    
     // Make App globally available for onclick handlers
     window.App = App;
 });
-</script>{ 
-                id: 'anchan-11012', 
-                title: 'Anchan Luxury Villas', 
-                type: 'Sale', 
-                category: 'Villa', 
-                location: 'Thalang', 
-                bedrooms: 3, 
-                bathrooms: 4, 
-                area: 473, 
-                priceTHB: 32837000, 
-                description: 'Experience ultimate luxury in this stunning villa
+</script>
+</html>
+```
