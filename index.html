@@ -31,7 +31,7 @@
         .header-top { background: var(--primary-color); color: white; padding: 0.5rem 0; font-size: 0.8rem; }
         .header-top a:hover { color: #f3e5e0; }
         .header-bottom { background-color: rgba(250, 247, 240, 0.8); backdrop-filter: blur(10px); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .hero { position: relative; height: 85vh; min-height: 600px; display: flex; align-items: center; justify-content: center; text-align: center; color: white; overflow: hidden; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .hero { position: relative; height: 85vh; min-height: 600px; display: flex; align-items: center; justify-content: center; text-align: center; color: white; overflow: hidden; background-color: #333; }
         .hero .container { display: flex; justify-content: center; align-items: center; }
         #hero-video { position: absolute; top: 50%; left: 50%; width: 100%; height: 100%; object-fit: cover; transform: translate(-50%, -50%); z-index: 1; }
         .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 2; }
@@ -263,7 +263,26 @@ const App = {
     PROPERTIES_KEY: 'mermaid_homes_properties_v2',
     elements: {},
     propertiesData: [],
-    translations: {},
+    translations: {
+        en: {
+            nav_properties: 'Properties', nav_roi: 'ROI Calculator', nav_contact: 'Contact', nav_post_property: 'Post Property', hero_agency: '🏖️ Real Estate Agency',
+            hero_title: 'Find Your Dream House By Us', hero_subtitle: "Thailand's best luxury homes | Sell and Rent 🏡", browse_properties: 'Make An Enquiry', properties_subtitle: 'Properties',
+            properties_title: 'Featured Listings', post_property_title: 'Post Your Property', post_property_desc: "Ready to list your property? Click the floating '+' button to open the submission form and reach thousands of potential buyers and renters.",
+            open_listing_form_btn: 'Open Listing Form', roi_title: 'Return on Investment (ROI) Calculator', roi_investment: 'Total Investment (THB)', roi_income: 'Monthly Rental Income (THB)',
+            roi_expenses: 'Annual Expenses (THB)', contact_title: 'Get In Touch', contact_subtitle: 'We are here to help you. Contact us via phone, email, or our social media channels.',
+            contact_phone: 'Phone', contact_whatsapp: 'WhatsApp', contact_whatsapp_text: 'Chat with us', contact_email: 'Email', footer_desc: 'Your gateway to finding the perfect property in Phuket.',
+            footer_quick_links: 'Quick Links', footer_social: 'Follow Us'
+        },
+        th: {
+            nav_properties: 'อสังหาริมทรัพย์', nav_roi: 'คำนวณ ROI', nav_contact: 'ติดต่อเรา', nav_post_property: 'ลงประกาศ', hero_agency: '🏖️ นายหน้าอสังหาริมทรัพย์',
+            hero_title: 'ค้นหาบ้านในฝันของคุณกับเรา', hero_subtitle: 'บ้านหรูระดับพรีเมี่ยมของไทย | ขายและเช่า 🏡', browse_properties: 'สอบถามข้อมูล', properties_subtitle: 'อสังหาริมทรัพย์',
+            properties_title: 'รายการแนะนำ', post_property_title: 'ลงประกาศอสังหาริมทรัพย์', post_property_desc: 'พร้อมที่จะลงประกาศแล้วหรือยัง? คลิกปุ่ม \'+\' เพื่อเปิดฟอร์มและเข้าถึงผู้ซื้อและผู้เช่าหลายพันคน',
+            open_listing_form_btn: 'เปิดฟอร์มลงประกาศ', roi_title: 'คำนวณผลตอบแทนการลงทุน (ROI)', roi_investment: 'เงินลงทุนทั้งหมด (บาท)', roi_income: 'รายได้จากการเช่ารายเดือน (บาท)',
+            roi_expenses: 'ค่าใช้จ่ายรายปี (บาท)', contact_title: 'ติดต่อเรา', contact_subtitle: 'เราพร้อมช่วยเหลือคุณ ติดต่อเราผ่านโทรศัพท์ อีเมล หรือโซเชียลมีเดีย', contact_phone: 'โทรศัพท์',
+            contact_whatsapp: 'WhatsApp', contact_whatsapp_text: 'แชทกับเรา', contact_email: 'อีเมล', footer_desc: 'ประตูสู่การค้นหาอสังหาริมทรัพย์ที่สุดในภูเก็ต',
+            footer_quick_links: 'ลิงก์ด่วน', footer_social: 'ติดตามเรา'
+        }
+    },
 
     init() {
         this.cacheDOMElements();
@@ -319,36 +338,13 @@ const App = {
 
     injectContent() {
         if (this.elements.roiCalculatorContent) {
-             this.elements.roiCalculatorContent.innerHTML = `
-                <div class="space-y-4">
-                    <div><label for="investment" class="block text-lg font-medium text-gray-700 mb-1" data-translate-key="roi_investment">Total Investment (THB)</label><input id="investment" type="number" placeholder="Enter total investment" class="w-full p-3 border border-gray-300 rounded-md text-lg"/></div>
-                    <div><label for="income" class="block text-lg font-medium text-gray-700 mb-1" data-translate-key="roi_income">Monthly Rental Income (THB)</label><input id="income" type="number" placeholder="Enter monthly rental income" class="w-full p-3 border border-gray-300 rounded-md text-lg"/></div>
-                    <div><label for="expenses" class="block text-lg font-medium text-gray-700 mb-1" data-translate-key="roi_expenses">Annual Expenses (THB)</label><input id="expenses" type="number" placeholder="Enter annual expenses" class="w-full p-3 border border-gray-300 rounded-md text-lg" /></div>
-                    <div id="roi-result" class="mt-4 text-center font-bold text-gray-800 text-3xl h-10"></div>
-                    <div id="roiChartContainer" class="h-64 md:h-80 mt-6"><canvas id="roiChart"></canvas></div>
-                </div>`;
+             this.elements.roiCalculatorContent.innerHTML = `<div class="space-y-4"><div><label for="investment" class="block text-lg font-medium text-gray-700 mb-1" data-translate-key="roi_investment">Total Investment (THB)</label><input id="investment" type="number" placeholder="Enter total investment" class="w-full p-3 border border-gray-300 rounded-md text-lg"/></div><div><label for="income" class="block text-lg font-medium text-gray-700 mb-1" data-translate-key="roi_income">Monthly Rental Income (THB)</label><input id="income" type="number" placeholder="Enter monthly rental income" class="w-full p-3 border border-gray-300 rounded-md text-lg"/></div><div><label for="expenses" class="block text-lg font-medium text-gray-700 mb-1" data-translate-key="roi_expenses">Annual Expenses (THB)</label><input id="expenses" type="number" placeholder="Enter annual expenses" class="w-full p-3 border border-gray-300 rounded-md text-lg" /></div><div id="roi-result" class="mt-4 text-center font-bold text-gray-800 text-3xl h-10"></div><div id="roiChartContainer" class="h-64 md:h-80 mt-6"><canvas id="roiChart"></canvas></div></div>`;
         }
         if (this.elements.contactContent) {
-            this.elements.contactContent.innerHTML = `
-                <a href="tel:+66654765114" class="bg-white p-8 rounded-lg shadow-sm text-center transition-transform hover:-translate-y-2"><div class="text-5xl text-[var(--primary-color)] mb-4"><i class="fas fa-phone-alt"></i></div><h3 class="text-2xl font-semibold text-gray-800" data-translate-key="contact_phone">Phone</h3><p class="text-gray-500 mt-2 text-lg">+66 65 476 5114</p></a>
-                <a href="https://wa.me/66654765114" target="_blank" class="bg-white p-8 rounded-lg shadow-sm text-center transition-transform hover:-translate-y-2"><div class="text-5xl text-green-500 mb-4"><i class="fab fa-whatsapp"></i></div><h3 class="text-2xl font-semibold text-gray-800" data-translate-key="contact_whatsapp">WhatsApp</h3><p class="text-gray-500 mt-2 text-lg" data-translate-key="contact_whatsapp_text">Chat with us</p></a>
-                <a href="mailto:contact@mermaidhomes.com" class="bg-white p-8 rounded-lg shadow-sm text-center transition-transform hover:-translate-y-2"><div class="text-5xl text-blue-500 mb-4"><i class="fas fa-envelope"></i></div><h3 class="text-2xl font-semibold text-gray-800" data-translate-key="contact_email">Email</h3><p class="text-gray-500 mt-2 text-lg">contact@mermaidhomes.com</p></a>`;
+            this.elements.contactContent.innerHTML = `<a href="tel:+66654765114" class="bg-white p-8 rounded-lg shadow-sm text-center transition-transform hover:-translate-y-2"><div class="text-5xl text-[var(--primary-color)] mb-4"><i class="fas fa-phone-alt"></i></div><h3 class="text-2xl font-semibold text-gray-800" data-translate-key="contact_phone">Phone</h3><p class="text-gray-500 mt-2 text-lg">+66 65 476 5114</p></a><a href="https://wa.me/66654765114" target="_blank" class="bg-white p-8 rounded-lg shadow-sm text-center transition-transform hover:-translate-y-2"><div class="text-5xl text-green-500 mb-4"><i class="fab fa-whatsapp"></i></div><h3 class="text-2xl font-semibold text-gray-800" data-translate-key="contact_whatsapp">WhatsApp</h3><p class="text-gray-500 mt-2 text-lg" data-translate-key="contact_whatsapp_text">Chat with us</p></a><a href="mailto:contact@mermaidhomes.com" class="bg-white p-8 rounded-lg shadow-sm text-center transition-transform hover:-translate-y-2"><div class="text-5xl text-blue-500 mb-4"><i class="fas fa-envelope"></i></div><h3 class="text-2xl font-semibold text-gray-800" data-translate-key="contact_email">Email</h3><p class="text-gray-500 mt-2 text-lg">contact@mermaidhomes.com</p></a>`;
         }
         if (this.elements.propertyForm) {
-            this.elements.propertyForm.innerHTML = `
-                <div><label class="block text-sm font-medium text-gray-700">Property Title</label><input type="text" name="title" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div>
-                <div><label class="block text-sm font-medium text-gray-700">Type</label><select name="type" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"><option value="Sale">Sale</option><option value="Rent">Rent</option></select></div>
-                <div><label class="block text-sm font-medium text-gray-700">Category</label><select name="category" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"><option value="Villa">Villa</option><option value="Condo">Condo</option><option value="House">House</option></select></div>
-                <div><label class="block text-sm font-medium text-gray-700">Location</label><input type="text" name="location" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div>
-                <div class="grid grid-cols-3 gap-4">
-                    <div><label class="block text-sm font-medium text-gray-700">Bedrooms</label><input type="number" name="bedrooms" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div>
-                    <div><label class="block text-sm font-medium text-gray-700">Bathrooms</label><input type="number" name="bathrooms" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div>
-                    <div><label class="block text-sm font-medium text-gray-700">Area (sqm)</label><input type="number" name="area" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div>
-                </div>
-                <div><label class="block text-sm font-medium text-gray-700">Price (THB)</label><input type="number" name="priceTHB" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div>
-                <div><label class="block text-sm font-medium text-gray-700">Description</label><textarea name="description" rows="3" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></textarea></div>
-                <div><label class="block text-sm font-medium text-gray-700">Property Images (Max 15)</label><input type="file" name="images" multiple accept="image/*" required class="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-rose-50 file:text-[var(--primary-color)] hover:file:bg-rose-100"/></div>
-                <button type="submit" class="w-full action-button py-2 px-4 rounded-md">Add Property</button>`;
+            this.elements.propertyForm.innerHTML = `<div><label class="block text-sm font-medium text-gray-700">Property Title</label><input type="text" name="title" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div><div><label class="block text-sm font-medium text-gray-700">Type</label><select name="type" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"><option value="Sale">Sale</option><option value="Rent">Rent</option></select></div><div><label class="block text-sm font-medium text-gray-700">Category</label><select name="category" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"><option value="Villa">Villa</option><option value="Condo">Condo</option><option value="House">House</option></select></div><div><label class="block text-sm font-medium text-gray-700">Location</label><input type="text" name="location" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div><div class="grid grid-cols-3 gap-4"><div><label class="block text-sm font-medium text-gray-700">Bedrooms</label><input type="number" name="bedrooms" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div><div><label class="block text-sm font-medium text-gray-700">Bathrooms</label><input type="number" name="bathrooms" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div><div><label class="block text-sm font-medium text-gray-700">Area (sqm)</label><input type="number" name="area" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div></div><div><label class="block text-sm font-medium text-gray-700">Price (THB)</label><input type="number" name="priceTHB" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div><div><label class="block text-sm font-medium text-gray-700">Description</label><textarea name="description" rows="3" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></textarea></div><div><label class="block text-sm font-medium text-gray-700">Property Images (Max 15)</label><input type="file" name="images" multiple accept="image/*" required class="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-rose-50 file:text-[var(--primary-color)] hover:file:bg-rose-100"/></div><button type="submit" class="w-full action-button py-2 px-4 rounded-md">Add Property</button>`;
         }
     },
 
@@ -388,7 +384,18 @@ const App = {
         }
     },
 
-    setLanguage(lang) { /* ... Translation logic ... */ },
+    setLanguage(lang) {
+        document.querySelectorAll('[data-translate-key]').forEach(element => {
+            const key = element.getAttribute('data-translate-key');
+            if (this.translations[lang] && this.translations[lang][key]) {
+                if (element.tagName === 'INPUT' && element.type !== 'submit') {
+                    element.placeholder = this.translations[lang][key];
+                } else {
+                    element.textContent = this.translations[lang][key];
+                }
+            }
+        });
+    },
     
     showNotification(message, type = 'success') {
         const el = this.elements.notification;
@@ -417,8 +424,9 @@ const App = {
         const contentEl = document.getElementById('property-detail-content');
         if (!contentEl) return;
         const formatPrice = price => new Intl.NumberFormat('th-TH').format(price);
+        const mainImage = property.images?.[0] || `https://placehold.co/800x600/f0f0f0/ccc?text=Image+Not+Found`;
         const thumbnailsHTML = property.images.map((imgSrc, index) => `<img src="${imgSrc}" alt="Thumbnail ${index + 1}" class="thumbnail-img h-16 w-24 object-cover rounded-md ${index === 0 ? 'active' : ''}" onclick="App.setMainImage(this, '${imgSrc}')" onerror="this.style.display='none'">`).join('');
-        contentEl.innerHTML = `<div class="grid grid-cols-1 lg:grid-cols-2 gap-8"><div class="space-y-4"><img id="main-property-image" src="${property.images[0]}" alt="${property.title}" class="w-full h-96 object-cover rounded-lg" onerror="this.src='https://placehold.co/800x600/f0f0f0/ccc?text=Image+Not+Found'"><div class="flex gap-2 flex-wrap">${thumbnailsHTML}</div></div><div class="space-y-4"><h2 class="text-3xl font-bold text-gray-800">${property.title}</h2><div class="text-3xl font-bold text-[var(--primary-color)]">฿${formatPrice(property.priceTHB)} ${property.type === 'Rent' ? '/month' : ''}</div><div class="grid grid-cols-2 gap-4 py-4 border-y"><div class="flex items-center gap-2"><i class="fas fa-bed text-[var(--primary-color)]"></i><span>${property.bedrooms} Bedrooms</span></div><div class="flex items-center gap-2"><i class="fas fa-bath text-[var(--primary-color)]"></i><span>${property.bathrooms} Bathrooms</span></div><div class="flex items-center gap-2"><i class="fas fa-ruler-combined text-[var(--primary-color)]"></i><span>${property.area} sqm</span></div><div class="flex items-center gap-2"><i class="fas fa-map-marker-alt text-[var(--primary-color)]"></i><span>${property.location}</span></div></div><div><h3 class="text-xl font-semibold mb-2">Description</h3><p class="text-gray-700 leading-relaxed">${property.description}</p></div><div class="flex gap-4"><a href="https://wa.me/66654765114?text=I'm interested in ${property.title}" target="_blank" class="flex-1 bg-green-500 text-white py-3 px-6 rounded-lg text-center hover:bg-green-600 transition-colors"><i class="fab fa-whatsapp mr-2"></i>WhatsApp</a><a href="tel:+66654765114" class="flex-1 action-button py-3 px-6 rounded-lg text-center"><i class="fas fa-phone mr-2"></i>Call Now</a></div></div></div>`;
+        contentEl.innerHTML = `<div class="grid grid-cols-1 lg:grid-cols-2 gap-8"><div class="space-y-4"><img id="main-property-image" src="${mainImage}" alt="${property.title}" class="w-full h-96 object-cover rounded-lg" onerror="this.src='https://placehold.co/800x600/f0f0f0/ccc?text=Image+Not+Found'"><div class="flex gap-2 flex-wrap">${thumbnailsHTML}</div></div><div class="space-y-4"><h2 class="text-3xl font-bold text-gray-800">${property.title}</h2><div class="text-3xl font-bold text-[var(--primary-color)]">฿${formatPrice(property.priceTHB)} ${property.type === 'Rent' ? '/month' : ''}</div><div class="grid grid-cols-2 gap-4 py-4 border-y"><div class="flex items-center gap-2"><i class="fas fa-bed text-[var(--primary-color)]"></i><span>${property.bedrooms} Bedrooms</span></div><div class="flex items-center gap-2"><i class="fas fa-bath text-[var(--primary-color)]"></i><span>${property.bathrooms} Bathrooms</span></div><div class="flex items-center gap-2"><i class="fas fa-ruler-combined text-[var(--primary-color)]"></i><span>${property.area} sqm</span></div><div class="flex items-center gap-2"><i class="fas fa-map-marker-alt text-[var(--primary-color)]"></i><span>${property.location}</span></div></div><div><h3 class="text-xl font-semibold mb-2">Description</h3><p class="text-gray-700 leading-relaxed">${property.description}</p></div><div class="flex gap-4"><a href="https://wa.me/66654765114?text=I'm interested in ${property.title}" target="_blank" class="flex-1 bg-green-500 text-white py-3 px-6 rounded-lg text-center hover:bg-green-600 transition-colors"><i class="fab fa-whatsapp mr-2"></i>WhatsApp</a><a href="tel:+66654765114" class="flex-1 action-button py-3 px-6 rounded-lg text-center"><i class="fas fa-phone mr-2"></i>Call Now</a></div></div></div>`;
         this.showModal(this.elements.propertyDetailModal);
     },
 
