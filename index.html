@@ -23,13 +23,10 @@
         body { font-family: 'Poppins', sans-serif; background-color: var(--bg-main); color: var(--text-dark); }
         .font-heading { font-family: 'Forum', serif; }
         .container { max-width: 1280px; }
-        #loading-overlay {
-            /* This is now visible by default and hidden by JS */
-            transition: opacity 0.5s ease-out;
-        }
+        #loading-overlay { transition: opacity 0.5s ease-out; }
         .page-content-section { display: none; }
         .page-content-section.active { display: block; animation: fadeIn 0.5s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .header { position: sticky; top: 0; z-index: 50; }
         .header-top { background: var(--primary-color); color: white; padding: 0.5rem 0; font-size: 0.8rem; }
         .header-top a:hover { color: #f3e5e0; }
@@ -134,13 +131,13 @@
     </header>
 
     <main id="main-content">
-        <section id="hero-section" class="page-content-section hero active">
+        <section id="hero-section" class="page-content-section hero">
             <video autoplay loop muted playsinline id="hero-video" poster="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyMCIgaGVpZ2h0PSIxMDgwIiB2aWV3Qm94PSIwIDAgMTkyMCAxMDgwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTkyMCIgaGVpZ2h0PSIxMDgwIiBmaWxsPSIjNjY3ZWVhIi8+Cjx0ZXh0IHg9Ijk2MCIgeT0iNTQwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iNDgiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+TG9hZGluZyBWaWRlby4uLjwvdGV4dD4KPHN2Zz4=">
                <source src="Video opening.mp4" type="video/mp4">
                Your browser does not support the video tag.
             </video>
             <div class="hero-overlay"></div>
-            <div class="container">
+            <div class="container mx-auto px-4">
                <div class="hero-content">
                    <p class="hero-subtitle" data-translate-key="hero_agency">Real Estate Agency</p>
                    <h2 class="h1 hero-title font-heading" data-translate-key="hero_title">Find Your Dream House By Us</h2>
@@ -171,7 +168,8 @@
              <div class="container mx-auto px-4">
                 <h2 class="text-4xl md:text-5xl font-bold text-center mb-10 text-gray-800" data-translate-key="roi_title">Return on Investment (ROI) Calculator</h2>
                 <div id="roi-calculator-content" class="max-w-xl mx-auto bg-white rounded-2xl shadow-lg p-8">
-                    </div>
+                    <!-- ROI form elements will be injected here by JS -->
+                </div>
             </div>
         </section>
 
@@ -180,7 +178,8 @@
                 <h2 class="text-4xl md:text-5xl font-bold text-center mb-4 text-gray-800" data-translate-key="contact_title">Get In Touch</h2>
                 <p class="text-center text-gray-500 mb-12 max-w-2xl mx-auto" data-translate-key="contact_subtitle">We are here to help you. Contact us via phone, email, or our social media channels.</p>
                 <div id="contact-content" class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    </div>
+                    <!-- Contact grid elements will be injected here by JS -->
+                </div>
             </div>
         </section>
     </main>
@@ -230,7 +229,7 @@
         <div class="modal-content">
             <button class="modal-close" onclick="App.hideModal(App.elements.addListingModal)">&times;</button>
             <h3 class="text-2xl font-bold mb-4">Add New Property</h3>
-            <form id="property-form" class="space-y-4"></form>
+            <form id="property-form" class="space-y-4"><!-- Form fields will be injected here by JS --></form>
         </div>
     </div>
     <div id="property-detail-modal" class="modal">
@@ -247,254 +246,255 @@
     </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const App = {
-        PROPERTIES_KEY: 'mermaid_homes_properties_v2',
-        imageBasePath: 'https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/images/',
-        elements: {},
-        currentLang: 'en',
-        propertiesData: [],
+// Main Application Logic
+const App = {
+    PROPERTIES_KEY: 'mermaid_homes_properties_v2',
+    elements: {},
+    propertiesData: [],
 
-        init() {
-            this.loadProperties();
-            this.cacheDOMElements();
-            this.injectContent();
-            this.bindEvents();
-            this.setLanguage('en');
-            this.showPage(window.location.hash.substring(1) || 'hero-section');
-            this.filterAndRenderProperties();
-            this.initScrollAnimations();
-            this.hideLoading(); // NEW: Hide loading screen after everything is ready
-        },
+    init() {
+        this.cacheDOMElements();
+        this.loadProperties();
+        this.injectContent();
+        this.bindEvents();
+        this.setLanguage('en');
+        const initialPage = window.location.hash.substring(1) || 'hero-section';
+        this.showPage(initialPage, true); // Initial load without scroll
+        this.filterAndRenderProperties();
+        this.initScrollAnimations();
+        this.hideLoading(); // Hide loading screen when everything is ready
+    },
 
-        // NEW: Function to hide the loading screen
-        hideLoading() {
-            const overlay = this.elements.loadingOverlay;
-            if (overlay) {
-                overlay.style.opacity = '0';
-                // Wait for fade out animation to finish before hiding
-                overlay.addEventListener('transitionend', () => {
-                    overlay.style.display = 'none';
-                }, { once: true });
-            }
-        },
-        
-        loadProperties() {
-            try {
-                const savedData = localStorage.getItem(this.PROPERTIES_KEY);
-                if (savedData && savedData !== '[]') {
-                    this.propertiesData = JSON.parse(savedData);
-                } else {
-                    this.propertiesData = this.getDefaultData();
-                    this.saveProperties();
-                }
-            } catch (e) {
-                console.error("Error loading properties from localStorage:", e);
-                this.propertiesData = this.getDefaultData();
-            }
-        },
-
-        saveProperties() {
-            try {
-                localStorage.setItem(this.PROPERTIES_KEY, JSON.stringify(this.propertiesData));
-            } catch (e) {
-                console.error("Error saving properties to localStorage:", e);
-                this.showNotification("Could not save properties. Storage may be full.", "error");
-            }
-        },
-        
-        cacheDOMElements() {
-            const ids = ['loading-overlay', 'notification', 'mobile-menu-button', 'mobile-menu', 'lang-switcher', 'properties-grid', 'add-listing-btn', 'open-listing-form-from-page', 'add-listing-modal', 'property-detail-modal', 'delete-confirm-modal', 'roi-calculator-content', 'contact-content', 'property-form'];
-            ids.forEach(id => {
-                const el = document.getElementById(id);
-                if (el) this.elements[id.replace(/-(\w)/g, (_, l) => l.toUpperCase())] = el;
-            });
-            this.elements.allPageSections = document.querySelectorAll('.page-content-section');
-            this.elements.navLinks = document.querySelectorAll('.nav-link');
-        },
-
-        injectContent() {
-            // This function injects repeatable HTML to keep the body clean
-            if (this.elements.roiCalculatorContent) {
-                 this.elements.roiCalculatorContent.innerHTML = `
-                    <div class="space-y-4">
-                        <div><label for="investment" class="block text-lg font-medium text-gray-700 mb-1" data-translate-key="roi_investment">Total Investment (THB)</label><input id="investment" type="number" placeholder="Enter total investment" class="w-full p-3 border border-gray-300 rounded-md text-lg"/></div>
-                        <div><label for="income" class="block text-lg font-medium text-gray-700 mb-1" data-translate-key="roi_income">Monthly Rental Income (THB)</label><input id="income" type="number" placeholder="Enter monthly rental income" class="w-full p-3 border border-gray-300 rounded-md text-lg"/></div>
-                        <div><label for="expenses" class="block text-lg font-medium text-gray-700 mb-1" data-translate-key="roi_expenses">Annual Expenses (THB)</label><input id="expenses" type="number" placeholder="Enter annual expenses" class="w-full p-3 border border-gray-300 rounded-md text-lg" /></div>
-                        <div id="roi-result" class="mt-4 text-center font-bold text-gray-800 text-3xl h-10"></div>
-                        <div id="roiChartContainer" class="h-64 md:h-80 mt-6"><canvas id="roiChart"></canvas></div>
-                    </div>`;
-            }
-            if (this.elements.contactContent) {
-                this.elements.contactContent.innerHTML = `
-                    <a href="tel:+66654765114" class="bg-white p-8 rounded-lg shadow-sm text-center transition-transform hover:-translate-y-2"><div class="text-5xl text-[var(--primary-color)] mb-4"><i class="fas fa-phone-alt"></i></div><h3 class="text-2xl font-semibold text-gray-800" data-translate-key="contact_phone">Phone</h3><p class="text-gray-500 mt-2 text-lg">+66 65 476 5114</p></a>
-                    <a href="https://wa.me/66654765114" target="_blank" class="bg-white p-8 rounded-lg shadow-sm text-center transition-transform hover:-translate-y-2"><div class="text-5xl text-green-500 mb-4"><i class="fab fa-whatsapp"></i></div><h3 class="text-2xl font-semibold text-gray-800" data-translate-key="contact_whatsapp">WhatsApp</h3><p class="text-gray-500 mt-2 text-lg" data-translate-key="contact_whatsapp_text">Chat with us</p></a>
-                    <a href="mailto:contact@mermaidhomes.com" class="bg-white p-8 rounded-lg shadow-sm text-center transition-transform hover:-translate-y-2"><div class="text-5xl text-blue-500 mb-4"><i class="fas fa-envelope"></i></div><h3 class="text-2xl font-semibold text-gray-800" data-translate-key="contact_email">Email</h3><p class="text-gray-500 mt-2 text-lg">contact@mermaidhomes.com</p></a>`;
-            }
-            if (this.elements.propertyForm) {
-                this.elements.propertyForm.innerHTML = `
-                    <div><label class="block text-sm font-medium text-gray-700">Property Title</label><input type="text" name="title" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div>
-                    <div><label class="block text-sm font-medium text-gray-700">Type</label><select name="type" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"><option value="Sale">Sale</option><option value="Rent">Rent</option></select></div>
-                    <div><label class="block text-sm font-medium text-gray-700">Category</label><select name="category" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"><option value="Villa">Villa</option><option value="Condo">Condo</option><option value="House">House</option></select></div>
-                    <div><label class="block text-sm font-medium text-gray-700">Location</label><input type="text" name="location" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div>
-                    <div class="grid grid-cols-3 gap-4">
-                        <div><label class="block text-sm font-medium text-gray-700">Bedrooms</label><input type="number" name="bedrooms" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div>
-                        <div><label class="block text-sm font-medium text-gray-700">Bathrooms</label><input type="number" name="bathrooms" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div>
-                        <div><label class="block text-sm font-medium text-gray-700">Area (sqm)</label><input type="number" name="area" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div>
-                    </div>
-                    <div><label class="block text-sm font-medium text-gray-700">Price (THB)</label><input type="number" name="priceTHB" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div>
-                    <div><label class="block text-sm font-medium text-gray-700">Description</label><textarea name="description" rows="3" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></textarea></div>
-                    <div><label class="block text-sm font-medium text-gray-700">Property Images (Max 15)</label><input type="file" name="images" multiple accept="image/*" required class="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-rose-50 file:text-[var(--primary-color)] hover:file:bg-rose-100"/></div>
-                    <button type="submit" class="w-full action-button py-2 px-4 rounded-md">Add Property</button>`;
-            }
-        },
-
-        bindEvents() {
-            if (this.elements.mobileMenuButton) this.elements.mobileMenuButton.addEventListener('click', () => this.elements.mobileMenu.classList.toggle('hidden'));
-            this.elements.navLinks.forEach(link => link.addEventListener('click', e => {
-                e.preventDefault();
-                const target = link.getAttribute('href');
-                if (target?.startsWith('#')) {
-                    this.showPage(target.substring(1));
-                    if (this.elements.mobileMenu) this.elements.mobileMenu.classList.add('hidden');
-                }
-            }));
-            if (this.elements.langSwitcher) this.elements.langSwitcher.addEventListener('click', e => e.target.matches('.lang-btn') && this.setLanguage(e.target.dataset.lang));
-            if (this.elements.addListingBtn) this.elements.addListingBtn.addEventListener('click', () => this.showModal(this.elements.addListingModal));
-            if (this.elements.openListingFormFromPage) this.elements.openListingFormFromPage.addEventListener('click', () => this.showModal(this.elements.addListingModal));
-            if (this.elements.propertyForm) this.elements.propertyForm.addEventListener('submit', (e) => this.handlePropertySubmit(e));
-            window.addEventListener('popstate', e => this.showPage(e.state?.page || 'hero-section'));
-        },
-        
-        showNotification(message, type = 'success') {
-            const el = this.elements.notification;
-            if (!el) return;
-            el.textContent = message;
-            el.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg ${type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`;
-            el.classList.remove('hidden');
-            setTimeout(() => el.classList.add('hidden'), 3000);
-        },
-
-        filterAndRenderProperties() {
-            if (!this.elements.propertiesGrid) return;
-            this.elements.propertiesGrid.innerHTML = this.propertiesData.length === 0 ? '<div class="col-span-full text-center text-gray-500 py-8">No properties found. Add one!</div>' : this.propertiesData.map(prop => this.getPropertyCardHTML(prop)).join('');
-        },
-
-        getPropertyCardHTML(prop) {
-            const formatPrice = price => new Intl.NumberFormat('th-TH').format(price);
-            const mainImage = prop.images?.[0] || `https://via.placeholder.com/800x600.png/FAF7F0/B17457?text=${encodeURIComponent(prop.title)}`;
-            return `<article class="property-card cursor-pointer" onclick="App.showPropertyDetail('${prop.id}')"><div class="card-banner"><img src="${mainImage}" alt="${prop.title}" class="w-full h-full object-cover" loading="lazy" onerror="this.src='https://via.placeholder.com/800x600.png/f0f0f0/ccc?text=Image+Not+Found'"><div class="card-badge ${prop.type.toLowerCase()}">${prop.type}</div><button class="delete-property-btn" onclick="event.stopPropagation(); App.showDeleteConfirmation('${prop.id}', '${prop.title}')" title="Delete Property"><i class="fas fa-trash"></i></button></div><div class="card-content"><h3 class="text-xl font-semibold text-gray-800 mb-2 truncate">${prop.title}</h3><p class="text-gray-600 mb-3 text-sm h-10 overflow-hidden">${prop.description}</p><div class="card-price">฿${formatPrice(prop.priceTHB)} ${prop.type === 'Rent' ? '/month' : ''}</div><div class="card-list"><div class="card-item"><i class="fas fa-bed text-[var(--primary-color)]"></i><span>${prop.bedrooms}</span></div><div class="card-item"><i class="fas fa-bath text-[var(--primary-color)]"></i><span>${prop.bathrooms}</span></div><div class="card-item"><i class="fas fa-ruler-combined text-[var(--primary-color)]"></i><span>${prop.area} sqm</span></div><div class="card-item"><i class="fas fa-map-marker-alt text-[var(--primary-color)]"></i><span class="truncate">${prop.location}</span></div></div></div></article>`;
-        },
-        
-        showPropertyDetail(propId) {
-            const property = this.propertiesData.find(p => p.id === propId);
-            if (!property) return;
-            const contentEl = document.getElementById('property-detail-content');
-            if (!contentEl) return;
-            const formatPrice = price => new Intl.NumberFormat('th-TH').format(price);
-            const thumbnailsHTML = property.images.map((imgSrc, index) => `<img src="${imgSrc}" alt="Thumbnail ${index + 1}" class="thumbnail-img h-16 w-24 object-cover rounded-md ${index === 0 ? 'active' : ''}" onclick="App.setMainImage(this, '${imgSrc}')" onerror="this.style.display='none'">`).join('');
-            contentEl.innerHTML = `<div class="grid grid-cols-1 lg:grid-cols-2 gap-8"><div class="space-y-4"><img id="main-property-image" src="${property.images[0]}" alt="${property.title}" class="w-full h-96 object-cover rounded-lg" onerror="this.src='https://via.placeholder.com/800x600.png/f0f0f0/ccc?text=Image+Not+Found'"><div class="flex gap-2 flex-wrap">${thumbnailsHTML}</div></div><div class="space-y-4"><h2 class="text-3xl font-bold text-gray-800">${property.title}</h2><div class="text-3xl font-bold text-[var(--primary-color)]">฿${formatPrice(property.priceTHB)} ${property.type === 'Rent' ? '/month' : ''}</div><div class="grid grid-cols-2 gap-4 py-4 border-y"><div class="flex items-center gap-2"><i class="fas fa-bed text-[var(--primary-color)]"></i><span>${property.bedrooms} Bedrooms</span></div><div class="flex items-center gap-2"><i class="fas fa-bath text-[var(--primary-color)]"></i><span>${property.bathrooms} Bathrooms</span></div><div class="flex items-center gap-2"><i class="fas fa-ruler-combined text-[var(--primary-color)]"></i><span>${property.area} sqm</span></div><div class="flex items-center gap-2"><i class="fas fa-map-marker-alt text-[var(--primary-color)]"></i><span>${property.location}</span></div></div><div><h3 class="text-xl font-semibold mb-2">Description</h3><p class="text-gray-700 leading-relaxed">${property.description}</p></div><div class="flex gap-4"><a href="https://wa.me/66654765114?text=I'm interested in ${property.title}" target="_blank" class="flex-1 bg-green-500 text-white py-3 px-6 rounded-lg text-center hover:bg-green-600 transition-colors"><i class="fab fa-whatsapp mr-2"></i>WhatsApp</a><a href="tel:+66654765114" class="flex-1 action-button py-3 px-6 rounded-lg text-center"><i class="fas fa-phone mr-2"></i>Call Now</a></div></div></div>`;
-            this.showModal(this.elements.propertyDetailModal);
-        },
-
-        setMainImage(thumbElement, imgSrc) {
-            document.getElementById('main-property-image').src = imgSrc;
-            document.querySelectorAll('.thumbnail-img').forEach(el => el.classList.remove('active'));
-            thumbElement.classList.add('active');
-        },
-        
-        showDeleteConfirmation(propId, propTitle) {
-            const contentEl = document.getElementById('delete-confirm-content');
-            if (!contentEl) return;
-            contentEl.innerHTML = `<h3 class="text-xl font-bold mb-4 text-red-600">Delete Property</h3><p class="mb-6">Are you sure you want to delete "${propTitle}"?</p><div class="flex gap-4"><button onclick="App.hideModal(App.elements.deleteConfirmModal)" class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400">Cancel</button><button onclick="App.deleteProperty('${propId}')" class="flex-1 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600">Delete</button></div>`;
-            this.showModal(this.elements.deleteConfirmModal);
-        },
-        
-        deleteProperty(propId) {
-            this.propertiesData = this.propertiesData.filter(prop => prop.id !== propId);
-            this.saveProperties();
-            this.filterAndRenderProperties();
-            this.initScrollAnimations();
-            this.hideModal(this.elements.deleteConfirmModal);
-            this.showNotification('Property deleted successfully!');
-        },
-
-        async handlePropertySubmit(event) {
-            event.preventDefault();
-            const formData = new FormData(event.target);
-            const files = event.target.images.files;
-            
-            if (files.length > 15) { return this.showNotification('You can select a maximum of 15 images.', 'error'); }
-            if (files.length === 0) { return this.showNotification('Please select at least one image.', 'error'); }
-
-            const fileToBase64 = file => new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = error => reject(error);
-            });
-            
-            this.showNotification('Uploading images...', 'success');
-            const imagePromises = Array.from(files).map(fileToBase64);
-            const base64Images = await Promise.all(imagePromises);
-
-            const newProperty = {
-                id: 'prop-' + Date.now(),
-                title: formData.get('title'), type: formData.get('type'), category: formData.get('category'),
-                location: formData.get('location'), bedrooms: parseInt(formData.get('bedrooms')),
-                bathrooms: parseInt(formData.get('bathrooms')), area: parseInt(formData.get('area')),
-                priceTHB: parseInt(formData.get('priceTHB')), description: formData.get('description'),
-                agentCode: 'USR-' + Date.now().toString().slice(-6), images: base64Images
-            };
-            
-            this.propertiesData.unshift(newProperty);
-            this.saveProperties();
-            this.filterAndRenderProperties();
-            this.initScrollAnimations();
-            this.hideModal(this.elements.addListingModal);
-            event.target.reset();
-            this.showNotification('Property added successfully!');
-        },
-        
-        initScrollAnimations() {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-            
-            document.querySelectorAll('.property-card').forEach(card => {
-                if (card.style.opacity !== '1') {
-                    card.style.opacity = '0';
-                    card.style.transform = 'translateY(20px)';
-                    card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-                    observer.observe(card);
-                }
-            });
-        },
-        
-        hideModal(modalEl) { if (modalEl) { modalEl.classList.remove('active'); document.body.style.overflow = 'auto'; } },
-        showModal(modalEl) { if (modalEl) { modalEl.classList.add('active'); document.body.style.overflow = 'hidden'; } },
-
-        getDefaultData() {
-             return [
-                { id: 'anchan-11012', title: 'Anchan Luxury Villas', type: 'Sale', category: 'Villa', location: 'Thalang', bedrooms: 3, bathrooms: 4, area: 473, priceTHB: 32837000, description: 'Experience ultimate luxury in this stunning villa.', agentCode: 'AG-PROJ-01', images: [] },
-                { id: 'trichada-rent', title: 'Trichada Pool Villa', type: 'Rent', category: 'Villa', location: 'Bangtao Beach', bedrooms: 3, bathrooms: 2, area: 200, priceTHB: 170000, description: 'Spacious 3-bedroom pool villa in prime Bangtao Beach.', agentCode: 'AG-RENT-02', images: [] }
-            ];
+    hideLoading() {
+        const overlay = this.elements.loadingOverlay;
+        if (overlay) {
+            overlay.style.opacity = '0';
+            overlay.addEventListener('transitionend', () => {
+                overlay.style.display = 'none';
+            }, { once: true });
         }
-    };
-    
-    // Fallback for translations and other dynamic content
-    App.setLanguage = App.setLanguage || function() {};
-    App.showPage = App.showPage || function() {};
+    },
 
-    App.init();
-    window.App = App;
-});
+    loadProperties() {
+        try {
+            const savedData = localStorage.getItem(this.PROPERTIES_KEY);
+            this.propertiesData = (savedData && savedData !== '[]') ? JSON.parse(savedData) : this.getDefaultData();
+            this.saveProperties(); // Ensure data is saved on first load
+        } catch (e) {
+            console.error("Error loading properties:", e);
+            this.propertiesData = this.getDefaultData();
+        }
+    },
+
+    saveProperties() {
+        try {
+            localStorage.setItem(this.PROPERTIES_KEY, JSON.stringify(this.propertiesData));
+        } catch (e) {
+            console.error("Error saving properties:", e);
+            this.showNotification("Could not save properties. Storage may be full.", "error");
+        }
+    },
+
+    cacheDOMElements() {
+        const ids = ['loading-overlay', 'notification', 'mobile-menu-button', 'mobile-menu', 'lang-switcher', 'properties-grid', 'add-listing-btn', 'open-listing-form-from-page', 'add-listing-modal', 'property-detail-modal', 'delete-confirm-modal', 'roi-calculator-content', 'contact-content', 'property-form'];
+        ids.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) this.elements[id.replace(/-(\w)/g, (_, l) => l.toUpperCase())] = el;
+        });
+        this.elements.allPageSections = document.querySelectorAll('.page-content-section');
+        this.elements.navLinks = document.querySelectorAll('.nav-link');
+    },
+
+    injectContent() {
+        if (this.elements.roiCalculatorContent) {
+             this.elements.roiCalculatorContent.innerHTML = `
+                <div class="space-y-4">
+                    <div><label for="investment" class="block text-lg font-medium text-gray-700 mb-1" data-translate-key="roi_investment">Total Investment (THB)</label><input id="investment" type="number" placeholder="Enter total investment" class="w-full p-3 border border-gray-300 rounded-md text-lg"/></div>
+                    <div><label for="income" class="block text-lg font-medium text-gray-700 mb-1" data-translate-key="roi_income">Monthly Rental Income (THB)</label><input id="income" type="number" placeholder="Enter monthly rental income" class="w-full p-3 border border-gray-300 rounded-md text-lg"/></div>
+                    <div><label for="expenses" class="block text-lg font-medium text-gray-700 mb-1" data-translate-key="roi_expenses">Annual Expenses (THB)</label><input id="expenses" type="number" placeholder="Enter annual expenses" class="w-full p-3 border border-gray-300 rounded-md text-lg" /></div>
+                    <div id="roi-result" class="mt-4 text-center font-bold text-gray-800 text-3xl h-10"></div>
+                    <div id="roiChartContainer" class="h-64 md:h-80 mt-6"><canvas id="roiChart"></canvas></div>
+                </div>`;
+        }
+        if (this.elements.contactContent) {
+            this.elements.contactContent.innerHTML = `
+                <a href="tel:+66654765114" class="bg-white p-8 rounded-lg shadow-sm text-center transition-transform hover:-translate-y-2"><div class="text-5xl text-[var(--primary-color)] mb-4"><i class="fas fa-phone-alt"></i></div><h3 class="text-2xl font-semibold text-gray-800" data-translate-key="contact_phone">Phone</h3><p class="text-gray-500 mt-2 text-lg">+66 65 476 5114</p></a>
+                <a href="https://wa.me/66654765114" target="_blank" class="bg-white p-8 rounded-lg shadow-sm text-center transition-transform hover:-translate-y-2"><div class="text-5xl text-green-500 mb-4"><i class="fab fa-whatsapp"></i></div><h3 class="text-2xl font-semibold text-gray-800" data-translate-key="contact_whatsapp">WhatsApp</h3><p class="text-gray-500 mt-2 text-lg" data-translate-key="contact_whatsapp_text">Chat with us</p></a>
+                <a href="mailto:contact@mermaidhomes.com" class="bg-white p-8 rounded-lg shadow-sm text-center transition-transform hover:-translate-y-2"><div class="text-5xl text-blue-500 mb-4"><i class="fas fa-envelope"></i></div><h3 class="text-2xl font-semibold text-gray-800" data-translate-key="contact_email">Email</h3><p class="text-gray-500 mt-2 text-lg">contact@mermaidhomes.com</p></a>`;
+        }
+        if (this.elements.propertyForm) {
+            this.elements.propertyForm.innerHTML = `
+                <div><label class="block text-sm font-medium text-gray-700">Property Title</label><input type="text" name="title" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div>
+                <div><label class="block text-sm font-medium text-gray-700">Type</label><select name="type" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"><option value="Sale">Sale</option><option value="Rent">Rent</option></select></div>
+                <div><label class="block text-sm font-medium text-gray-700">Category</label><select name="category" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"><option value="Villa">Villa</option><option value="Condo">Condo</option><option value="House">House</option></select></div>
+                <div><label class="block text-sm font-medium text-gray-700">Location</label><input type="text" name="location" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div>
+                <div class="grid grid-cols-3 gap-4">
+                    <div><label class="block text-sm font-medium text-gray-700">Bedrooms</label><input type="number" name="bedrooms" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div>
+                    <div><label class="block text-sm font-medium text-gray-700">Bathrooms</label><input type="number" name="bathrooms" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div>
+                    <div><label class="block text-sm font-medium text-gray-700">Area (sqm)</label><input type="number" name="area" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div>
+                </div>
+                <div><label class="block text-sm font-medium text-gray-700">Price (THB)</label><input type="number" name="priceTHB" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></div>
+                <div><label class="block text-sm font-medium text-gray-700">Description</label><textarea name="description" rows="3" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"></textarea></div>
+                <div><label class="block text-sm font-medium text-gray-700">Property Images (Max 15)</label><input type="file" name="images" multiple accept="image/*" required class="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-rose-50 file:text-[var(--primary-color)] hover:file:bg-rose-100"/></div>
+                <button type="submit" class="w-full action-button py-2 px-4 rounded-md">Add Property</button>`;
+        }
+    },
+
+    bindEvents() {
+        this.elements.navLinks.forEach(link => link.addEventListener('click', e => {
+            e.preventDefault();
+            const targetId = link.getAttribute('href')?.substring(1);
+            if (targetId) this.showPage(targetId);
+        }));
+        if (this.elements.mobileMenuButton) this.elements.mobileMenuButton.addEventListener('click', () => this.elements.mobileMenu.classList.toggle('hidden'));
+        if (this.elements.langSwitcher) this.elements.langSwitcher.addEventListener('click', e => e.target.matches('.lang-btn') && this.setLanguage(e.target.dataset.lang));
+        if (this.elements.addListingBtn) this.elements.addListingBtn.addEventListener('click', () => this.showModal(this.elements.addListingModal));
+        if (this.elements.openListingFormFromPage) this.elements.openListingFormFromPage.addEventListener('click', () => this.showModal(this.elements.addListingModal));
+        if (this.elements.propertyForm) this.elements.propertyForm.addEventListener('submit', (e) => this.handlePropertySubmit(e));
+        window.addEventListener('popstate', e => this.showPage(e.state?.page || 'hero-section', true));
+    },
+
+    showPage(pageId, isInitial = false) {
+        this.elements.allPageSections.forEach(section => section.classList.remove('active'));
+        const targetSection = document.getElementById(pageId);
+        if (targetSection) {
+            targetSection.classList.add('active');
+            if (!isInitial) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                history.pushState({ page: pageId }, '', `#${pageId}`);
+            }
+        }
+        if (this.elements.mobileMenu) this.elements.mobileMenu.classList.add('hidden');
+    },
+
+    setLanguage(lang) {
+        // ... (translation logic) ...
+    },
+    
+    showNotification(message, type = 'success') {
+        const el = this.elements.notification;
+        if (!el) return;
+        el.textContent = message;
+        el.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg ${type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`;
+        el.classList.remove('hidden');
+        setTimeout(() => el.classList.add('hidden'), 3000);
+    },
+
+    filterAndRenderProperties() {
+        if (!this.elements.propertiesGrid) return;
+        this.elements.propertiesGrid.innerHTML = this.propertiesData.length === 0 ? '<div class="col-span-full text-center text-gray-500 py-8">No properties found. Add one!</div>' : this.propertiesData.map(prop => this.getPropertyCardHTML(prop)).join('');
+        this.initScrollAnimations(); // Re-apply animations after render
+    },
+
+    getPropertyCardHTML(prop) {
+        const formatPrice = price => new Intl.NumberFormat('th-TH').format(price);
+        const mainImage = prop.images?.[0] || `https://via.placeholder.com/800x600.png/FAF7F0/B17457?text=${encodeURIComponent(prop.title)}`;
+        return `<article class="property-card cursor-pointer" onclick="App.showPropertyDetail('${prop.id}')"><div class="card-banner"><img src="${mainImage}" alt="${prop.title}" class="w-full h-full object-cover" loading="lazy" onerror="this.src='https://via.placeholder.com/800x600.png/f0f0f0/ccc?text=Image+Not+Found'"><div class="card-badge ${prop.type.toLowerCase()}">${prop.type}</div><button class="delete-property-btn" onclick="event.stopPropagation(); App.showDeleteConfirmation('${prop.id}', '${prop.title}')" title="Delete Property"><i class="fas fa-trash"></i></button></div><div class="card-content"><h3 class="text-xl font-semibold text-gray-800 mb-2 truncate">${prop.title}</h3><p class="text-gray-600 mb-3 text-sm h-10 overflow-hidden">${prop.description}</p><div class="card-price">฿${formatPrice(prop.priceTHB)} ${prop.type === 'Rent' ? '/month' : ''}</div><div class="card-list"><div class="card-item"><i class="fas fa-bed text-[var(--primary-color)]"></i><span>${prop.bedrooms}</span></div><div class="card-item"><i class="fas fa-bath text-[var(--primary-color)]"></i><span>${prop.bathrooms}</span></div><div class="card-item"><i class="fas fa-ruler-combined text-[var(--primary-color)]"></i><span>${prop.area} sqm</span></div><div class="card-item"><i class="fas fa-map-marker-alt text-[var(--primary-color)]"></i><span class="truncate">${prop.location}</span></div></div></div></article>`;
+    },
+    
+    showPropertyDetail(propId) {
+        const property = this.propertiesData.find(p => p.id === propId);
+        if (!property) return;
+        const contentEl = document.getElementById('property-detail-content');
+        if (!contentEl) return;
+        const formatPrice = price => new Intl.NumberFormat('th-TH').format(price);
+        const thumbnailsHTML = property.images.map((imgSrc, index) => `<img src="${imgSrc}" alt="Thumbnail ${index + 1}" class="thumbnail-img h-16 w-24 object-cover rounded-md ${index === 0 ? 'active' : ''}" onclick="App.setMainImage(this, '${imgSrc}')" onerror="this.style.display='none'">`).join('');
+        contentEl.innerHTML = `<div class="grid grid-cols-1 lg:grid-cols-2 gap-8"><div class="space-y-4"><img id="main-property-image" src="${property.images[0]}" alt="${property.title}" class="w-full h-96 object-cover rounded-lg" onerror="this.src='https://via.placeholder.com/800x600.png/f0f0f0/ccc?text=Image+Not+Found'"><div class="flex gap-2 flex-wrap">${thumbnailsHTML}</div></div><div class="space-y-4"><h2 class="text-3xl font-bold text-gray-800">${property.title}</h2><div class="text-3xl font-bold text-[var(--primary-color)]">฿${formatPrice(property.priceTHB)} ${property.type === 'Rent' ? '/month' : ''}</div><div class="grid grid-cols-2 gap-4 py-4 border-y"><div class="flex items-center gap-2"><i class="fas fa-bed text-[var(--primary-color)]"></i><span>${property.bedrooms} Bedrooms</span></div><div class="flex items-center gap-2"><i class="fas fa-bath text-[var(--primary-color)]"></i><span>${property.bathrooms} Bathrooms</span></div><div class="flex items-center gap-2"><i class="fas fa-ruler-combined text-[var(--primary-color)]"></i><span>${property.area} sqm</span></div><div class="flex items-center gap-2"><i class="fas fa-map-marker-alt text-[var(--primary-color)]"></i><span>${property.location}</span></div></div><div><h3 class="text-xl font-semibold mb-2">Description</h3><p class="text-gray-700 leading-relaxed">${property.description}</p></div><div class="flex gap-4"><a href="https://wa.me/66654765114?text=I'm interested in ${property.title}" target="_blank" class="flex-1 bg-green-500 text-white py-3 px-6 rounded-lg text-center hover:bg-green-600 transition-colors"><i class="fab fa-whatsapp mr-2"></i>WhatsApp</a><a href="tel:+66654765114" class="flex-1 action-button py-3 px-6 rounded-lg text-center"><i class="fas fa-phone mr-2"></i>Call Now</a></div></div></div>`;
+        this.showModal(this.elements.propertyDetailModal);
+    },
+
+    setMainImage(thumbElement, imgSrc) {
+        document.getElementById('main-property-image').src = imgSrc;
+        document.querySelectorAll('.thumbnail-img').forEach(el => el.classList.remove('active'));
+        thumbElement.classList.add('active');
+    },
+    
+    showDeleteConfirmation(propId, propTitle) {
+        const contentEl = document.getElementById('delete-confirm-content');
+        if (!contentEl) return;
+        contentEl.innerHTML = `<h3 class="text-xl font-bold mb-4 text-red-600">Delete Property</h3><p class="mb-6">Are you sure you want to delete "${propTitle}"?</p><div class="flex gap-4"><button onclick="App.hideModal(App.elements.deleteConfirmModal)" class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400">Cancel</button><button onclick="App.deleteProperty('${propId}')" class="flex-1 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600">Delete</button></div>`;
+        this.showModal(this.elements.deleteConfirmModal);
+    },
+    
+    deleteProperty(propId) {
+        this.propertiesData = this.propertiesData.filter(prop => prop.id !== propId);
+        this.saveProperties();
+        this.filterAndRenderProperties();
+        this.hideModal(this.elements.deleteConfirmModal);
+        this.showNotification('Property deleted successfully!');
+    },
+
+    async handlePropertySubmit(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const files = event.target.images.files;
+        
+        if (files.length > 15) { return this.showNotification('You can select a maximum of 15 images.', 'error'); }
+        if (files.length === 0) { return this.showNotification('Please select at least one image.', 'error'); }
+
+        const fileToBase64 = file => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+        
+        this.showNotification('Uploading images...', 'success');
+        const imagePromises = Array.from(files).map(fileToBase64);
+        const base64Images = await Promise.all(imagePromises);
+
+        const newProperty = {
+            id: 'prop-' + Date.now(),
+            title: formData.get('title'), type: formData.get('type'), category: formData.get('category'),
+            location: formData.get('location'), bedrooms: parseInt(formData.get('bedrooms')),
+            bathrooms: parseInt(formData.get('bathrooms')), area: parseInt(formData.get('area')),
+            priceTHB: parseInt(formData.get('priceTHB')), description: formData.get('description'),
+            agentCode: 'USR-' + Date.now().toString().slice(-6), images: base64Images
+        };
+        
+        this.propertiesData.unshift(newProperty);
+        this.saveProperties();
+        this.filterAndRenderProperties();
+        this.hideModal(this.elements.addListingModal);
+        event.target.reset();
+        this.showNotification('Property added successfully!');
+    },
+    
+    initScrollAnimations() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+        
+        document.querySelectorAll('.property-card').forEach(card => {
+            if (card.style.opacity !== '1') {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(card);
+            }
+        });
+    },
+    
+    hideModal(modalEl) { if (modalEl) { modalEl.classList.remove('active'); document.body.style.overflow = 'auto'; } },
+    showModal(modalEl) { if (modalEl) { modalEl.classList.add('active'); document.body.style.overflow = 'hidden'; } },
+
+    getDefaultData() {
+        // Returns a fresh copy of default properties
+         return [
+            { id: 'anchan-11012', title: 'Anchan Luxury Villas', type: 'Sale', category: 'Villa', location: 'Thalang', bedrooms: 3, bathrooms: 4, area: 473, priceTHB: 32837000, description: 'Experience ultimate luxury in this stunning villa.', agentCode: 'AG-PROJ-01', images: [] },
+            { id: 'trichada-rent', title: 'Trichada Pool Villa', type: 'Rent', category: 'Villa', location: 'Bangtao Beach', bedrooms: 3, bathrooms: 2, area: 200, priceTHB: 170000, description: 'Spacious 3-bedroom pool villa in prime Bangtao Beach.', agentCode: 'AG-RENT-02', images: [] }
+        ];
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => App.init());
+window.App = App; // For inline event handlers
 </script>
 
 </body>
