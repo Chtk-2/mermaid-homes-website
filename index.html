@@ -3,120 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mermaid Homes - Find Your Own</title>
+    <title>Mermaid Homes - Find Your Dream Property in Phuket</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Forum&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 
     <style>
         :root {
             --primary-color: #B17457;
             --primary-color-dark: #9A644A;
             --bg-main: #FEF3E2;
-            --bg-secondary: #F8EEDF;
-            --text-dark: #2d3748;
-            --footer-bg-light: #4B3F38; /* New Footer Color */
-            --footer-bg-dark: #3C322D;  /* New Footer Color */
+            --bg-secondary: #FDFBF7;
+            --text-dark: #3a3a3a;
+            --text-light: #707070;
+            --border-color: rgba(0, 0, 0, 0.08);
         }
         html { scroll-behavior: smooth; }
         body { font-family: 'Poppins', sans-serif; background-color: var(--bg-main); color: var(--text-dark); }
-        .container { max-width: 1280px; margin: 0 auto; padding: 0 1rem; }
+        .container { max-width: 1320px; margin: 0 auto; padding: 0 1.5rem; }
 
-        /* --- Page Loader --- */
-        #loader {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: var(--bg-main); z-index: 9999;
-            display: flex; justify-content: center; align-items: center;
-            opacity: 1; transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
-            visibility: visible;
-        }
-        #loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-        .loader-logo {
-            font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 2rem;
-            letter-spacing: 0.1em; color: var(--text-dark);
-            animation: pulse 1.5s infinite ease-in-out;
-        }
-        @keyframes pulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
-
-        /* --- Page Content Styling --- */
-        /* BUG FIX: Set default display to none. JS will handle showing the correct one. */
-        .page-content-section { 
-            display: none; 
-            animation: fadeIn 0.5s ease-out;
-        }
+        /* --- Animations & Transitions --- */
+        .page { display: none; animation: fadeIn 0.5s ease-out; }
+        .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        
-        /* Animation for elements scrolling into view */
-        .reveal {
-            opacity: 0; transform: translateY(30px);
-            transition: opacity 0.8s ease-out, transform 0.6s ease-out;
-        }
+        .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease-out, transform 0.6s ease-out; }
         .reveal.visible { opacity: 1; transform: translateY(0); }
 
-        /* --- Header & Navigation --- */
-        .header { position: sticky; top: 0; z-index: 50; }
-        .header-bottom { background-color: rgba(254, 243, 226, 0.9); backdrop-filter: blur(10px); box-shadow: 0 2px 4px rgba(0,0,0,0.05); padding: 1.5rem 0; }
-        .logo-text { font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 1.5rem; letter-spacing: 0.1em; color: var(--text-dark); }
-        .nav-link.nav-active { color: var(--primary-color); font-weight: 600; }
-        #mobile-menu { background-color: var(--bg-main); opacity: 0; max-height: 0; transform: translateY(-10px); overflow: hidden; transition: all 0.3s ease-out; display: block !important; }
-        #mobile-menu.active { opacity: 1; max-height: 500px; transform: translateY(0); }
+        /* --- Header & Mega Menu --- */
+        .header { position: sticky; top: 0; z-index: 50; transition: background-color 0.3s ease, box-shadow 0.3s ease; }
+        .header.scrolled { background-color: rgba(254, 243, 226, 0.98); backdrop-filter: blur(10px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .logo-text { font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 1.5rem; letter-spacing: 0.1em; }
+        .nav-item { position: relative; }
+        .mega-menu {
+            display: none; position: absolute; top: 100%; left: 0; right: 0;
+            background-color: white; padding: 2rem; margin-top: 1rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: 0 0 0.5rem 0.5rem;
+            animation: slideDown 0.3s ease-out;
+        }
+        .nav-item:hover .mega-menu { display: block; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* --- Hero Section --- */
-        .hero { position: relative; height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; color: white; overflow: hidden; }
+        .hero { position: relative; height: 90vh; min-height: 700px; display: flex; align-items: center; justify-content: center; text-align: center; color: white; overflow: hidden; }
         #hero-video { position: absolute; top: 50%; left: 50%; min-width: 100%; min-height: 100%; width: auto; height: auto; z-index: 1; transform: translateX(-50%) translateY(-50%); object-fit: cover; }
-        .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 2; }
-        .hero .container { position: relative; z-index: 3; }
-        .hero .hero-content h1 { font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 3rem; letter-spacing: 0.1em; color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
-        .hero .hero-content p { font-family: 'Poppins', sans-serif; font-weight: 300; font-size: 1.25rem; letter-spacing: 0.3em; text-transform: uppercase; color: #eee; margin-top: 1rem; }
+        .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(0,0,0,0.5), rgba(0,0,0,0.1)); z-index: 2; }
+        .hero-content { position: relative; z-index: 3; }
+        .hero-content h1 { font-family: 'Forum', serif; font-size: 4rem; text-shadow: 0 2px 15px rgba(0,0,0,0.3); }
         
-        /* --- General Components --- */
-        .section-heading { font-family: 'Forum', serif; font-size: 3rem; color: var(--text-dark); }
-        .btn-primary { background: var(--primary-color); color: white; padding: 0.75rem 1.5rem; border-radius: 0.5rem; cursor: pointer; transition: all 0.3s ease; font-weight: 500; text-decoration: none; display: inline-block; box-shadow: 0 4px 15px rgba(177, 116, 87, 0.2); }
+        /* --- Buttons & Forms --- */
+        .btn { border-radius: 0.5rem; cursor: pointer; transition: all 0.3s ease; font-weight: 500; text-decoration: none; display: inline-block; padding: 0.75rem 1.5rem; }
+        .btn-primary { background: var(--primary-color); color: white; box-shadow: 0 4px 15px rgba(177, 116, 87, 0.2); }
         .btn-primary:hover { background-color: var(--primary-color-dark); transform: translateY(-2px); box-shadow: 0 7px 20px rgba(177, 116, 87, 0.3); }
+        .filter-pill { background-color: #fff; border: 1px solid var(--border-color); padding: 0.5rem 1rem; border-radius: 99px; transition: all 0.2s ease; }
+        .filter-pill:hover, .filter-pill.active { background-color: var(--primary-color); color: white; border-color: var(--primary-color); }
+
+        /* --- General Components --- */
+        .section-heading { font-family: 'Forum', serif; font-size: 2.75rem; color: var(--text-dark); }
         
-        /* --- Property Card --- */
-        .properties-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 2.5rem; }
-        .property-card { background: #fff; border-radius: 0.75rem; border: 1px solid #EADDCB; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03); overflow: hidden; transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); display: flex; flex-direction: column; cursor: pointer; }
-        .property-card:hover { transform: translateY(-8px); box-shadow: 0 14px 28px rgba(0,0,0,0.07); }
-        .card-banner { position: relative; height: 220px; overflow: hidden; }
-        .card-banner img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
-        .property-card:hover .card-banner img { transform: scale(1.05); }
-        .card-badge { position: absolute; top: 1rem; left: 1rem; text-transform: capitalize; background-color: var(--primary-color); color: white; padding: 0.25rem 0.75rem; border-radius: 99px; font-size: 0.8rem; font-weight: 500; }
-        .card-content { padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column; }
-        .card-price { font-size: 1.5rem; font-weight: 600; color: var(--primary-color); margin-top: auto; }
+        /* --- Property Cards & Grids --- */
+        .property-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1.5rem; }
+        .property-card { background: white; border-radius: 0.75rem; border: 1px solid var(--border-color); box-shadow: 0 5px 15px rgba(0, 0, 0, 0); overflow: hidden; transition: all 0.4s ease; }
+        .property-card:hover { transform: translateY(-5px); box-shadow: 0 12px 24px rgba(0,0,0,0.06); }
         
         /* --- Footer --- */
-        .footer-light { background-color: var(--footer-bg-light); }
-        .footer-dark { background-color: var(--footer-bg-dark); }
+        .footer { background: var(--bg-secondary); border-top: 1px solid var(--border-color); }
+        .footer h4 { font-weight: 600; margin-bottom: 1rem; }
+        .footer a:hover { color: var(--primary-color); }
     </style>
 </head>
 <body>
-
-    <div id="loader"><div class="loader-logo">MERMAID HOMES</div></div>
-
     <header id="header" class="header"></header>
-    <main id="main-content"></main>
+    
+    <div id="page-home" class="page active"></div>
+    <div id="page-listings" class="page"></div>
+
     <footer id="footer" class="footer"></footer>
 
 <script>
 const App = {
     elements: {},
     propertiesData: [],
-    roiChart: null,
+    filters: {
+        listingType: 'rent',
+        category: 'all',
+        beds: 'all',
+        baths: 'all',
+        search: ''
+    },
     
     init() {
-        window.addEventListener('load', () => {
-            setTimeout(() => { this.elements.loader?.classList.add('hidden'); }, 300);
-        });
-
         document.addEventListener('DOMContentLoaded', () => {
             this.cacheDOMElements();
             this.injectHTML();
-            this.cacheInjectedElements();
             this.bindEvents();
             this.loadInitialContent();
             this.scrollReveal();
@@ -124,177 +104,179 @@ const App = {
     },
     
     loadInitialContent() {
-        this.loadProperties();
-        const initialPage = window.location.hash.substring(1) || 'hero-section';
-        this.showPage(initialPage, true);
+        this.propertiesData = this.getDefaultData();
+        const initialPage = window.location.hash.substring(1) || 'home';
+        this.showPage(initialPage);
     },
 
     cacheDOMElements() {
-        const ids = ['loader', 'header', 'main-content', 'footer'];
+        const ids = ['header', 'page-home', 'page-listings', 'footer'];
         ids.forEach(id => { this.elements[id] = document.getElementById(id); });
     },
 
-    cacheInjectedElements() {
-        const ids = ['mobile-menu', 'mobile-menu-button', 'properties-grid', 'roi-calculator-content', 'roiChart', 'investment', 'income', 'expenses', 'roi-result'];
-        ids.forEach(id => {
-            const el = document.getElementById(id);
-            if(el) this.elements[id.replace(/-(\w)/g, (_,l) => l.toUpperCase())] = el;
-        });
-    },
-
     injectHTML() {
-        const headerHTML = `
-            <div class="header-bottom">
-                <div class="container mx-auto px-4 flex justify-between items-center">
-                    <a href="#hero-section" class="nav-link logo-text">MERMAID HOMES</a>
-                    <nav class="hidden lg:flex items-center space-x-8 text-md font-medium text-gray-600">
-                        <a href="#properties" class="nav-link hover:text-[var(--primary-color)] transition-colors">Properties</a>
-                        <a href="#roi-calculator" class="nav-link hover:text-[var(--primary-color)] transition-colors">ROI Calculator</a>
-                        <a href="#contact" class="nav-link hover:text-[var(--primary-color)] transition-colors">Contact</a>
-                    </nav>
-                    <button id="mobile-menu-button" class="lg:hidden text-gray-600"><i class="fas fa-bars text-2xl"></i></button>
+        // --- HEADER & MEGA MENU ---
+        this.elements.header.innerHTML = `
+            <div class="container py-4 flex justify-between items-center">
+                <a href="#home" class="logo-text page-link">MERMAID HOMES</a>
+                <nav class="hidden lg:flex items-center space-x-8 text-md font-medium text-gray-700">
+                    <div class="nav-item">
+                        <a href="#listings-buy" class="page-link py-4">Buy</a>
+                        <div class="mega-menu">
+                            <div class="grid grid-cols-3 gap-8">
+                                <div><h4 class="font-semibold mb-2">Residential</h4><ul class="space-y-1 text-sm text-gray-600"><li><a href="#">Apartments</a></li><li><a href="#">Townhouses</a></li><li><a href="#">Villas</a></li></ul></div>
+                                <div><h4 class="font-semibold mb-2">Off-Plan</h4><ul class="space-y-1 text-sm text-gray-600"><li><a href="#">Apartments</a></li><li><a href="#">Townhouses</a></li><li><a href="#">Villas</a></li></ul></div>
+                                <div><h4 class="font-semibold mb-2">Commercial</h4><ul class="space-y-1 text-sm text-gray-600"><li><a href="#">Offices</a></li></ul></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#listings-rent" class="page-link py-4">Rent</a>
+                        <div class="mega-menu">
+                             <div class="grid grid-cols-2 gap-8">
+                                <div><h4 class="font-semibold mb-2">Residential</h4><ul class="space-y-1 text-sm text-gray-600"><li><a href="#">Apartments</a></li><li><a href="#">Penthouses</a></li><li><a href="#">Villas</a></li></ul></div>
+                                <div><h4 class="font-semibold mb-2">Commercial</h4><ul class="space-y-1 text-sm text-gray-600"><li><a href="#">Offices</a></li></ul></div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#" class="page-link py-4">About Us</a>
+                </nav>
+                <a href="#" class="btn btn-primary hidden lg:inline-block">Contact Us</a>
+            </div>`;
+
+        // --- HOME PAGE CONTENT ---
+        this.elements['page-home'].innerHTML = `
+            <section class="hero">
+                <video autoplay muted loop playsinline id="hero-video"><source src="opening.mp4" type="video/mp4"></video>
+                <div class="hero-overlay"></div>
+                <div class="container hero-content"><h1>Find Your Dream Home in Phuket</h1></div>
+            </section>
+            <section class="py-20 bg-white text-center"><div class="container"><h2 class="section-heading">Our Services</h2></div></section>
+        `;
+
+        // --- LISTINGS PAGE CONTENT (FILTERING UI) ---
+        this.elements['page-listings'].innerHTML = `
+            <div class="bg-white shadow-sm">
+                <div class="container py-6">
+                    <div id="filter-bar" class="grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
+                        <input type="text" id="search-input" placeholder="Search by name or location..." class="md:col-span-2 w-full p-3 border rounded-lg outline-none focus:ring-2 focus:ring-[var(--primary-color)]">
+                        <select id="type-select" class="w-full p-3 border rounded-lg bg-white"><option value="all">All Types</option><option value="Apartment">Apartment</option><option value="Villa">Villa</option><option value="Townhouse">Townhouse</option></select>
+                        <select id="beds-select" class="w-full p-3 border rounded-lg bg-white"><option value="all">All Beds</option><option value="1">1 Bed</option><option value="2">2+ Beds</option><option value="3">3+ Beds</option></select>
+                        <select id="baths-select" class="w-full p-3 border rounded-lg bg-white"><option value="all">All Baths</option><option value="1">1 Bath</option><option value="2">2+ Baths</option><option value="3">3+ Baths</option></select>
+                    </div>
+                    <div id="filter-pills" class="flex flex-wrap gap-3 mt-6">
+                        <button class="filter-pill active" data-category="all">All</button>
+                        <button class="filter-pill" data-category="Townhouse">Townhouse</button>
+                        <button class="filter-pill" data-category="Apartment">Apartment</button>
+                        <button class="filter-pill" data-category="Villa">Villa</button>
+                    </div>
                 </div>
             </div>
-            <div id="mobile-menu" class="lg:hidden border-t">
-                <a href="#properties" class="nav-link block text-center py-4 text-gray-700 hover:bg-gray-50">Properties</a>
-                <a href="#roi-calculator" class="nav-link block text-center py-4 text-gray-700 hover:bg-gray-50">ROI Calculator</a>
-                <a href="#contact" class="nav-link block text-center py-4 text-gray-700 hover:bg-gray-50">Contact</a>
+            <div class="container py-12">
+                <h2 id="listing-title" class="text-3xl font-bold mb-8">Properties for Rent</h2>
+                <div id="property-grid" class="property-grid"></div>
             </div>`;
-        if (this.elements.header) this.elements.header.innerHTML = headerHTML;
 
-        const mainHTML = `
-            <section id="hero-section" class="page-content-section hero">
-                <video autoplay muted loop playsinline id="hero-video"><source src="Video opening.mp4" type="video/mp4"></video>
-                <div class="hero-overlay"></div>
-                <div class="container"><div class="hero-content reveal visible"><h1>MERMAID HOMES</h1><p>FIND YOUR OWN</p><a href="#properties" class="nav-link btn-primary inline-block mt-8 font-bold py-3 px-8 rounded-full">Explore Listings</a></div></div>
-            </section>
-            <section id="properties" class="page-content-section py-16 md:py-24 bg-[var(--bg-secondary)]">
-                <div class="container"><h2 class="section-heading text-center mb-12 reveal">Featured Listings</h2><div id="properties-grid" class="properties-grid reveal"></div></div>
-            </section>
-            <section id="roi-calculator" class="page-content-section py-16 md:py-24">
-                <div class="container"><h2 class="section-heading text-center mb-12 reveal">Investment Calculator</h2><div id="roi-calculator-content" class="max-w-xl mx-auto bg-white rounded-2xl shadow-lg p-8 reveal"><div class="space-y-4"><div><label for="investment" class="block text-lg font-medium text-gray-700 mb-1">Total Investment (THB)</label><input id="investment" type="number" class="w-full p-2 border rounded" placeholder="5000000"></div><div><label for="income" class="block text-lg font-medium text-gray-700 mb-1">Monthly Rental Income (THB)</label><input id="income" type="number" class="w-full p-2 border rounded" placeholder="30000"></div><div><label for="expenses" class="block text-lg font-medium text-gray-700 mb-1">Annual Expenses (THB)</label><input id="expenses" type="number" class="w-full p-2 border rounded" placeholder="25000"></div><div id="roi-result" class="mt-4 text-center font-bold text-3xl h-10" style="color: var(--primary-color);"></div><div class="h-64 md:h-80 mt-6"><canvas id="roiChart"></canvas></div></div></div></div>
-            </section>
-            <section id="contact" class="page-content-section py-16 md:py-24 bg-[var(--bg-secondary)]">
-                <div class="container"><h2 class="section-heading text-center mb-4 reveal">Get In Touch</h2><p class="text-center text-gray-500 mb-12 max-w-2xl mx-auto reveal">We are here to help you find your perfect property in Phuket.</p><div class="grid grid-cols-1 md:grid-cols-3 gap-8 reveal"><div class="text-center p-6"><i class="fas fa-phone text-4xl text-[var(--primary-color)] mb-4"></i><h3 class="text-xl font-bold mb-2">Phone</h3><p class="text-gray-600">+66 65 476 5114</p></div><div class="text-center p-6"><i class="fas fa-envelope text-4xl text-[var(--primary-color)] mb-4"></i><h3 class="text-xl font-bold mb-2">Email</h3><p class="text-gray-600">info@mermaidhomes.com</p></div><div class="text-center p-6"><i class="fas fa-map-marker-alt text-4xl text-[var(--primary-color)] mb-4"></i><h3 class="text-xl font-bold mb-2">Location</h3><p class="text-gray-600">Phuket, Thailand</p></div></div></div>
-            </section>`;
-        if (this.elements.mainContent) this.elements.mainContent.innerHTML = mainHTML;
-
-        const footerHTML = `
-            <div class="py-12 footer-light text-white"><div class="container"><h3 class="logo-text text-white text-2xl mb-2 text-center">MERMAID HOMES</h3><p class="text-gray-300 text-center">Your trusted real estate partner in Phuket</p></div></div>
-            <div class="py-4 footer-dark text-center text-gray-400 text-sm"><p>&copy; ${new Date().getFullYear()} Mermaid Homes. All Rights Reserved.</p></div>`;
-        if (this.elements.footer) this.elements.footer.innerHTML = footerHTML;
+        // --- FOOTER ---
+        this.elements.footer.innerHTML = `
+             <div class="container py-16"><div class="grid grid-cols-1 md:grid-cols-4 gap-8"><div><h3 class="logo-text mb-4">MERMAID HOMES</h3><p class="text-sm text-gray-600">Your trusted real estate partner in Phuket.</p></div><div><h4>Quick Links</h4><ul class="space-y-2 text-sm text-gray-600"><li><a href="#">Buy</a></li><li><a href="#">Rent</a></li><li><a href="#">About Us</a></li></ul></div><div><h4>Contact Info</h4><ul class="space-y-2 text-sm text-gray-600"><li><i class="fas fa-map-marker-alt w-4 mr-2"></i>Phuket, Thailand</li><li><i class="fas fa-phone w-4 mr-2"></i>+66 65 476 5114</li><li><i class="fas fa-envelope w-4 mr-2"></i>info@mermaidhomes.com</li></ul></div><div><h4>Follow Us</h4><div class="flex space-x-4 text-xl"><a href="#"><i class="fab fa-facebook"></i></a><a href="#"><i class="fab fa-instagram"></i></a></div></div></div></div>
+            <div class="bg-white py-4 border-t border-[var(--border-color)]"><p class="text-center text-sm text-gray-500">&copy; ${new Date().getFullYear()} Mermaid Homes. All Rights Reserved.</p></div>`;
     },
 
     bindEvents() {
-        document.addEventListener('click', e => {
-            const navLink = e.target.closest('.nav-link');
-            if (navLink) {
+        // --- Page Navigation ---
+        document.body.addEventListener('click', e => {
+            const pageLink = e.target.closest('.page-link');
+            if(pageLink) {
                 e.preventDefault();
-                const href = navLink.getAttribute('href');
-                if (href && href.startsWith('#')) this.showPage(href.substring(1));
+                this.showPage(pageLink.hash.substring(1));
             }
         });
-        
-        window.addEventListener('popstate', e => {
-            this.showPage(e.state?.page || 'hero-section', true);
+
+        // --- Header Scroll Effect ---
+        const header = this.elements.header;
+        window.addEventListener('scroll', () => {
+            header.classList.toggle('scrolled', window.scrollY > 50);
         });
 
-        this.elements.roiCalculatorContent?.addEventListener('input', () => {
-            this.calculateROI();
-        });
-
-        this.elements.mobileMenuButton?.addEventListener('click', () => {
-             this.elements.mobileMenu?.classList.toggle('active');
+        // --- Filter Event Listeners ---
+        document.getElementById('search-input')?.addEventListener('keyup', e => this.handleFilterChange('search', e.target.value));
+        document.getElementById('type-select')?.addEventListener('change', e => this.handleFilterChange('category', e.target.value));
+        document.getElementById('beds-select')?.addEventListener('change', e => this.handleFilterChange('beds', e.target.value));
+        document.getElementById('baths-select')?.addEventListener('change', e => this.handleFilterChange('baths', e.target.value));
+        document.getElementById('filter-pills')?.addEventListener('click', e => {
+            if (e.target.matches('.filter-pill')) {
+                document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+                e.target.classList.add('active');
+                this.handleFilterChange('category', e.target.dataset.category);
+            }
         });
     },
 
-    showPage(pageId, isInitial = false) {
-        const loader = this.elements.loader;
+    handleFilterChange(key, value) {
+        this.filters[key] = value;
+        this.renderListings();
+    },
 
-        const transition = () => {
-            // Hide all sections by setting display to 'none'
-            document.querySelectorAll('.page-content-section').forEach(s => {
-                s.style.display = 'none';
-            });
+    showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        
+        let pageToShow = 'home'; // Default page
+        if (pageId.startsWith('listings')) {
+            pageToShow = 'listings';
+            this.filters.listingType = pageId.split('-')[1]; // 'buy' or 'rent'
             
-            const targetSection = document.getElementById(pageId);
-            if (targetSection) {
-                // Show the target section by setting display to 'block'
-                targetSection.style.display = 'block';
-
-                history.pushState({ page: pageId }, '', `#${pageId}`);
-                document.querySelectorAll('.nav-link').forEach(l => {
-                    l.classList.remove('nav-active');
-                    if(l.getAttribute('href') === `#${pageId}`) {
-                        l.classList.add('nav-active');
-                    }
-                });
-                
-                if (!isInitial) window.scrollTo({ top: 0, behavior: 'auto' });
-                
-                // Initialize content for the specific page AFTER it's visible
-                if (pageId === 'roi-calculator') {
-                    this.calculateROI();
-                }
-            }
-            loader?.classList.add('hidden');
-        };
-
-        if (isInitial) {
-            transition();
-        } else {
-            loader?.classList.remove('hidden');
-            setTimeout(transition, 300);
+            const titleEl = document.getElementById('listing-title');
+            if(titleEl) titleEl.textContent = `Properties for ${this.filters.listingType}`;
+            
+            this.renderListings();
         }
         
-        this.elements.mobileMenu?.classList.remove('active');
+        document.getElementById(`page-${pageToShow}`)?.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     },
 
-    loadProperties() {
-        this.propertiesData = this.getDefaultData();
-        const grid = this.elements.propertiesGrid;
+    renderListings() {
+        const grid = document.getElementById('property-grid');
         if (!grid) return;
-        grid.innerHTML = this.propertiesData.map(p => this.renderPropertyCard(p)).join('');
+
+        let filteredData = this.propertiesData.filter(p => p.type === this.filters.listingType);
+
+        if (this.filters.category !== 'all') {
+            filteredData = filteredData.filter(p => p.category === this.filters.category);
+        }
+        if (this.filters.beds !== 'all') {
+            filteredData = filteredData.filter(p => p.bedrooms >= parseInt(this.filters.beds));
+        }
+        if (this.filters.baths !== 'all') {
+            filteredData = filteredData.filter(p => p.bathrooms >= parseInt(this.filters.baths));
+        }
+        if (this.filters.search) {
+            const searchTerm = this.filters.search.toLowerCase();
+            filteredData = filteredData.filter(p => 
+                p.title.toLowerCase().includes(searchTerm) || 
+                p.location.toLowerCase().includes(searchTerm)
+            );
+        }
+
+        grid.innerHTML = filteredData.length 
+            ? filteredData.map(p => this.renderPropertyCard(p)).join('')
+            : `<p class="col-span-full text-center py-10">No properties found matching your criteria.</p>`;
     },
 
     renderPropertyCard(property) {
         const price = `฿${new Intl.NumberFormat('en-US').format(property.priceTHB)}`;
-        return `<div class="property-card"><div class="card-banner"><img src="${property.images[0]}" loading="lazy"><div class="card-badge">${property.type}</div></div><div class="card-content"><h3 class="text-xl font-semibold mb-2 truncate">${property.title}</h3><p class="text-gray-500 mb-4"><i class="fas fa-map-marker-alt mr-2"></i>${property.location}</p><div class="flex justify-between text-sm text-gray-600 mb-4 border-t pt-4"><span><i class="fas fa-bed mr-2"></i>${property.bedrooms}</span><span><i class="fas fa-bath mr-2"></i>${property.bathrooms}</span><span><i class="fas fa-ruler-combined mr-2"></i>${property.area} m²</span></div><div class="card-price">${price}</div></div></div>`;
+        return `
+            <div class="property-card">
+                <div class="relative h-52"><img src="${property.images[0]}" class="w-full h-full object-cover" alt="${property.title}"></div>
+                <div class="p-4"><h4 class="text-lg font-semibold truncate">${property.title}</h4><p class="text-sm text-gray-500 my-2"><i class="fas fa-map-marker-alt mr-2"></i>${property.location}</p><div class="flex justify-between text-sm text-gray-600 pt-2"><span><i class="fas fa-bed mr-2"></i>${property.bedrooms}</span><span><i class="fas fa-bath mr-2"></i>${property.bathrooms}</span><span><i class="fas fa-ruler-combined mr-2"></i>${property.area} m²</span></div><div class="mt-4 pt-4 border-t border-[var(--border-color)] font-bold text-lg text-[var(--primary-color)]">${price}</div></div>
+            </div>`;
     },
 
-    calculateROI() {
-        const investment = parseFloat(this.elements.investment?.value) || 0;
-        const income = parseFloat(this.elements.income?.value) || 0;
-        const expenses = parseFloat(this.elements.expenses?.value) || 0;
-        const resultEl = this.elements.roiResult;
-        
-        if (!resultEl) return;
-        if (investment === 0) { 
-            resultEl.textContent = ''; 
-            if (this.roiChart) { this.roiChart.destroy(); this.roiChart = null; }
-            return; 
-        }
-        const roi = ((income * 12 - expenses) / investment) * 100;
-        resultEl.textContent = `Annual ROI: ${roi.toFixed(2)}%`;
-        this.updateRoiChart(investment, (income * 12 - expenses));
-    },
-
-    updateRoiChart(investment, netProfit) {
-        const ctx = this.elements.roiChart?.getContext('2d');
-        if (!ctx) return;
-        if (this.roiChart) this.roiChart.destroy();
-        this.roiChart = new Chart(ctx, { type: 'doughnut', data: { labels: ['Net Profit', 'Investment'], datasets: [{ data: [netProfit > 0 ? netProfit : 0, investment], backgroundColor: ['#4CAF50', '#E0E0E0'], borderWidth: 2 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { display: false } } } });
-    },
-
-    scrollReveal() {
-        const observer = new IntersectionObserver(entries => {
-            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
-        }, { threshold: 0.1 });
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-    },
+    scrollReveal() { /* ... function to reveal elements on scroll ... */ },
 
     getDefaultData() {
-       return [{"id":1,"title":"Luxury Pool Villa in Bangtao","type":"sale","location":"Bangtao, Phuket","bedrooms":4,"bathrooms":5,"area":450,"priceTHB":25000000,"images":["https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800"]},{"id":2,"title":"Modern Sea View Condo","type":"rent","location":"Kamala, Phuket","bedrooms":2,"bathrooms":2,"area":120,"priceTHB":60000,"images":["https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800"]},{"id":3,"title":"Cozy House near Rawai Beach","type":"sale","location":"Rawai, Phuket","bedrooms":3,"bathrooms":2,"area":200,"priceTHB":8500000,"images":["https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800"]}];
+       return [{"id":1,"title":"Luxury Pool Villa","type":"rent","category":"Villa","location":"Bangtao, Phuket","bedrooms":4,"bathrooms":5,"area":450,"priceTHB":150000,"images":["https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800"]},{"id":2,"title":"Modern Sea View Condo","type":"rent","category":"Apartment","location":"Kamala, Phuket","bedrooms":2,"bathrooms":2,"area":120,"priceTHB":60000,"images":["https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800"]},{"id":3,"title":"Cozy Townhouse","type":"buy","category":"Townhouse","location":"Rawai, Phuket","bedrooms":3,"bathrooms":2,"area":200,"priceTHB":8500000,"images":["https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800"]},{"id":4,"title":"Elegant Family Villa","type":"buy","category":"Villa","location":"Cherngtalay, Phuket","bedrooms":5,"bathrooms":5,"area":500,"priceTHB":35000000,"images":["https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800"]},{"id":5,"title":"Beachfront Apartment","type":"rent","category":"Apartment","location":"Patong, Phuket","bedrooms":1,"bathrooms":1,"area":80,"priceTHB":45000,"images":["https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800"]}];
     }
 };
 
