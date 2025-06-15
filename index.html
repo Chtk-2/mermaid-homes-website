@@ -3,285 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mermaid Homes - Find Your Dream Property in Phuket</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Mermaid Homes - Find Your Dream Property</title>
+    <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
-
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
-    <link rel="preload" href="opening.mp4" as="video" type="video/mp4">
-
-    <style>
-        :root {
-            --primary-color: #B17457;
-            --bg-main: #8F867B;
-            --text-light: #FBFBFB;
-            --text-dark: #3a3a3a;
-        }
-        html { scroll-behavior: smooth; }
-        body { font-family: 'Poppins', sans-serif; background-color: var(--bg-main); color: var(--text-light); }
-        .container { max-width: 1400px; margin: 0 auto; padding: 0 1.5rem; }
-
-        /* --- Header & Mega Menu --- */
-        .header { position: fixed; top: 0; left: 0; right: 0; z-index: 50; transition: background-color 0.3s ease; }
-        .header.scrolled { background-color: rgba(143, 134, 123, 0.98); backdrop-filter: blur(10px); }
-        .logo-text { font-family: 'Poppins', sans-serif; font-weight: 500; font-size: 1.25rem; letter-spacing: 0.2em; text-transform: uppercase; }
-        
-        .mega-menu-container { position: relative; }
-        .mega-menu {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 600px;
-            background-color: #fff;
-            color: var(--text-dark);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            border-radius: 0 0 8px 8px;
-            padding: 2rem;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
-        .mega-menu-container:hover .mega-menu { display: flex; opacity: 1; visibility: visible; }
-        .mega-menu-col h4 { font-weight: 600; margin-bottom: 1rem; color: #333; }
-        .mega-menu-link { display: block; padding: 0.5rem 0; color: #555; transition: color 0.2s; }
-        .mega-menu-link:hover { color: var(--primary-color); }
-
-        /* --- Hero Section --- */
-        .hero { position: relative; height: 100vh; display: flex; align-items: center; justify-content: center; }
-        #hero-video { position: absolute; top: 50%; left: 50%; width: 100%; height: 100%; object-fit: cover; transform: translate(-50%, -50%); z-index: -1; }
-        .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-main); opacity: 0.8; z-index: 0; }
-        .hero-content h1 { font-family: 'Cormorant Garamond', serif; font-size: 3rem; md:font-size: 4.5rem; }
-        
-        /* --- Listings Page --- */
-        .listings-page { padding-top: 120px; background-color: #F4F1ED; color: var(--text-dark); min-height: 100vh; }
-        .property-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
-        .delete-property-btn { position: absolute; top: 10px; right: 10px; background-color: rgba(220, 53, 69, 0.8); color: white; border-radius: 50%; width: 30px; height: 30px; z-index: 5; opacity: 0; transition: opacity 0.2s; }
-        .property-card:hover .delete-property-btn { opacity: 1; }
-        
-        /* --- General --- */
-        .add-listing-btn { position: fixed; bottom: 2rem; right: 2rem; width: 60px; height: 60px; background: var(--primary-color); z-index: 40; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 100; }
-        .modal.active { display: flex; }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header id="header" class="header"></header>
-    <main id="main-content"></main>
-    <footer id="footer"></footer>
-
-    <button id="add-listing-btn" class="add-listing-btn rounded-full shadow-lg flex items-center justify-center text-2xl text-white"><i class="fas fa-plus"></i></button>
-    <div id="add-listing-modal" class="modal justify-center items-center p-4"></div>
-
-<script>
-const App = {
-    elements: {},
-    propertiesData: [],
+    <header id="header" class="header on-hero"></header>
     
-    firebaseConfig: {
-        apiKey: "AIzaSyPASN89uqTfDICCswwdmcTRs1fyWp4w",
-        authDomain: "mermaid-homes-phuket.firebaseapp.com",
-        projectId: "mermaid-homes-phuket",
-        storageBucket: "mermaid-homes-phuket.appspot.com",
-        messagingSenderId: "911498027425",
-        appId: "1:911498027425:web:772ee87f18dc68750f4528"
-    },
-
-    async init() {
-        firebase.initializeApp(this.firebaseConfig);
-        this.db = firebase.firestore();
-        document.addEventListener('DOMContentLoaded', async () => {
-            this.cacheDOMElements();
-            this.injectStaticHTML();
-            this.bindEvents();
-            await this.loadInitialContent();
+    <main id="main-content">
+        <section class="hero">
+            <div class="hero-video-wrapper">
+                <video autoplay muted loop playsinline id="hero-video">
+                    <source src="opening.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <h1 class="hero-title">Find Your Dream Home in Phuket</h1>
+            </div>
+        </section>
+    </main>
+    
+    <script src="main.js"></script>
+    <script>
+        // Initialize only the header for the homepage
+        document.addEventListener('DOMContentLoaded', () => {
+            App.initHeader();
         });
-    },
-    
-    async loadInitialContent() {
-        await this.loadProperties();
-        const initialPage = window.location.hash.substring(1) || 'home';
-        this.showPage(initialPage, true);
-    },
-
-    cacheDOMElements() {
-        const ids = ['header', 'main-content', 'footer', 'add-listing-btn', 'add-listing-modal'];
-        ids.forEach(id => { this.elements[id] = document.getElementById(id); });
-    },
-
-    injectStaticHTML() {
-        this.elements.header.innerHTML = `
-            <div class="container py-6 flex justify-between items-center">
-                <a href="#home" class="logo-text page-link">MERMAID HOMES</a>
-                <nav class="hidden lg:flex items-center space-x-8 text-sm font-light tracking-wider">
-                    <div class="mega-menu-container">
-                        <a href="#listings-buy" class="page-link py-2">Buy</a>
-                        <div class="mega-menu">
-                            <div class="flex-1 mega-menu-col">
-                                <h4>By Property Type</h4>
-                                <a href="#listings-buy" class="mega-menu-link" data-filter-category="Villa">Villas</a>
-                                <a href="#listings-buy" class="mega-menu-link" data-filter-category="Apartment">Apartments</a>
-                                <a href="#listings-buy" class="mega-menu-link" data-filter-category="Townhouse">Townhouses</a>
-                            </div>
-                            <div class="flex-1 mega-menu-col">
-                                <h4>By Location</h4>
-                                <a href="#" class="mega-menu-link">Patong</a>
-                                <a href="#" class="mega-menu-link">Kamala</a>
-                                <a href="#" class="mega-menu-link">Bang Tao</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mega-menu-container">
-                        <a href="#listings-rent" class="page-link py-2">Rent</a>
-                         <div class="mega-menu">
-                             <div class="flex-1 mega-menu-col">
-                                <h4>By Property Type</h4>
-                                <a href="#listings-rent" class="mega-menu-link" data-filter-category="Villa">Villas</a>
-                                <a href="#listings-rent" class="mega-menu-link" data-filter-category="Apartment">Apartments</a>
-                                <a href="#listings-rent" class="mega-menu-link" data-filter-category="Townhouse">Townhouses</a>
-                            </div>
-                        </div>
-                    </div>
-                </nav>
-            </div>`;
-        this.elements.footer.innerHTML = `<div class="bg-gray-800 text-gray-300 py-12"><div class="container text-center"><p>&copy; ${new Date().getFullYear()} Mermaid Homes. All Rights Reserved.</p></div></div>`;
-        this.elements.addListingModal.innerHTML = `<div class="bg-white text-gray-800 rounded-lg p-6 w-full max-w-lg max-h-full overflow-y-auto"><div class="flex justify-between items-center mb-6"><h3 class="text-2xl font-bold">Add New Property</h3><button class="close-modal-btn text-gray-500 text-3xl">&times;</button></div><form id="property-form" class="space-y-4"><div><label>Title</label><input type="text" name="title" required class="w-full p-2 border rounded"></div><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div><label>Listing Type</label><select name="type" required class="w-full p-2 border rounded"><option value="rent">For Rent</option><option value="buy">For Sale</option></select></div><div><label>Category</label><select name="category" required class="w-full p-2 border rounded"><option value="Villa">Villa</option><option value="Apartment">Apartment</option><option value="Townhouse">Townhouse</option></select></div></div><div><label>Location</label><input type="text" name="location" required class="w-full p-2 border rounded"></div><div class="grid grid-cols-3 gap-4"><div><label>Beds</label><input type="number" name="bedrooms" required class="w-full p-2 border rounded" min="0"></div><div><label>Baths</label><input type="number" name="bathrooms" required class="w-full p-2 border rounded" min="0"></div><div><label>Area (m²)</label><input type="number" name="area" required class="w-full p-2 border rounded" min="0"></div></div><div><label>Price (THB)</label><input type="number" name="priceTHB" required class="w-full p-2 border rounded" min="1"></div><div><label>Image URL</label><input type="url" name="images" required class="w-full p-2 border rounded" placeholder="https://..."></div><button type="submit" class="w-full bg-[var(--primary-color)] text-white p-3 rounded-lg !mt-6 flex items-center justify-center">Add Property</button></form></div>`;
-    },
-
-    bindEvents() {
-        document.body.addEventListener('click', e => {
-            if (e.target.closest('.page-link')) { e.preventDefault(); this.showPage(e.target.closest('.page-link').hash.substring(1)); }
-            if (e.target.closest('.close-modal-btn')) { this.hideModal(); }
-            if (e.target.closest('.mega-menu-link')) {
-                const type = e.target.closest('.mega-menu-link').href.split('-')[1];
-                const category = e.target.dataset.filterCategory;
-                this.showPage(`listings-${type}`, false, { category });
-            }
-        });
-        window.addEventListener('scroll', () => this.handleHeaderScroll());
-        this.elements.addListingBtn?.addEventListener('click', () => this.showModal());
-        document.getElementById('property-form')?.addEventListener('submit', e => this.handlePropertySubmit(e));
-    },
-
-    bindListingPageEvents() {
-        ['search-input', 'sort-select'].forEach(id => {
-            document.getElementById(id)?.addEventListener('input', () => this.renderListings());
-        });
-        document.getElementById('property-grid')?.addEventListener('click', async e => {
-            if (e.target.closest('.delete-property-btn')) {
-                e.stopPropagation();
-                if (confirm('Are you sure?')) await this.deleteProperty(e.target.closest('.delete-property-btn').dataset.id);
-            }
-        });
-    },
-    
-    async showPage(pageId, isInitial = false, filters = {}) {
-        const mainContent = this.elements.mainContent;
-        if (!isInitial) mainContent.style.opacity = 0;
-        await new Promise(resolve => setTimeout(resolve, isInitial ? 0 : 200));
-
-        if (pageId.startsWith('listings')) {
-            this.currentListingType = pageId.split('-')[1] || 'rent';
-            mainContent.innerHTML = this.getListingPageHTML(this.currentListingType);
-            this.renderListings(filters);
-            this.bindListingPageEvents();
-        } else {
-            mainContent.innerHTML = this.getHomePageHTML();
-        }
-        mainContent.style.opacity = 1;
-        if (!isInitial) window.scrollTo({ top: 0, behavior: 'auto' });
-        this.handleHeaderScroll();
-    },
-    
-    getHomePageHTML() {
-        return `<section id="home" class="hero"><video autoplay muted loop playsinline id="hero-video"><source src="opening.mp4" type="video/mp4"></video><div class="hero-overlay"></div><div class="relative z-10 text-center text-white hero-content px-4"><h1 class="leading-tight">Find Your Dream Home in Phuket</h1></div></section>`;
-    },
-
-    getListingPageHTML(type) {
-        return `<div class="listings-page"><div class="container py-8"><div class="flex justify-between items-center mb-8"> <h2 class="text-3xl font-bold">Properties for ${type === 'buy' ? 'Sale' : 'Rent'}</h2><div class="flex gap-4"><input type="text" id="search-input" placeholder="Search by name..." class="p-2 border rounded"><select id="sort-select" class="p-2 border rounded"><option value="newest">Newest</option><option value="price_desc">Price: High to Low</option><option value="price_asc">Price: Low to High</option></select></div></div><div id="property-grid" class="property-grid"></div></div></div>`;
-    },
-
-    async loadProperties() {
-        if (this.propertiesData.length > 0) return;
-        const snapshot = await this.db.collection('properties').orderBy('createdAt', 'desc').get();
-        this.propertiesData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    },
-
-    renderListings(filters = {}) {
-        const grid = document.getElementById('property-grid');
-        if (!grid) return;
-        let data = this.propertiesData.filter(p => p.type === this.currentListingType);
-
-        // Apply external filters from mega menu
-        if (filters.category) {
-            data = data.filter(p => p.category === filters.category);
-        }
-
-        // Apply on-page filters
-        const searchTerm = document.getElementById('search-input')?.value.toLowerCase();
-        if (searchTerm) {
-            data = data.filter(p => p.title.toLowerCase().includes(searchTerm));
-        }
-        
-        const sortBy = document.getElementById('sort-select')?.value;
-        if (sortBy === 'price_desc') data.sort((a,b) => b.priceTHB - a.priceTHB);
-        if (sortBy === 'price_asc') data.sort((a,b) => a.priceTHB - b.priceTHB);
-
-        grid.innerHTML = data.length ? data.map(p => this.renderPropertyCard(p)).join('') : `<p class="col-span-full text-center py-10">No properties found.</p>`;
-    },
-
-    renderPropertyCard(property) {
-        return `<div class="property-card relative bg-white rounded-lg shadow-sm hover:shadow-xl transition-shadow duration-300"><button class="delete-property-btn flex items-center justify-center" data-id="${property.id}"><i class="fas fa-trash-alt"></i></button><div class="relative h-56"><img src="${property.images[0]}" class="w-full h-full object-cover"></div><div class="p-4"><h4 class="font-semibold truncate text-gray-800">${property.title}</h4><p class="text-sm text-gray-500 my-1"><i class="fas fa-map-marker-alt mr-2"></i>${property.location}</p><div class="mt-4 font-semibold text-lg text-gray-900">฿${new Intl.NumberFormat().format(property.priceTHB)}</div></div></div>`;
-    },
-
-    async handlePropertySubmit(e) {
-        e.preventDefault();
-        const btn = e.target.querySelector('button[type="submit"]');
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
-        
-        const newProperty = Object.fromEntries(new FormData(e.target).entries());
-        newProperty.images = [newProperty.images];
-        ['bedrooms', 'bathrooms', 'area', 'priceTHB'].forEach(k => newProperty[k] = parseInt(newProperty[k]));
-        newProperty.createdAt = firebase.firestore.FieldValue.serverTimestamp();
-        
-        try {
-            await this.db.collection('properties').add(newProperty);
-            alert('Property added successfully!');
-            e.target.reset(); this.hideModal();
-            await this.loadProperties(true); // Force reload
-            this.renderListings();
-        } catch (error) {
-            alert('Error: Could not add property.');
-        } finally {
-            btn.disabled = false; btn.innerHTML = 'Add Property';
-        }
-    },
-
-    async deleteProperty(id) {
-        try {
-            await this.db.collection('properties').doc(id).delete();
-            await this.loadProperties(true);
-            this.renderListings();
-        } catch (error) { console.error("Error deleting:", error); }
-    },
-    
-    handleHeaderScroll() {
-        this.elements.header.classList.toggle('scrolled', window.scrollY > 50);
-    },
-    showModal() { this.elements.addListingModal.classList.add('active'); },
-    hideModal() { this.elements.addListingModal.classList.remove('active'); },
-};
-
-App.init();
-
-</script>
-
+    </script>
 </body>
 </html>
