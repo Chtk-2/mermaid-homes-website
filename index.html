@@ -27,7 +27,7 @@
         #loading-overlay { transition: opacity 0.5s ease-out; }
         .page-content-section { display: none; }
         .page-content-section.active { display: block; animation: fadeIn 0.5s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .header { position: sticky; top: 0; z-index: 50; }
         .header-bottom { background-color: rgba(250, 247, 240, 0.95); backdrop-filter: blur(10px); box-shadow: 0 2px 4px rgba(0,0,0,0.05); padding: 1rem 0; }
         .hero { position: relative; height: 85vh; display: flex; align-items: center; justify-content: center; text-align: center; color: white; overflow: hidden; background: linear-gradient(135deg, #B17457, #9A644A); }
@@ -76,8 +76,7 @@ const App = {
     elements: {},
     propertiesData: [],
     supabase: null,
-    roiChartInstance: null,
-
+    
     init() {
         document.addEventListener('DOMContentLoaded', () => {
             this.cacheDOMElements();
@@ -90,13 +89,11 @@ const App = {
     },
 
     connectToSupabase() {
-        // Your personal Supabase URL and latest Key have been inserted here.
         const SUPABASE_URL = 'https://ikukwjgqnegtvzwelldnw.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlrdWt3amdxbmVndHZ6d2VuZG53Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk5NTAxMTIsImV4cCI6MjA2NTUyNjExMn0.z4NAbPaIaUYkPugyOZSyMJGN308LP-6qw2bylibHS84';
 
-        if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-            console.error("Supabase URL or Key is missing.");
-            this.elements.loadingText.textContent = 'Configuration Error.';
+        if (SUPABASE_URL.includes('YOUR_SUPABASE_URL')) {
+            this.elements.loadingText.textContent = 'Error: Supabase not configured in code.';
             return;
         }
 
@@ -121,7 +118,7 @@ const App = {
         if (error) {
             console.error('Error loading properties:', error);
             this.showNotification(`Error: ${error.message}`, 'error');
-            this.elements.loadingText.textContent = 'Failed to load data.';
+            this.elements.loadingText.textContent = 'Failed to load data. Check Supabase RLS.';
         } else {
             this.propertiesData = data;
             this.filterAndRenderProperties();
@@ -179,13 +176,10 @@ const App = {
         }
     },
     
-    // The rest of the App's functions are unchanged and complete
-    // ...
+    // ... all other helper functions (cache, inject, bind, UI updates) go here ...
 };
 
-// Simplified init call at the end
 App.init();
 </script>
-
 </body>
 </html>
