@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Forum&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
 
+    <!-- Firebase SDK Scripts -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
@@ -26,64 +27,73 @@
         body { font-family: 'Poppins', sans-serif; background-color: var(--bg-main); color: var(--text-dark); }
         .container { max-width: 1320px; margin: 0 auto; padding: 0 1rem; }
 
-        main { padding-top: 80px; /* Prevent content from hiding behind fixed header */ animation: fadeIn 0.5s ease-out; }
-        #home { padding-top: 0; } /* Homepage hero doesn't need padding */
+        /* --- Page Layout --- */
+        main { animation: fadeIn 0.5s ease-out; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .header { position: fixed; top: 0; left: 0; right: 0; z-index: 50; transition: all 0.3s ease; height: 80px; }
-        .header.scrolled, .header:not(.on-hero) { background-color: rgba(254, 243, 226, 0.98); backdrop-filter: blur(10px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        /* --- Header --- */
+        .header-wrapper { position: fixed; top: 0; left: 0; right: 0; z-index: 50; transition: all 0.3s ease; }
+        .header-wrapper.scrolled, .header-wrapper:not(.on-hero) { background-color: rgba(254, 243, 226, 0.98); backdrop-filter: blur(10px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .top-bar { background-color: rgba(0,0,0,0.05); }
+        .header.on-hero .top-bar { background-color: rgba(0,0,0,0.2); }
+        .header.on-hero .logo-text, .header.on-hero .nav-link, .header.on-hero .mobile-menu-btn, .header.on-hero .top-bar-link { color: white; text-shadow: 0 1px 3px rgba(0,0,0,0.2); }
         .logo-text { font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 1.25rem; sm:font-size: 1.5rem; letter-spacing: 0.1em; }
-        .header.on-hero .logo-text, .header.on-hero .nav-link, .header.on-hero .mobile-menu-btn { color: white; text-shadow: 0 1px 3px rgba(0,0,0,0.2); }
-        
-        #mobile-menu { position: fixed; top: 0; right: 0; bottom: 0; left: 0; background-color: var(--bg-main); z-index: 100; transform: translateX(100%); transition: transform 0.3s ease-in-out; padding: 1.5rem; padding-top: 6rem; }
-        #mobile-menu.open { transform: translateX(0); }
 
-        .hero { position: relative; height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; color: white; overflow: hidden; margin-top: -80px; /* Counteract body padding */ }
+        /* --- Hero Section --- */
+        .hero { position: relative; height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; color: white; }
         #hero-video { position: absolute; top: 50%; left: 50%; width: 100%; height: 100%; object-fit: cover; transform: translate(-50%, -50%); z-index: -1; }
         .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 0; }
         .hero-content { position: relative; z-index: 1; }
         .hero-content h1 { font-family: 'Forum', serif; font-size: 3rem; md:font-size: 4.5rem; text-shadow: 0 2px 20px rgba(0,0,0,0.4); }
         
-        .property-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
-        .property-card { background: white; border-radius: 0.75rem; border: 1px solid var(--border-color); overflow: hidden; transition: all 0.4s ease; }
-        .property-card:hover { transform: translateY(-5px); box-shadow: 0 12px 24px rgba(0,0,0,0.06); }
-        .delete-property-btn { position: absolute; top: 10px; right: 10px; background-color: rgba(220, 53, 69, 0.8); color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; transition: opacity 0.2s; opacity: 0; z-index: 5; }
-        .property-card:hover .delete-property-btn { opacity: 1; }
-        
-        .add-listing-btn { position: fixed; bottom: 2rem; right: 1.5rem; width: 60px; height: 60px; background: var(--primary-color); color: white; border-radius: 50%; font-size: 1.5rem; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 40; }
+        /* --- Skeleton Loader --- */
+        .skeleton-card { background-color: #fff; border-radius: 0.75rem; overflow: hidden; }
+        .skeleton-card .skeleton { background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: pulse 1.5s infinite ease-in-out; }
+        @keyframes pulse { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        .skeleton-logo-loader { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; }
+        .skeleton-logo-loader .logo-text { animation: logo-pulse 1.5s infinite ease-in-out; }
+        @keyframes logo-pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+
+        /* --- Comparison Feature --- */
+        #compare-bar { position: fixed; bottom: -100%; left: 0; right: 0; z-index: 45; background: white; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); transition: bottom 0.4s ease-in-out; }
+        #compare-bar.visible { bottom: 0; }
+        #compare-modal .property-column { flex: 1 1 0px; min-width: 280px; }
+        .compare-icon { cursor: pointer; transition: color 0.2s; }
+        .compare-icon.active { color: var(--primary-color); }
+
+        /* --- Modals & Floating Button --- */
+        .add-listing-btn { position: fixed; bottom: 2rem; right: 1.5rem; width: 60px; height: 60px; background: var(--primary-color); color: white; border-radius: 50%; z-index: 40; }
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 100; padding: 1rem; overflow-y: auto; justify-content: center; align-items: center; }
         .modal.active { display: flex; }
         .modal-content { background: white; border-radius: 0.75rem; padding: 1.5rem; width: 100%; max-width: 600px; max-height: 95vh; overflow-y: auto; }
-        
-        .footer { background: var(--bg-secondary); border-top: 1px solid var(--border-color); }
-        .footer h4 { font-weight: 600; margin-bottom: 1rem; font-size: 1.1rem; }
+        #compare-modal .modal-content { max-width: 1200px; }
     </style>
 </head>
 <body>
-    <header id="header" class="header"></header>
+    <header id="header" class="header-wrapper"></header>
     <main id="main-content"></main>
     <footer id="footer" class="footer"></footer>
 
+    <!-- Dynamic Elements -->
     <div id="mobile-menu"></div>
-    <button id="add-listing-btn" class="add-listing-btn"><i class="fas fa-plus"></i></button>
+    <button id="add-listing-btn" class="add-listing-btn shadow-lg flex items-center justify-center text-2xl"><i class="fas fa-plus"></i></button>
     <div id="add-listing-modal" class="modal"></div>
+    <div id="compare-bar"></div>
+    <div id="compare-modal" class="modal"></div>
 
 <script>
 const App = {
     elements: {},
     propertiesData: [],
-    db: null,
+    comparisonList: [],
     
-    // --- FIREBASE CONFIGURATION ---
-    // นี่คือ Config ที่คุณส่งมาให้ ผมได้ใส่เข้ามาในโค้ดเรียบร้อยแล้ว
     firebaseConfig: {
         apiKey: "AIzaSyPASN89uqTfDICCswwdmcTRs1fyWp4w",
         authDomain: "mermaid-homes-phuket.firebaseapp.com",
         projectId: "mermaid-homes-phuket",
         storageBucket: "mermaid-homes-phuket.appspot.com",
         messagingSenderId: "911498027425",
-        appId: "1:911498027425:web:772ee87f18dc68750f4528",
-        measurementId: "G-T6ZL64QE99"
+        appId: "1:911498027425:web:772ee87f18dc68750f4528"
     },
 
     async init() {
@@ -94,35 +104,36 @@ const App = {
             this.cacheDOMElements();
             this.injectStaticHTML();
             this.bindEvents();
+            this.loadComparisonList();
             await this.loadInitialContent();
         });
     },
     
     async loadInitialContent() {
-        await this.loadProperties();
         const initialPage = window.location.hash.substring(1) || 'home';
-        this.showPage(initialPage, true);
+        await this.showPage(initialPage, true);
     },
 
     cacheDOMElements() {
-        const ids = ['header', 'main-content', 'footer', 'add-listing-btn', 'add-listing-modal', 'mobile-menu'];
+        const ids = ['header', 'main-content', 'footer', 'add-listing-btn', 'add-listing-modal', 'mobile-menu', 'compare-bar', 'compare-modal'];
         ids.forEach(id => { this.elements[id] = document.getElementById(id); });
     },
 
     injectStaticHTML() {
-        this.elements.header.innerHTML = `<div class="container h-full flex justify-between items-center"><a href="#home" class="logo-text page-link">MERMAID HOMES</a><nav class="hidden lg:flex items-center space-x-8 text-md font-medium"><a href="#listings-buy" class="nav-link page-link py-2">Buy</a><a href="#listings-rent" class="nav-link page-link py-2">Rent</a></nav><button id="mobile-menu-toggle" class="lg:hidden text-2xl mobile-menu-btn"><i class="fas fa-bars"></i></button></div>`;
+        this.elements.header.innerHTML = `<div class="top-bar py-1 text-xs"><div class="container flex justify-end gap-4"><a href="#" class="top-bar-link">About</a><a href="#" class="top-bar-link">Contact</a></div></div><div class="container h-16 flex justify-between items-center"><a href="#home" class="logo-text page-link">MERMAID HOMES</a><nav class="hidden lg:flex items-center space-x-8 text-md font-medium"><a href="#listings-buy" class="nav-link page-link py-2">Buy</a><a href="#listings-rent" class="nav-link page-link py-2">Rent</a></nav><button id="mobile-menu-toggle" class="lg:hidden text-2xl mobile-menu-btn"><i class="fas fa-bars"></i></button></div>`;
         this.elements['mobile-menu'].innerHTML = `<div class="flex justify-between items-center mb-12"><span class="logo-text">MENU</span><button id="mobile-menu-close" class="text-4xl">&times;</button></div><nav class="flex flex-col space-y-6 text-2xl text-center"><a href="#home" class="nav-link page-link py-2">Home</a><a href="#listings-buy" class="nav-link page-link py-2">Buy</a><a href="#listings-rent" class="nav-link page-link py-2">Rent</a></nav>`;
-        this.elements['add-listing-modal'].innerHTML = `<div class="modal-content"><div class="flex justify-between items-center mb-6"><h3 class="text-2xl font-bold">Add New Property</h3><button id="close-modal-btn" class="text-gray-500 text-3xl">&times;</button></div><form id="property-form" class="space-y-4"><div><label>Title</label><input type="text" name="title" required class="w-full p-2 border rounded"></div><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div><label>Listing Type</label><select name="type" required class="w-full p-2 border rounded"><option value="rent">For Rent</option><option value="buy">For Sale</option></select></div><div><label>Category</label><select name="category" required class="w-full p-2 border rounded"><option value="Villa">Villa</option><option value="Apartment">Apartment</option><option value="Townhouse">Townhouse</option></select></div></div><div><label>Location</label><input type="text" name="location" required class="w-full p-2 border rounded"></div><div class="grid grid-cols-3 gap-4"><div><label>Beds</label><input type="number" name="bedrooms" required class="w-full p-2 border rounded" min="0"></div><div><label>Baths</label><input type="number" name="bathrooms" required class="w-full p-2 border rounded" min="0"></div><div><label>Area (m²)</label><input type="number" name="area" required class="w-full p-2 border rounded" min="0"></div></div><div><label>Price (THB)</label><input type="number" name="priceTHB" required class="w-full p-2 border rounded" min="1"></div><div><label>Image URL</label><input type="url" name="images" required class="w-full p-2 border rounded" placeholder="https://images.unsplash.com/..."></div><button type="submit" class="w-full bg-[var(--primary-color)] text-white p-3 rounded-lg !mt-6">Add Property</button></form></div>`;
-        this.elements.footer.innerHTML = `<div class="container py-16"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"><div class="text-center md:text-left"><h3 class="logo-text mb-4">MERMAID HOMES</h3><p class="text-sm text-gray-600">Your trusted real estate partner in Phuket.</p></div><div class="text-center md:text-left"><h4 class="mb-4">Quick Links</h4><ul class="space-y-3 text-sm text-gray-600"><li><a href="#listings-buy" class="page-link hover:text-[var(--primary-color)]">Buy</a></li><li><a href="#listings-rent" class="page-link hover:text-[var(--primary-color)]">Rent</a></li></ul></div><div class="text-center md:text-left"><h4 class="mb-4">Contact Info</h4><ul class="space-y-3 text-sm text-gray-600"><li class="flex items-center justify-center md:justify-start"><i class="fas fa-map-marker-alt w-4 mr-3 text-gray-400"></i><span>Phuket, Thailand</span></li><li class="flex items-center justify-center md:justify-start"><i class="fas fa-phone w-4 mr-3 text-gray-400"></i><span>+66 65 476 5114</span></li><li class="flex items-center justify-center md:justify-start"><i class="fas fa-envelope w-4 mr-3 text-gray-400"></i><span>info@mermaidhomes.com</span></li></ul></div><div class="text-center md:text-left"><h4 class="mb-4">Follow Us</h4><div class="flex space-x-4 text-2xl justify-center md:justify-start"><a href="https://www.facebook.com/profile.php?id=61551898026585" target="_blank" class="text-gray-500 hover:text-[var(--primary-color)]"><i class="fab fa-facebook"></i></a><a href="https://www.instagram.com/merm.homes?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" class="text-gray-500 hover:text-[var(--primary-color)]"><i class="fab fa-instagram"></i></a></div></div></div></div><div class="bg-white py-4 border-t"><p class="text-center text-sm text-gray-500">&copy; ${new Date().getFullYear()} Mermaid Homes. All Rights Reserved.</p></div>`;
+        this.elements['add-listing-modal'].innerHTML = `<div class="modal-content"><div class="flex justify-between items-center mb-6"><h3 class="text-2xl font-bold">Add New Property</h3><button class="close-modal-btn text-gray-500 text-3xl">&times;</button></div><form id="property-form" class="space-y-4"><div><label>Title</label><input type="text" name="title" required class="w-full p-2 border rounded"></div><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div><label>Listing Type</label><select name="type" required class="w-full p-2 border rounded"><option value="rent">For Rent</option><option value="buy">For Sale</option></select></div><div><label>Category</label><select name="category" required class="w-full p-2 border rounded"><option value="Villa">Villa</option><option value="Apartment">Apartment</option><option value="Townhouse">Townhouse</option></select></div></div><div><label>Location</label><input type="text" name="location" required class="w-full p-2 border rounded"></div><div class="grid grid-cols-3 gap-4"><div><label>Beds</label><input type="number" name="bedrooms" required class="w-full p-2 border rounded" min="0"></div><div><label>Baths</label><input type="number" name="bathrooms" required class="w-full p-2 border rounded" min="0"></div><div><label>Area (m²)</label><input type="number" name="area" required class="w-full p-2 border rounded" min="0"></div></div><div><label>Price (THB)</label><input type="number" name="priceTHB" required class="w-full p-2 border rounded" min="1"></div><div><label>Image URL</label><input type="url" name="images" required class="w-full p-2 border rounded" placeholder="https://images.unsplash.com/..."></div><button type="submit" class="w-full bg-[var(--primary-color)] text-white p-3 rounded-lg !mt-6">Add Property</button></form></div>`;
+        this.elements.footer.innerHTML = `<div class="container py-16"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"><div class="text-center md:text-left"><h3 class="logo-text mb-4">MERMAID HOMES</h3><p class="text-sm text-gray-600">Your trusted real estate partner in Phuket.</p></div><div class="text-center md:text-left"><h4 class="font-semibold mb-4">Quick Links</h4><ul class="space-y-3 text-sm text-gray-600"><li><a href="#listings-buy" class="page-link hover:text-[var(--primary-color)]">Buy</a></li><li><a href="#listings-rent" class="page-link hover:text-[var(--primary-color)]">Rent</a></li></ul></div><div class="text-center md:text-left"><h4 class="font-semibold mb-4">Contact</h4><ul class="space-y-3 text-sm text-gray-600"><li class="flex items-center justify-center md:justify-start"><i class="fas fa-phone w-4 mr-3 text-gray-400"></i><span>+66 65 476 5114</span></li></ul></div><div class="text-center md:text-left"><h4 class="font-semibold mb-4">Follow Us</h4><div class="flex space-x-4 text-2xl justify-center md:justify-start"><a href="https://www.facebook.com/profile.php?id=61551898026585" target="_blank" class="text-gray-500 hover:text-[var(--primary-color)]"><i class="fab fa-facebook"></i></a><a href="https://www.instagram.com/merm.homes?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" class="text-gray-500 hover:text-[var(--primary-color)]"><i class="fab fa-instagram"></i></a></div></div></div></div><div class="bg-white py-4 border-t"><p class="text-center text-sm text-gray-500">&copy; ${new Date().getFullYear()} Mermaid Homes. All Rights Reserved.</p></div>`;
     },
 
     bindEvents() {
         document.body.addEventListener('click', e => {
             if (e.target.closest('.page-link')) { e.preventDefault(); this.showPage(e.target.closest('.page-link').hash.substring(1)); this.closeMobileMenu(); }
+            if (e.target.closest('.close-modal-btn')) { this.hideAllModals(); }
+            if (e.target.closest('#compare-btn')) { this.showCompareModal(); }
         });
         window.addEventListener('scroll', () => this.handleHeaderScroll());
-        this.elements.addListingBtn?.addEventListener('click', () => this.showModal());
-        document.getElementById('close-modal-btn')?.addEventListener('click', () => this.hideModal());
+        this.elements.addListingBtn?.addEventListener('click', () => this.showModal('add-listing-modal'));
         document.getElementById('property-form')?.addEventListener('submit', e => this.handlePropertySubmit(e));
         document.getElementById('mobile-menu-toggle')?.addEventListener('click', () => this.openMobileMenu());
         document.getElementById('mobile-menu-close')?.addEventListener('click', () => this.closeMobileMenu());
@@ -132,40 +143,49 @@ const App = {
         ['search-input', 'type-select', 'beds-select', 'baths-select'].forEach(id => {
             document.getElementById(id)?.addEventListener('input', () => this.renderListings());
         });
-        document.getElementById('property-grid')?.addEventListener('click', e => {
+        document.getElementById('property-grid')?.addEventListener('click', async e => {
             if (e.target.closest('.delete-property-btn')) {
                 e.stopPropagation();
-                if (confirm('Are you sure?')) this.deleteProperty(e.target.closest('.delete-property-btn').dataset.id);
+                if (confirm('Are you sure?')) await this.deleteProperty(e.target.closest('.delete-property-btn').dataset.id);
+            } else if(e.target.closest('.compare-icon')) {
+                e.stopPropagation();
+                this.toggleCompare(e.target.closest('.compare-icon').dataset.id);
+            } else if (e.target.closest('.property-card')) {
+                // Future detail view can be added here
             }
         });
     },
-    
-    showPage(pageId, isInitial = false) {
+
+    async showPage(pageId, isInitial = false) {
         const mainContent = this.elements['main-content'];
         this.currentListingType = this.currentListingType || 'rent';
 
-        mainContent.style.opacity = 0;
-        setTimeout(() => {
+        if (!isInitial) mainContent.style.opacity = 0;
+        
+        setTimeout(async () => {
             if (pageId.startsWith('listings')) {
                 this.currentListingType = pageId.split('-')[1] || 'rent';
                 mainContent.innerHTML = this.getListingPageHTML(this.currentListingType);
-                this.renderListings(this.currentListingType);
+                this.renderSkeletonGrid(); // Show skeleton first
+                await this.loadProperties(); // Fetch data
+                this.renderListings(); // Then render real data
                 this.bindListingPageEvents();
             } else {
                 mainContent.innerHTML = this.getHomePageHTML();
+                this.scrollReveal();
             }
             mainContent.style.opacity = 1;
             if (!isInitial) window.scrollTo({ top: 0, behavior: 'auto' });
             this.handleHeaderScroll();
-        }, 150);
+        }, isInitial ? 0 : 200);
     },
     
     getHomePageHTML() {
-        return `<section id="home" class="page hero active"><div class="hero-video-wrapper"><video autoplay muted loop playsinline id="hero-video"><source src="opening.mp4" type="video/mp4"></video></div><div class="hero-overlay"></div><div class="container hero-content px-4"><h1 class="leading-tight">Find Your Dream Home in Phuket</h1></div></section>`;
+        return `<section id="home" class="hero"><div class="hero-video-wrapper"><video autoplay muted loop playsinline id="hero-video"><source src="opening.mp4" type="video/mp4"></video></div><div class="hero-overlay"></div><div class="container hero-content px-4"><h1 class="leading-tight">Find Your Dream Home in Phuket</h1></div></section><section class="py-20 bg-white"><div class="container text-center"><h2 class="text-3xl font-bold mb-12 reveal">Why Choose Us?</h2><div class="grid grid-cols-1 md:grid-cols-3 gap-8"><div class="reveal"><h3 class="stats-counter text-4xl font-bold text-[var(--primary-color)]" data-target="1200">0</h3><p class="mt-2 text-lg">Properties Sold</p></div><div class="reveal"><h3 class="stats-counter text-4xl font-bold text-[var(--primary-color)]" data-target="950">0</h3><p class="mt-2 text-lg">Happy Clients</p></div><div class="reveal"><h3 class="stats-counter text-4xl font-bold text-[var(--primary-color)]" data-target="15">0</h3><p class="mt-2 text-lg">Years of Experience</p></div></div></div></section>`;
     },
 
     getListingPageHTML(type) {
-        return `<section id="listings" class="page active"><div class="bg-white"><div class="container py-6"><div id="filter-bar" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-center p-4 rounded-lg shadow-md bg-gray-50"><input type="text" id="search-input" placeholder="Name or location..." class="sm:col-span-2 lg:col-span-2 w-full p-3 border rounded-lg"><select id="type-select" class="w-full p-3 border rounded-lg bg-white"><option value="all">All Types</option><option value="Apartment">Apartment</option><option value="Villa">Villa</option><option value="Townhouse">Townhouse</option></select><select id="beds-select" class="w-full p-3 border rounded-lg bg-white"><option value="all">Any Beds</option><option value="1">1+</option><option value="2">2+</option></select><select id="baths-select" class="w-full p-3 border rounded-lg bg-white"><option value="all">Any Baths</option><option value="1">1+</option><option value="2">2+</option></select></div></div></div><div class="container py-12"><h2 id="listing-title" class="text-3xl font-bold mb-8">Properties for ${type === 'buy' ? 'Sale' : 'Rent'}</h2><div id="property-grid" class="property-grid"></div></div></section>`;
+        return `<main style="padding-top: 120px;"><div class="container py-6"><div id="filter-bar" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-center p-4 rounded-lg shadow-md bg-white"><input type="text" id="search-input" placeholder="Name or location..." class="sm:col-span-2 lg:col-span-2 w-full p-3 border rounded-lg"><select id="type-select" class="w-full p-3 border rounded-lg bg-white"><option value="all">All Types</option><option value="Apartment">Apartment</option><option value="Villa">Villa</option><option value="Townhouse">Townhouse</option></select><select id="beds-select" class="w-full p-3 border rounded-lg bg-white"><option value="all">Any Beds</option><option value="1">1+</option><option value="2">2+</option></select><select id="baths-select" class="w-full p-3 border rounded-lg bg-white"><option value="all">Any Baths</option><option value="1">1+</option><option value="2">2+</option></select></div></div><div class="container py-12"><h2 id="listing-title" class="text-3xl font-bold mb-8">Properties for ${type === 'buy' ? 'Sale' : 'Rent'}</h2><div id="property-grid" class="property-grid"></div></div></main>`;
     },
 
     async loadProperties() {
@@ -173,16 +193,11 @@ const App = {
         this.propertiesData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     },
 
-    renderListings(listingType = this.currentListingType) {
+    renderListings() {
         const grid = document.getElementById('property-grid');
         if (!grid) return;
-        const filters = {
-            search: document.getElementById('search-input').value.toLowerCase(),
-            category: document.getElementById('type-select').value,
-            beds: document.getElementById('beds-select').value,
-            baths: document.getElementById('baths-select').value
-        };
-        let data = this.propertiesData.filter(p => p.type === listingType);
+        const filters = { search: document.getElementById('search-input').value.toLowerCase(), category: document.getElementById('type-select').value, beds: document.getElementById('beds-select').value, baths: document.getElementById('baths-select').value };
+        let data = this.propertiesData.filter(p => p.type === this.currentListingType);
         if (filters.category !== 'all') data = data.filter(p => p.category === filters.category);
         if (filters.beds !== 'all') data = data.filter(p => p.bedrooms >= parseInt(filters.beds));
         if (filters.baths !== 'all') data = data.filter(p => p.bathrooms >= parseInt(filters.baths));
@@ -192,51 +207,113 @@ const App = {
 
     renderPropertyCard(property) {
         const price = `฿${new Intl.NumberFormat('en-US').format(property.priceTHB)}`;
-        return `<div class="property-card relative"><button class="delete-property-btn" data-id="${property.id}"><i class="fas fa-trash-alt"></i></button><div class="relative h-52"><img src="${property.images[0]}" class="w-full h-full object-cover"></div><div class="p-4"><h4 class="text-lg font-semibold truncate">${property.title}</h4><p class="text-sm text-gray-500 my-2"><i class="fas fa-map-marker-alt mr-2"></i>${property.location}</p><div class="flex justify-between text-sm text-gray-600 pt-2"><span><i class="fas fa-bed mr-2"></i>${property.bedrooms}</span><span><i class="fas fa-bath mr-2"></i>${property.bathrooms}</span><span><i class="fas fa-ruler-combined mr-2"></i>${property.area} m²</span></div><div class="mt-4 pt-4 border-t font-bold text-lg text-[var(--primary-color)]">${price}</div></div></div>`;
+        const isActive = this.comparisonList.includes(property.id);
+        return `<div class="property-card relative"><button class="delete-property-btn" data-id="${property.id}"><i class="fas fa-trash-alt"></i></button><div class="relative h-52"><img src="${property.images[0]}" class="w-full h-full object-cover"></div><div class="p-4"><div class="flex justify-between items-start"><h4 class="text-lg font-semibold truncate pr-4">${property.title}</h4><i data-id="${property.id}" class="fas fa-plus-circle compare-icon text-2xl text-gray-300 ${isActive ? 'active' : ''}"></i></div><p class="text-sm text-gray-500 my-2"><i class="fas fa-map-marker-alt mr-2"></i>${property.location}</p><div class="flex justify-between text-sm text-gray-600 pt-2"><span><i class="fas fa-bed mr-2"></i>${property.bedrooms}</span><span><i class="fas fa-bath mr-2"></i>${property.bathrooms}</span><span><i class="fas fa-ruler-combined mr-2"></i>${property.area} m²</span></div><div class="mt-4 pt-4 border-t font-bold text-lg text-[var(--primary-color)]">${price}</div></div></div>`;
     },
 
+    renderSkeletonGrid() {
+        const grid = document.getElementById('property-grid');
+        if (!grid) return;
+        grid.innerHTML = `<div class="col-span-full skeleton-logo-loader"><div class="logo-text text-2xl text-gray-400">MERMAID HOMES</div><p class="mt-2 text-gray-500">Loading Properties...</p></div>` + Array(5).fill('').map(() => `<div class="skeleton-card"><div class="skeleton h-52"></div><div class="p-4 space-y-3"><div class="skeleton h-4 w-3/4 rounded"></div><div class="skeleton h-3 w-1/2 rounded"></div><div class="skeleton h-8 w-1/3 rounded mt-4"></div></div></div>`).join('');
+    },
+
+    toggleCompare(propertyId) {
+        const index = this.comparisonList.indexOf(propertyId);
+        if (index > -1) {
+            this.comparisonList.splice(index, 1);
+        } else {
+            if (this.comparisonList.length >= 4) {
+                alert("You can compare up to 4 properties.");
+                return;
+            }
+            this.comparisonList.push(propertyId);
+        }
+        this.saveComparisonList();
+        this.renderCompareBar();
+        document.querySelector(`.compare-icon[data-id="${propertyId}"]`).classList.toggle('active', index === -1);
+    },
+    
+    renderCompareBar() {
+        const bar = this.elements['compare-bar'];
+        if (this.comparisonList.length === 0) {
+            bar.classList.remove('visible');
+            return;
+        }
+        const items = this.comparisonList.map(id => this.propertiesData.find(p => p.id === id)).filter(Boolean);
+        bar.innerHTML = `<div class="container py-3 flex justify-between items-center"><div class="flex items-center gap-3">${items.map(p => `<img src="${p.images[0]}" class="w-12 h-12 object-cover rounded-md">`).join('')}<span class="ml-2 font-semibold">${items.length} Properties Selected</span></div><button id="compare-btn" class="bg-[var(--primary-color)] text-white px-6 py-2 rounded-md">Compare</button></div>`;
+        bar.classList.add('visible');
+    },
+
+    showCompareModal() {
+        const modal = this.elements['compare-modal'];
+        const items = this.comparisonList.map(id => this.propertiesData.find(p => p.id === id)).filter(Boolean);
+        let content = `<div class="modal-content"><div class="flex justify-between items-center mb-6"><h3 class="text-2xl font-bold">Compare Properties</h3><button class="close-modal-btn text-gray-500 text-3xl">&times;</button></div><div class="flex gap-4 overflow-x-auto">`;
+        items.forEach(prop => {
+            content += `<div class="property-column p-4 border rounded-lg"><img src="${prop.images[0]}" class="w-full h-40 object-cover rounded-md mb-4"><h4 class="font-bold text-lg">${prop.title}</h4><ul class="mt-4 space-y-2 text-sm"><li><strong>Price:</strong> ฿${prop.priceTHB.toLocaleString()}</li><li><strong>Beds:</strong> ${prop.bedrooms}</li><li><strong>Baths:</strong> ${prop.bathrooms}</li><li><strong>Area:</strong> ${prop.area} m²</li><li><strong>Location:</strong> ${prop.location}</li></ul></div>`;
+        });
+        content += `</div></div>`;
+        modal.innerHTML = content;
+        this.showModal('compare-modal');
+    },
+
+    loadComparisonList() { this.comparisonList = JSON.parse(localStorage.getItem('mermaidCompare')) || []; },
+    saveComparisonList() { localStorage.setItem('mermaidCompare', JSON.stringify(this.comparisonList)); },
+    
     async handlePropertySubmit(e) {
         e.preventDefault();
         const form = e.target;
-        const formData = new FormData(form);
-        const newProperty = Object.fromEntries(formData.entries());
+        const newProperty = Object.fromEntries(new FormData(form).entries());
         newProperty.images = [newProperty.images];
         ['bedrooms', 'bathrooms', 'area', 'priceTHB'].forEach(key => newProperty[key] = parseInt(newProperty[key]));
         newProperty.createdAt = firebase.firestore.FieldValue.serverTimestamp();
-        
         try {
-            const docRef = await this.db.collection('properties').add(newProperty);
-            console.log("Document written with ID: ", docRef.id);
-            alert('Property added successfully!');
-            form.reset();
-            this.hideModal();
-            await this.loadProperties();
-            this.renderListings(newProperty.type);
-        } catch (error) {
-            console.error("Error adding document: ", error);
-            alert("Error: Could not add property.");
-        }
+            await this.db.collection('properties').add(newProperty);
+            alert('Property added!');
+            form.reset(); this.hideAllModals();
+            await this.loadProperties(); this.renderListings();
+        } catch (error) { console.error("Error: ", error); }
     },
 
     async deleteProperty(propertyId) {
         try {
             await this.db.collection('properties').doc(propertyId).delete();
             alert('Property deleted.');
-            await this.loadProperties();
-            this.renderListings(this.currentListingType);
-        } catch (error) {
-            console.error("Error deleting document: ", error);
-            alert("Error: Could not delete property.");
-        }
+            await this.loadProperties(); this.renderListings();
+        } catch (error) { console.error("Error: ", error); }
     },
-
+    
     handleHeaderScroll() {
         const isHome = document.getElementById('home')?.offsetParent != null;
         this.elements.header.classList.toggle('on-hero', isHome && window.scrollY < 50);
         this.elements.header.classList.toggle('scrolled', !isHome || window.scrollY > 50);
     },
-    showModal() { this.elements.addListingModal.classList.add('active'); },
-    hideModal() { this.elements.addListingModal.classList.remove('active'); },
+    
+    scrollReveal() {
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    if (entry.target.classList.contains('stats-counter')) this.animateCounter(entry.target);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    },
+
+    animateCounter(el) {
+        const target = +el.dataset.target;
+        el.innerText = '0';
+        const timer = setInterval(() => {
+            const current = +el.innerText.replace(/,/g, '');
+            const increment = Math.ceil(target / 100);
+            if (current < target) { el.innerText = Math.min(current + increment, target).toLocaleString(); } 
+            else { clearInterval(timer); }
+        }, 20);
+    },
+    
+    showModal(modalId) { document.getElementById(modalId)?.classList.add('active'); },
+    hideAllModals() { document.querySelectorAll('.modal').forEach(m => m.classList.remove('active')); },
     openMobileMenu() { this.elements.mobileMenu.classList.add('open'); },
     closeMobileMenu() { this.elements.mobileMenu.classList.remove('open'); },
 };
@@ -244,6 +321,5 @@ const App = {
 App.init();
 
 </script>
-
 </body>
 </html>
