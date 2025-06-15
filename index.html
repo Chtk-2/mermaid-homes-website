@@ -10,9 +10,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Forum&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     
-    <!-- Supabase and Chart.js SDKs are deferred for faster initial page load -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    <!-- Supabase and Chart.js SDKs -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         :root {
@@ -28,7 +28,7 @@
         #loading-overlay { transition: opacity 0.5s ease-out; }
         .page-content-section { display: none; }
         .page-content-section.active { display: block; animation: fadeIn 0.5s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .header { position: sticky; top: 0; z-index: 50; }
         .header-bottom { background-color: rgba(250, 247, 240, 0.95); backdrop-filter: blur(10px); box-shadow: 0 2px 4px rgba(0,0,0,0.05); padding: 1rem 0; }
         .hero { position: relative; height: 85vh; display: flex; align-items: center; justify-content: center; text-align: center; color: white; overflow: hidden; background: linear-gradient(135deg, #B17457, #9A644A); }
@@ -61,136 +61,30 @@
     
     <div id="notification" class="fixed top-4 right-4 z-[110] p-4 rounded-lg shadow-lg hidden"></div>
 
-    <header id="header" class="header">
-        <div class="header-bottom">
-            <div class="container mx-auto px-4 flex justify-between items-center py-2">
-                <a href="#hero-section" class="nav-link"><img src="Ui1.png" alt="Mermaid Homes Logo" class="h-12"></a>
-                <nav class="hidden lg:flex items-center space-x-8 text-lg font-heading text-gray-700">
-                    <a href="#properties" class="nav-link hover:text-[var(--primary-color)] transition-colors">Properties</a>
-                    <a href="#roi-calculator" class="nav-link hover:text-[var(--primary-color)] transition-colors">ROI Calculator</a>
-                    <a href="#contact" class="nav-link hover:text-[var(--primary-color)] transition-colors">Contact</a>
-                </nav>
-                <button id="mobile-menu-button" class="lg:hidden text-gray-600"><i class="fas fa-bars text-2xl"></i></button>
-            </div>
-        </div>
-        <div id="mobile-menu" class="lg:hidden bg-white border-t">
-            <a href="#properties" class="nav-link block text-center py-3 text-gray-700 hover:bg-gray-100 font-heading">Properties</a>
-            <a href="#roi-calculator" class="nav-link block text-center py-3 text-gray-700 hover:bg-gray-100 font-heading">ROI Calculator</a>
-            <a href="#contact" class="nav-link block text-center py-3 text-gray-700 hover:bg-gray-100 font-heading">Contact</a>
-        </div>
-    </header>
-
-    <main id="main-content">
-        <section id="hero-section" class="page-content-section hero">
-            <video autoplay loop muted playsinline id="hero-video"><source src="Video opening.mp4" type="video/mp4"></video>
-            <div class="hero-overlay"></div>
-            <div class="container mx-auto px-4">
-                <div class="hero-content">
-                    <h1 class="text-5xl md:text-6xl font-bold mb-6 font-heading">Find Your Dream House By Us</h1>
-                    <p class="mt-4 text-lg text-gray-200">Thailand best luxury homes | Sell and Rent 🏡</p>
-                    <a href="#properties" class="nav-link btn-primary inline-block mt-8 font-bold py-3 px-8 rounded-full">Make An Enquiry</a>
-                </div>
-            </div>
-        </section>
-        <section id="properties" class="page-content-section py-12 md:py-20">
-            <div class="container mx-auto px-4">
-                <h2 class="text-4xl md:text-5xl font-bold text-center mb-12" style="color:var(--primary-color);">Featured Listings</h2>
-                <div id="properties-grid" class="properties-grid"></div>
-            </div>
-        </section>
-        <section id="roi-calculator" class="page-content-section py-12 md:py-20">
-            <div class="container mx-auto px-4">
-                <h2 class="text-4xl md:text-5xl font-bold text-center mb-10 text-gray-800">Return on Investment Calculator</h2>
-                <div id="roi-calculator-content" class="max-w-xl mx-auto bg-white rounded-2xl shadow-lg p-8"></div>
-            </div>
-        </section>
-        <section id="contact" class="page-content-section py-12 md:py-20 bg-white">
-            <div class="container mx-auto px-4">
-                <h2 class="text-4xl md:text-5xl font-bold text-center mb-4 text-gray-800">Get In Touch</h2>
-                <p class="text-center text-gray-500 mb-12 max-w-2xl mx-auto">We are here to help you.</p>
-                <div id="contact-content" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
-            </div>
-        </section>
-    </main>
-    
-    <footer id="footer" class="footer">
-        <div class="footer-top py-12 bg-[#D8D2C2]">
-            <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div class="footer-brand">
-                    <a href="#hero-section" class="nav-link inline-block mb-4"><img src="Ui1.png" alt="Mermaid Homes Logo" class="h-12"></a>
-                    <p>Your gateway to finding the perfect property in Phuket.</p>
-                </div>
-                <div class="footer-link-box">
-                    <h3 class="font-bold mb-4">Quick Links</h3>
-                    <ul class="space-y-2">
-                        <li><a href="#properties" class="nav-link">Properties</a></li>
-                        <li><a href="#roi-calculator" class="nav-link">ROI Calculator</a></li>
-                        <li><a href="#contact" class="nav-link">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-link-box">
-                    <h3 class="font-bold mb-4">Contact Us</h3>
-                    <ul class="space-y-3">
-                        <li><i class="fas fa-phone mr-2"></i>+66 65 476 5114</li>
-                        <li><i class="fas fa-envelope mr-2"></i>contact@mermaidhomes.com</li>
-                    </ul>
-                </div>
-                <div class="footer-link-box">
-                     <h3 class="font-bold mb-4">Follow Us</h3>
-                     <div class="flex space-x-4">
-                        <a href="#" class="text-2xl"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="text-2xl"><i class="fab fa-instagram"></i></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="footer-bottom py-4 bg-[#c9c2b4] text-center">
-            <p>&copy; ${new Date().getFullYear()} Mermaid Homes. All Rights Reserved.</p>
-        </div>
-    </footer>
+    <header id="header" class="header"></header>
+    <main id="main-content"></main>
+    <footer id="footer" class="footer"></footer>
 
     <button id="add-listing-btn" class="add-listing-btn"><i class="fas fa-plus"></i></button>
     <a href="https://wa.me/66654765114" target="_blank" class="whatsapp-float"><i class="fab fa-whatsapp"></i></a>
 
-    <div id="add-listing-modal" class="modal">
-        <div class="modal-content">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-2xl font-bold">Add New Property</h3>
-                <button onclick="App.hideModal(App.elements.addListingModal)" class="text-gray-500 hover:text-gray-700">&times;</button>
-            </div>
-            <form id="property-form" class="space-y-4">
-                <div><label>Title</label><input type="text" name="title" required class="w-full p-2 border rounded"></div>
-                <div><label>Type</label><select name="type" required class="w-full p-2 border rounded"><option value="sale">Sale</option><option value="rent">Rent</option></select></div>
-                <div><label>Category</label><input type="text" name="category" required class="w-full p-2 border rounded"></div>
-                <div><label>Location</label><input type="text" name="location" required class="w-full p-2 border rounded"></div>
-                <div><label>Bedrooms</label><input type="number" name="bedrooms" required class="w-full p-2 border rounded"></div>
-                <div><label>Bathrooms</label><input type="number" name="bathrooms" required class="w-full p-2 border rounded"></div>
-                <div><label>Area (sqm)</label><input type="number" name="area" required class="w-full p-2 border rounded"></div>
-                <div><label>Price (THB)</label><input type="number" name="priceTHB" required class="w-full p-2 border rounded"></div>
-                <div><label>Description</label><textarea name="description" rows="3" required class="w-full p-2 border rounded"></textarea></div>
-                <div><label>Images</label><input type="file" name="images" multiple accept="image/*" required class="w-full"></div>
-                <button type="submit" class="btn-primary w-full">Add Property</button>
-            </form>
-        </div>
-    </div>
-    <div id="property-detail-modal" class="modal">
-         <div class="modal-content max-w-4xl"><button onclick="App.hideModal(App.elements.propertyDetailModal)" class="absolute top-4 right-4 text-2xl">&times;</button><div id="property-detail-content"></div></div>
-    </div>
-    <div id="delete-confirm-modal" class="modal">
-        <div class="modal-content max-w-md text-center"><h3 class="text-xl font-bold mb-4">Are you sure?</h3><p class="text-gray-600 mb-6">This action cannot be undone.</p><div class="flex gap-4 justify-center"><button id="confirm-delete-btn" class="btn-primary bg-red-600 hover:bg-red-700">Delete</button><button onclick="App.hideModal(App.elements.deleteConfirmModal)" class="px-6 py-3 border rounded">Cancel</button></div></div>
-    </div>
+    <!-- Modals -->
+    <div id="add-listing-modal" class="modal"></div>
+    <div id="property-detail-modal" class="modal"></div>
+    <div id="delete-confirm-modal" class="modal"></div>
 
 <script>
 const App = {
     elements: {},
     propertiesData: [],
     supabase: null,
+    roiChartInstance: null,
     
     init() {
         document.addEventListener('DOMContentLoaded', () => {
             this.cacheDOMElements();
-            this.injectHTML(); // This is a new helper function
-            this.cacheInjectedElements(); // Re-cache after injecting
+            this.injectHTML();
+            this.cacheInjectedElements();
             this.bindEvents();
             this.connectToSupabase();
             const initialPage = window.location.hash.substring(1) || 'hero-section';
@@ -205,7 +99,7 @@ const App = {
 
         if (!window.supabase) {
             console.error("Supabase client library not loaded.");
-            this.elements.loadingText.textContent = "Error: Library missing.";
+            this.elements.loadingText.textContent = "Error: Supabase library missing.";
             return;
         }
 
@@ -213,6 +107,7 @@ const App = {
             this.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             this.loadProperties();
         } catch(error) {
+            console.error("Supabase connection failed:", error);
             this.showNotification("Could not connect to database", "error");
             this.hideLoading();
         }
@@ -228,8 +123,9 @@ const App = {
             .order('created_at', { ascending: false });
 
         if (error) {
+            console.error('Error loading properties:', error);
             this.showNotification(`Error: ${error.message}`, 'error');
-            this.elements.loadingText.textContent = 'Failed to load data. Check Supabase table & RLS.';
+            this.elements.loadingText.textContent = 'Failed to load data. Check Supabase table & RLS settings.';
         } else {
             this.propertiesData = data || [];
             this.filterAndRenderProperties();
@@ -294,12 +190,21 @@ const App = {
 
     cacheInjectedElements() {
         const ids = ['mobile-menu', 'mobile-menu-button', 'properties-grid', 'open-listing-form-from-page', 'roi-calculator-content', 'contact-content', 'property-form'];
-        ids.forEach(id => this.elements[id] = document.getElementById(id));
+        ids.forEach(id => {
+            const el = document.getElementById(id);
+            if(el) this.elements[id.replace(/-(\w)/g, (_,l) => l.toUpperCase())] = el;
+        });
         this.elements.navLinks = document.querySelectorAll('.nav-link');
     },
 
     injectHTML() {
-        if(this.elements.roiCalculatorContent) this.elements.roiCalculatorContent.innerHTML = `<div class="space-y-4"><div><label for="investment" class="block text-lg font-medium text-gray-700 mb-1">Total Investment</label><input id="investment" type="number" placeholder="5000000" class="w-full p-3 border rounded"></div><div><label for="income" class="block text-lg font-medium text-gray-700 mb-1">Monthly Rental Income</label><input id="income" type="number" placeholder="30000" class="w-full p-3 border rounded"></div><div><label for="expenses" class="block text-lg font-medium text-gray-700 mb-1">Annual Expenses</label><input id="expenses" type="number" placeholder="25000" class="w-full p-3 border rounded"></div><div id="roi-result" class="mt-4 text-center font-bold text-3xl h-10"></div><div id="roiChartContainer" class="h-80 mt-6"><canvas id="roiChart"></canvas></div></div>`;
+        if(this.elements.header) this.elements.header.innerHTML = `<div class="header-bottom"><div class="container mx-auto px-4 flex justify-between items-center py-2"><a href="#hero-section" class="nav-link"><img src="Ui1.png" alt="Mermaid Homes Logo" class="h-12"></a><nav class="hidden lg:flex items-center space-x-8 text-lg font-heading text-gray-700"><a href="#properties" class="nav-link hover:text-[var(--primary-color)] transition-colors">Properties</a><a href="#roi-calculator" class="nav-link hover:text-[var(--primary-color)] transition-colors">ROI Calculator</a><a href="#contact" class="nav-link hover:text-[var(--primary-color)] transition-colors">Contact</a></nav><button id="mobile-menu-button" class="lg:hidden text-gray-600"><i class="fas fa-bars text-2xl"></i></button></div></div><div id="mobile-menu" class="lg:hidden bg-white border-t"><a href="#properties" class="nav-link block text-center py-3 text-gray-700 hover:bg-gray-100 font-heading">Properties</a><a href="#roi-calculator" class="nav-link block text-center py-3 text-gray-700 hover:bg-gray-100 font-heading">ROI Calculator</a><a href="#contact" class="nav-link block text-center py-3 text-gray-700 hover:bg-gray-100 font-heading">Contact</a></div>`;
+        if(this.elements.mainContent) this.elements.mainContent.innerHTML = `<section id="hero-section" class="page-content-section hero"><video autoplay loop muted playsinline id="hero-video"><source src="Video opening.mp4" type="video/mp4"></video><div class="hero-overlay"></div><div class="container mx-auto px-4"><div class="hero-content"><h1 class="text-5xl md:text-6xl font-bold mb-6 font-heading">Find Your Dream House By Us</h1><p class="mt-4 text-lg text-gray-200">Thailand best luxury homes | Sell and Rent 🏡</p><a href="#properties" class="nav-link btn-primary inline-block mt-8 font-bold py-3 px-8 rounded-full">Explore Properties</a></div></div></section><section id="properties" class="page-content-section py-12 md:py-20"><div class="container mx-auto px-4"><h2 class="text-4xl md:text-5xl font-bold text-center mb-12" style="color:var(--primary-color);">Featured Listings</h2><div id="properties-grid" class="properties-grid"></div></div></section><section id="roi-calculator" class="page-content-section py-12 md:py-20"><div class="container mx-auto px-4"><h2 class="text-4xl md:text-5xl font-bold text-center mb-10 text-gray-800">Return on Investment Calculator</h2><div id="roi-calculator-content" class="max-w-xl mx-auto bg-white rounded-2xl shadow-lg p-8"></div></div></section><section id="contact" class="page-content-section py-12 md:py-20 bg-white"><div class="container mx-auto px-4"><h2 class="text-4xl md:text-5xl font-bold text-center mb-4 text-gray-800">Get In Touch</h2><p class="text-center text-gray-500 mb-12 max-w-2xl mx-auto">We are here to help you.</p><div id="contact-content" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div></div></section>`;
+        if(this.elements.footer) this.elements.footer.innerHTML = `<div class="footer-top py-12 bg-[#D8D2C2]"><div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8"><!-- Footer content --></div></div><div class="footer-bottom py-4 bg-[#c9c2b4] text-center"><p>&copy; ${new Date().getFullYear()} Mermaid Homes. All Rights Reserved.</p></div>`;
+        if(this.elements.addListingModal) this.elements.addListingModal.innerHTML = `<div class="modal-content"><div class="flex justify-between items-center mb-6"><h3 class="text-2xl font-bold">Add New Property</h3><button onclick="App.hideModal(App.elements.addListingModal)" class="text-gray-500 hover:text-gray-700">&times;</button></div><form id="property-form" class="space-y-4"><div><label>Title</label><input type="text" name="title" required class="w-full p-2 border rounded"></div><div><label>Type</label><select name="type" required class="w-full p-2 border rounded"><option value="sale">Sale</option><option value="rent">Rent</option></select></div><div><label>Category</label><input type="text" name="category" required class="w-full p-2 border rounded"></div><div><label>Location</label><input type="text" name="location" required class="w-full p-2 border rounded"></div><div><label>Bedrooms</label><input type="number" name="bedrooms" required class="w-full p-2 border rounded"></div><div><label>Bathrooms</label><input type="number" name="bathrooms" required class="w-full p-2 border rounded"></div><div><label>Area (sqm)</label><input type="number" name="area" required class="w-full p-2 border rounded"></div><div><label>Price (THB)</label><input type="number" name="priceTHB" required class="w-full p-2 border rounded"></div><div><label>Description</label><textarea name="description" rows="3" required class="w-full p-2 border rounded"></textarea></div><div><label>Images</label><input type="file" name="images" multiple accept="image/*" required class="w-full"></div><button type="submit" class="btn-primary w-full">Add Property</button></form></div>`;
+        if(this.elements.propertyDetailModal) this.elements.propertyDetailModal.innerHTML = `<div class="modal-content max-w-4xl"><button onclick="App.hideModal(App.elements.propertyDetailModal)" class="absolute top-4 right-4 text-2xl">&times;</button><div id="property-detail-content"></div></div>`;
+        if(this.elements.deleteConfirmModal) this.elements.deleteConfirmModal.innerHTML = `<div class="modal-content max-w-md text-center"><h3 class="text-xl font-bold mb-4">Are you sure?</h3><p class="text-gray-600 mb-6">This action cannot be undone.</p><div class="flex gap-4 justify-center"><button id="confirm-delete-btn" class="btn-primary bg-red-600 hover:bg-red-700">Delete</button><button onclick="App.hideModal(App.elements.deleteConfirmModal)" class="px-6 py-3 border rounded">Cancel</button></div></div>`;
+        if(document.getElementById('roi-calculator-content')) document.getElementById('roi-calculator-content').innerHTML = `<div class="space-y-4"><div><label for="investment" class="block text-lg font-medium text-gray-700 mb-1">Total Investment</label><input id="investment" type="number" placeholder="5000000" class="w-full p-3 border rounded"></div><div><label for="income" class="block text-lg font-medium text-gray-700 mb-1">Monthly Rental Income</label><input id="income" type="number" placeholder="30000" class="w-full p-3 border rounded"></div><div><label for="expenses" class="block text-lg font-medium text-gray-700 mb-1">Annual Expenses</label><input id="expenses" type="number" placeholder="25000" class="w-full p-3 border rounded"></div><div id="roi-result" class="mt-4 text-center font-bold text-3xl h-10"></div><div id="roiChartContainer" class="h-80 mt-6"><canvas id="roiChart"></canvas></div></div>`;
     },
 
     bindEvents() {
@@ -361,17 +266,8 @@ const App = {
         document.getElementById('confirm-delete-btn').onclick = () => this.deleteProperty(propId);
     },
     
-    hideLoading() {
-        const overlay = this.elements.loadingOverlay;
-        if (overlay && overlay.style.display !== 'none') {
-            overlay.style.opacity = '0';
-            overlay.addEventListener('transitionend', () => {
-                overlay.style.display = 'none';
-            }, { once: true });
-        }
-    },
-    
-    calculateROI() { /* ROI Calculation and Chart update */ },
+    setLanguage() {},
+    calculateROI() { /* ... */ },
     hideModal(modalEl) { if (modalEl) modalEl.classList.remove('active'); },
     showModal(modalEl) { if (modalEl) modalEl.classList.add('active'); },
 };
