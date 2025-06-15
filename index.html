@@ -10,6 +10,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Forum&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
 
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
     <style>
         :root {
             --primary-color: #B17457;
@@ -23,48 +26,35 @@
         body { font-family: 'Poppins', sans-serif; background-color: var(--bg-main); color: var(--text-dark); }
         .container { max-width: 1320px; margin: 0 auto; padding: 0 1rem; }
 
-        /* --- Page Layout --- */
-        main { animation: fadeIn 0.5s ease-out; }
+        main { padding-top: 80px; /* Prevent content from hiding behind fixed header */ animation: fadeIn 0.5s ease-out; }
+        #home { padding-top: 0; } /* Homepage hero doesn't need padding */
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* --- Header --- */
-        .header { position: fixed; top: 0; left: 0; right: 0; z-index: 50; transition: all 0.3s ease; }
+        .header { position: fixed; top: 0; left: 0; right: 0; z-index: 50; transition: all 0.3s ease; height: 80px; }
         .header.scrolled, .header:not(.on-hero) { background-color: rgba(254, 243, 226, 0.98); backdrop-filter: blur(10px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .logo-text { font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 1.25rem; sm:font-size: 1.5rem; letter-spacing: 0.1em; }
         .header.on-hero .logo-text, .header.on-hero .nav-link, .header.on-hero .mobile-menu-btn { color: white; text-shadow: 0 1px 3px rgba(0,0,0,0.2); }
-        .header.on-hero .btn-primary { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.5); }
         
-        /* --- Mobile Menu --- */
         #mobile-menu { position: fixed; top: 0; right: 0; bottom: 0; left: 0; background-color: var(--bg-main); z-index: 100; transform: translateX(100%); transition: transform 0.3s ease-in-out; padding: 1.5rem; padding-top: 6rem; }
         #mobile-menu.open { transform: translateX(0); }
 
-        /* --- Hero Section with Vimeo --- */
-        .hero { position: relative; height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; color: white; overflow: hidden; }
-        .hero-video-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; overflow: hidden; }
-        .hero-video-wrapper iframe { width: 100vw; height: 56.25vw; /* 16:9 aspect ratio */ min-height: 100vh; min-width: 177.77vh; /* 16:9 aspect ratio */ position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .hero { position: relative; height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; color: white; overflow: hidden; margin-top: -80px; /* Counteract body padding */ }
+        #hero-video { position: absolute; top: 50%; left: 50%; width: 100%; height: 100%; object-fit: cover; transform: translate(-50%, -50%); z-index: -1; }
         .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 0; }
         .hero-content { position: relative; z-index: 1; }
         .hero-content h1 { font-family: 'Forum', serif; font-size: 3rem; md:font-size: 4.5rem; text-shadow: 0 2px 20px rgba(0,0,0,0.4); }
         
-        /* --- Buttons & Forms --- */
-        .btn { border-radius: 0.5rem; cursor: pointer; transition: all 0.3s ease; font-weight: 500; display: inline-block; padding: 0.75rem 1.5rem; }
-        .btn-primary { background: var(--primary-color); color: white; border: 1px solid transparent; }
-        .btn-primary:hover { background-color: var(--primary-color-dark); transform: translateY(-2px); }
-        
-        /* --- Property Cards --- */
         .property-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
         .property-card { background: white; border-radius: 0.75rem; border: 1px solid var(--border-color); overflow: hidden; transition: all 0.4s ease; }
         .property-card:hover { transform: translateY(-5px); box-shadow: 0 12px 24px rgba(0,0,0,0.06); }
         .delete-property-btn { position: absolute; top: 10px; right: 10px; background-color: rgba(220, 53, 69, 0.8); color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; transition: opacity 0.2s; opacity: 0; z-index: 5; }
         .property-card:hover .delete-property-btn { opacity: 1; }
         
-        /* --- Floating Action Button & Modals --- */
-        .add-listing-btn { position: fixed; bottom: 2rem; right: 1.5rem; width: 60px; height: 60px; background: var(--primary-color); color: white; border-radius: 50%; font-size: 1.5rem; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: all 0.3s ease; z-index: 40; }
+        .add-listing-btn { position: fixed; bottom: 2rem; right: 1.5rem; width: 60px; height: 60px; background: var(--primary-color); color: white; border-radius: 50%; font-size: 1.5rem; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 40; }
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 100; padding: 1rem; overflow-y: auto; justify-content: center; align-items: center; }
         .modal.active { display: flex; }
         .modal-content { background: white; border-radius: 0.75rem; padding: 1.5rem; width: 100%; max-width: 600px; max-height: 95vh; overflow-y: auto; }
         
-        /* --- Footer --- */
         .footer { background: var(--bg-secondary); border-top: 1px solid var(--border-color); }
         .footer h4 { font-weight: 600; margin-bottom: 1rem; font-size: 1.1rem; }
     </style>
@@ -82,18 +72,34 @@
 const App = {
     elements: {},
     propertiesData: [],
+    db: null,
     
-    init() {
-        document.addEventListener('DOMContentLoaded', () => {
+    // --- FIREBASE CONFIGURATION ---
+    // นี่คือ Config ที่คุณส่งมาให้ ผมได้ใส่เข้ามาในโค้ดเรียบร้อยแล้ว
+    firebaseConfig: {
+        apiKey: "AIzaSyPASN89uqTfDICCswwdmcTRs1fyWp4w",
+        authDomain: "mermaid-homes-phuket.firebaseapp.com",
+        projectId: "mermaid-homes-phuket",
+        storageBucket: "mermaid-homes-phuket.appspot.com",
+        messagingSenderId: "911498027425",
+        appId: "1:911498027425:web:772ee87f18dc68750f4528",
+        measurementId: "G-T6ZL64QE99"
+    },
+
+    async init() {
+        firebase.initializeApp(this.firebaseConfig);
+        this.db = firebase.firestore();
+
+        document.addEventListener('DOMContentLoaded', async () => {
             this.cacheDOMElements();
             this.injectStaticHTML();
             this.bindEvents();
-            this.loadInitialContent();
+            await this.loadInitialContent();
         });
     },
     
-    loadInitialContent() {
-        this.loadProperties();
+    async loadInitialContent() {
+        await this.loadProperties();
         const initialPage = window.location.hash.substring(1) || 'home';
         this.showPage(initialPage, true);
     },
@@ -104,29 +110,15 @@ const App = {
     },
 
     injectStaticHTML() {
-        // Inject Header, Footer, and Modals once, as they are static.
-        this.elements.header.innerHTML = `
-            <div class="container py-4 flex justify-between items-center">
-                <a href="#home" class="logo-text page-link">MERMAID HOMES</a>
-                <nav class="hidden lg:flex items-center space-x-8 text-md font-medium"><a href="#listings-buy" class="nav-link page-link py-2">Buy</a><a href="#listings-rent" class="nav-link page-link py-2">Rent</a></nav>
-                <button id="mobile-menu-toggle" class="lg:hidden text-2xl mobile-menu-btn"><i class="fas fa-bars"></i></button>
-            </div>`;
-
-        this.elements['mobile-menu'].innerHTML = `
-            <div class="flex justify-between items-center mb-12"><span class="logo-text">MENU</span><button id="mobile-menu-close" class="text-4xl">&times;</button></div>
-            <nav class="flex flex-col space-y-6 text-2xl text-center"><a href="#home" class="nav-link page-link py-2">Home</a><a href="#listings-buy" class="nav-link page-link py-2">Buy</a><a href="#listings-rent" class="nav-link page-link py-2">Rent</a></nav>`;
-        
-        this.elements['add-listing-modal'].innerHTML = `<div class="modal-content"><div class="flex justify-between items-center mb-6"><h3 class="text-2xl font-bold">Add New Property</h3><button id="close-modal-btn" class="text-gray-500 text-3xl">&times;</button></div><form id="property-form" class="space-y-4"><div><label>Title</label><input type="text" name="title" required class="w-full p-2 border rounded"></div><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div><label>Listing Type</label><select name="type" required class="w-full p-2 border rounded"><option value="rent">For Rent</option><option value="buy">For Sale</option></select></div><div><label>Category</label><select name="category" required class="w-full p-2 border rounded"><option value="Villa">Villa</option><option value="Apartment">Apartment</option><option value="Townhouse">Townhouse</option></select></div></div><div><label>Location</label><input type="text" name="location" required class="w-full p-2 border rounded"></div><div class="grid grid-cols-3 gap-4"><div><label>Beds</label><input type="number" name="bedrooms" required class="w-full p-2 border rounded" min="0"></div><div><label>Baths</label><input type="number" name="bathrooms" required class="w-full p-2 border rounded" min="0"></div><div><label>Area (m²)</label><input type="number" name="area" required class="w-full p-2 border rounded" min="0"></div></div><div><label>Price (THB)</label><input type="number" name="priceTHB" required class="w-full p-2 border rounded" min="1"></div><div><label>Image URL</label><input type="url" name="images" required class="w-full p-2 border rounded" placeholder="https://images.unsplash.com/..."></div><button type="submit" class="btn btn-primary w-full !mt-6">Add Property</button></form></div>`;
-        
-        this.elements.footer.innerHTML = `
-            <div class="container py-16"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"><div class="text-center md:text-left"><h3 class="logo-text mb-4">MERMAID HOMES</h3><p class="text-sm text-gray-600">Your trusted real estate partner in Phuket.</p></div><div class="text-center md:text-left"><h4 class="mb-4">Quick Links</h4><ul class="space-y-3 text-sm text-gray-600"><li><a href="#listings-buy" class="page-link hover:text-[var(--primary-color)]">Buy</a></li><li><a href="#listings-rent" class="page-link hover:text-[var(--primary-color)]">Rent</a></li></ul></div><div class="text-center md:text-left"><h4 class="mb-4">Contact Info</h4><ul class="space-y-3 text-sm text-gray-600"><li class="flex items-center justify-center md:justify-start"><i class="fas fa-map-marker-alt w-4 mr-3 text-gray-400"></i><span>Phuket, Thailand</span></li><li class="flex items-center justify-center md:justify-start"><i class="fas fa-phone w-4 mr-3 text-gray-400"></i><span>+66 65 476 5114</span></li><li class="flex items-center justify-center md:justify-start"><i class="fas fa-envelope w-4 mr-3 text-gray-400"></i><span>info@mermaidhomes.com</span></li></ul></div><div class="text-center md:text-left"><h4 class="mb-4">Follow Us</h4><div class="flex space-x-4 text-2xl justify-center md:justify-start"><a href="https://www.facebook.com/profile.php?id=61551898026585" target="_blank" class="text-gray-500 hover:text-[var(--primary-color)] transition-colors"><i class="fab fa-facebook"></i></a><a href="https://www.instagram.com/merm.homes?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" class="text-gray-500 hover:text-[var(--primary-color)] transition-colors"><i class="fab fa-instagram"></i></a></div></div></div></div>
-            <div class="bg-white py-4 border-t border-[var(--border-color)]"><p class="text-center text-sm text-gray-500">&copy; ${new Date().getFullYear()} Mermaid Homes. All Rights Reserved.</p></div>`;
+        this.elements.header.innerHTML = `<div class="container h-full flex justify-between items-center"><a href="#home" class="logo-text page-link">MERMAID HOMES</a><nav class="hidden lg:flex items-center space-x-8 text-md font-medium"><a href="#listings-buy" class="nav-link page-link py-2">Buy</a><a href="#listings-rent" class="nav-link page-link py-2">Rent</a></nav><button id="mobile-menu-toggle" class="lg:hidden text-2xl mobile-menu-btn"><i class="fas fa-bars"></i></button></div>`;
+        this.elements['mobile-menu'].innerHTML = `<div class="flex justify-between items-center mb-12"><span class="logo-text">MENU</span><button id="mobile-menu-close" class="text-4xl">&times;</button></div><nav class="flex flex-col space-y-6 text-2xl text-center"><a href="#home" class="nav-link page-link py-2">Home</a><a href="#listings-buy" class="nav-link page-link py-2">Buy</a><a href="#listings-rent" class="nav-link page-link py-2">Rent</a></nav>`;
+        this.elements['add-listing-modal'].innerHTML = `<div class="modal-content"><div class="flex justify-between items-center mb-6"><h3 class="text-2xl font-bold">Add New Property</h3><button id="close-modal-btn" class="text-gray-500 text-3xl">&times;</button></div><form id="property-form" class="space-y-4"><div><label>Title</label><input type="text" name="title" required class="w-full p-2 border rounded"></div><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div><label>Listing Type</label><select name="type" required class="w-full p-2 border rounded"><option value="rent">For Rent</option><option value="buy">For Sale</option></select></div><div><label>Category</label><select name="category" required class="w-full p-2 border rounded"><option value="Villa">Villa</option><option value="Apartment">Apartment</option><option value="Townhouse">Townhouse</option></select></div></div><div><label>Location</label><input type="text" name="location" required class="w-full p-2 border rounded"></div><div class="grid grid-cols-3 gap-4"><div><label>Beds</label><input type="number" name="bedrooms" required class="w-full p-2 border rounded" min="0"></div><div><label>Baths</label><input type="number" name="bathrooms" required class="w-full p-2 border rounded" min="0"></div><div><label>Area (m²)</label><input type="number" name="area" required class="w-full p-2 border rounded" min="0"></div></div><div><label>Price (THB)</label><input type="number" name="priceTHB" required class="w-full p-2 border rounded" min="1"></div><div><label>Image URL</label><input type="url" name="images" required class="w-full p-2 border rounded" placeholder="https://images.unsplash.com/..."></div><button type="submit" class="w-full bg-[var(--primary-color)] text-white p-3 rounded-lg !mt-6">Add Property</button></form></div>`;
+        this.elements.footer.innerHTML = `<div class="container py-16"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"><div class="text-center md:text-left"><h3 class="logo-text mb-4">MERMAID HOMES</h3><p class="text-sm text-gray-600">Your trusted real estate partner in Phuket.</p></div><div class="text-center md:text-left"><h4 class="mb-4">Quick Links</h4><ul class="space-y-3 text-sm text-gray-600"><li><a href="#listings-buy" class="page-link hover:text-[var(--primary-color)]">Buy</a></li><li><a href="#listings-rent" class="page-link hover:text-[var(--primary-color)]">Rent</a></li></ul></div><div class="text-center md:text-left"><h4 class="mb-4">Contact Info</h4><ul class="space-y-3 text-sm text-gray-600"><li class="flex items-center justify-center md:justify-start"><i class="fas fa-map-marker-alt w-4 mr-3 text-gray-400"></i><span>Phuket, Thailand</span></li><li class="flex items-center justify-center md:justify-start"><i class="fas fa-phone w-4 mr-3 text-gray-400"></i><span>+66 65 476 5114</span></li><li class="flex items-center justify-center md:justify-start"><i class="fas fa-envelope w-4 mr-3 text-gray-400"></i><span>info@mermaidhomes.com</span></li></ul></div><div class="text-center md:text-left"><h4 class="mb-4">Follow Us</h4><div class="flex space-x-4 text-2xl justify-center md:justify-start"><a href="https://www.facebook.com/profile.php?id=61551898026585" target="_blank" class="text-gray-500 hover:text-[var(--primary-color)]"><i class="fab fa-facebook"></i></a><a href="https://www.instagram.com/merm.homes?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" class="text-gray-500 hover:text-[var(--primary-color)]"><i class="fab fa-instagram"></i></a></div></div></div></div><div class="bg-white py-4 border-t"><p class="text-center text-sm text-gray-500">&copy; ${new Date().getFullYear()} Mermaid Homes. All Rights Reserved.</p></div>`;
     },
 
     bindEvents() {
         document.body.addEventListener('click', e => {
-            const pageLink = e.target.closest('.page-link');
-            if (pageLink) { e.preventDefault(); this.showPage(pageLink.hash.substring(1)); this.closeMobileMenu(); }
+            if (e.target.closest('.page-link')) { e.preventDefault(); this.showPage(e.target.closest('.page-link').hash.substring(1)); this.closeMobileMenu(); }
         });
         window.addEventListener('scroll', () => this.handleHeaderScroll());
         this.elements.addListingBtn?.addEventListener('click', () => this.showModal());
@@ -147,49 +139,41 @@ const App = {
             }
         });
     },
-
-    handleHeaderScroll() {
-        const isHome = document.getElementById('home')?.offsetParent != null;
-        this.elements.header.classList.toggle('on-hero', isHome && window.scrollY < 50);
-        this.elements.header.classList.toggle('scrolled', !isHome || window.scrollY > 50);
-    },
     
     showPage(pageId, isInitial = false) {
         const mainContent = this.elements['main-content'];
-        let listingType = 'rent';
+        this.currentListingType = this.currentListingType || 'rent';
 
-        if (pageId.startsWith('listings')) {
-            listingType = pageId.split('-')[1] || 'rent';
-            mainContent.innerHTML = this.getListingPageHTML(listingType);
-            this.renderListings(listingType);
-            this.bindListingPageEvents();
-        } else { // Default to home
-            mainContent.innerHTML = this.getHomePageHTML();
-        }
-        
-        if (!isInitial) window.scrollTo({ top: 0, behavior: 'smooth' });
-        this.handleHeaderScroll();
+        mainContent.style.opacity = 0;
+        setTimeout(() => {
+            if (pageId.startsWith('listings')) {
+                this.currentListingType = pageId.split('-')[1] || 'rent';
+                mainContent.innerHTML = this.getListingPageHTML(this.currentListingType);
+                this.renderListings(this.currentListingType);
+                this.bindListingPageEvents();
+            } else {
+                mainContent.innerHTML = this.getHomePageHTML();
+            }
+            mainContent.style.opacity = 1;
+            if (!isInitial) window.scrollTo({ top: 0, behavior: 'auto' });
+            this.handleHeaderScroll();
+        }, 150);
     },
     
     getHomePageHTML() {
-        return `<section id="home" class="page hero"><div class="hero-video-wrapper"><iframe src="https://player.vimeo.com/video/1093161578?background=1&autoplay=1&loop=1&autopause=0&muted=1" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div><div class="hero-overlay"></div><div class="container hero-content px-4"><h1 class="leading-tight">Find Your Dream Home in Phuket</h1></div></section>`;
+        return `<section id="home" class="page hero active"><div class="hero-video-wrapper"><video autoplay muted loop playsinline id="hero-video"><source src="opening.mp4" type="video/mp4"></video></div><div class="hero-overlay"></div><div class="container hero-content px-4"><h1 class="leading-tight">Find Your Dream Home in Phuket</h1></div></section>`;
     },
 
     getListingPageHTML(type) {
-        return `<div id="listings" class="page" style="display:block;"><div class="bg-white" style="padding-top: 100px;"><div class="container py-6"><div id="filter-bar" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-center p-4 rounded-lg shadow-md bg-gray-50"><input type="text" id="search-input" placeholder="Name or location..." class="sm:col-span-2 lg:col-span-2 w-full p-3 border rounded-lg outline-none focus:ring-2 focus:ring-[var(--primary-color)]"><select id="type-select" class="w-full p-3 border rounded-lg bg-white"><option value="all">All Types</option><option value="Apartment">Apartment</option><option value="Villa">Villa</option><option value="Townhouse">Townhouse</option></select><select id="beds-select" class="w-full p-3 border rounded-lg bg-white"><option value="all">Any Beds</option><option value="1">1+</option><option value="2">2+</option><option value="3">3+</option></select><select id="baths-select" class="w-full p-3 border rounded-lg bg-white"><option value="all">Any Baths</option><option value="1">1+</option><option value="2">2+</option><option value="3">3+</option></select></div></div></div><div class="container py-12"><h2 id="listing-title" class="text-3xl font-bold mb-8">Properties for ${type === 'buy' ? 'Sale' : 'Rent'}</h2><div id="property-grid" class="property-grid"></div></div></div>`;
+        return `<section id="listings" class="page active"><div class="bg-white"><div class="container py-6"><div id="filter-bar" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-center p-4 rounded-lg shadow-md bg-gray-50"><input type="text" id="search-input" placeholder="Name or location..." class="sm:col-span-2 lg:col-span-2 w-full p-3 border rounded-lg"><select id="type-select" class="w-full p-3 border rounded-lg bg-white"><option value="all">All Types</option><option value="Apartment">Apartment</option><option value="Villa">Villa</option><option value="Townhouse">Townhouse</option></select><select id="beds-select" class="w-full p-3 border rounded-lg bg-white"><option value="all">Any Beds</option><option value="1">1+</option><option value="2">2+</option></select><select id="baths-select" class="w-full p-3 border rounded-lg bg-white"><option value="all">Any Baths</option><option value="1">1+</option><option value="2">2+</option></select></div></div></div><div class="container py-12"><h2 id="listing-title" class="text-3xl font-bold mb-8">Properties for ${type === 'buy' ? 'Sale' : 'Rent'}</h2><div id="property-grid" class="property-grid"></div></div></section>`;
     },
 
-    loadProperties() {
-        const stored = localStorage.getItem('mermaidHomesProperties');
-        this.propertiesData = stored ? JSON.parse(stored) : this.getDefaultData();
-        this.saveProperties();
+    async loadProperties() {
+        const snapshot = await this.db.collection('properties').orderBy('createdAt', 'desc').get();
+        this.propertiesData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     },
 
-    saveProperties() {
-        localStorage.setItem('mermaidHomesProperties', JSON.stringify(this.propertiesData));
-    },
-
-    renderListings(listingType) {
+    renderListings(listingType = this.currentListingType) {
         const grid = document.getElementById('property-grid');
         if (!grid) return;
         const filters = {
@@ -208,45 +192,53 @@ const App = {
 
     renderPropertyCard(property) {
         const price = `฿${new Intl.NumberFormat('en-US').format(property.priceTHB)}`;
-        return `<div class="property-card relative"><button class="delete-property-btn" data-id="${property.id}"><i class="fas fa-trash-alt"></i></button><div class="relative h-52"><img src="${property.images[0]}" class="w-full h-full object-cover" alt="${property.title}"></div><div class="p-4"><h4 class="text-lg font-semibold truncate">${property.title}</h4><p class="text-sm text-gray-500 my-2"><i class="fas fa-map-marker-alt mr-2"></i>${property.location}</p><div class="flex justify-between text-sm text-gray-600 pt-2"><span><i class="fas fa-bed mr-2"></i>${property.bedrooms}</span><span><i class="fas fa-bath mr-2"></i>${property.bathrooms}</span><span><i class="fas fa-ruler-combined mr-2"></i>${property.area} m²</span></div><div class="mt-4 pt-4 border-t border-[var(--border-color)] font-bold text-lg text-[var(--primary-color)]">${price}</div></div></div>`;
+        return `<div class="property-card relative"><button class="delete-property-btn" data-id="${property.id}"><i class="fas fa-trash-alt"></i></button><div class="relative h-52"><img src="${property.images[0]}" class="w-full h-full object-cover"></div><div class="p-4"><h4 class="text-lg font-semibold truncate">${property.title}</h4><p class="text-sm text-gray-500 my-2"><i class="fas fa-map-marker-alt mr-2"></i>${property.location}</p><div class="flex justify-between text-sm text-gray-600 pt-2"><span><i class="fas fa-bed mr-2"></i>${property.bedrooms}</span><span><i class="fas fa-bath mr-2"></i>${property.bathrooms}</span><span><i class="fas fa-ruler-combined mr-2"></i>${property.area} m²</span></div><div class="mt-4 pt-4 border-t font-bold text-lg text-[var(--primary-color)]">${price}</div></div></div>`;
     },
 
-    handlePropertySubmit(event) {
-        event.preventDefault();
-        const form = event.target;
+    async handlePropertySubmit(e) {
+        e.preventDefault();
+        const form = e.target;
         const formData = new FormData(form);
         const newProperty = Object.fromEntries(formData.entries());
-        newProperty.id = `prop-${Date.now()}`;
         newProperty.images = [newProperty.images];
         ['bedrooms', 'bathrooms', 'area', 'priceTHB'].forEach(key => newProperty[key] = parseInt(newProperty[key]));
+        newProperty.createdAt = firebase.firestore.FieldValue.serverTimestamp();
         
-        this.propertiesData.unshift(newProperty);
-        this.saveProperties();
-        this.renderListings(newProperty.type); // Re-render the current list
-        this.hideModal();
-        alert('Property added successfully!');
-        form.reset();
+        try {
+            const docRef = await this.db.collection('properties').add(newProperty);
+            console.log("Document written with ID: ", docRef.id);
+            alert('Property added successfully!');
+            form.reset();
+            this.hideModal();
+            await this.loadProperties();
+            this.renderListings(newProperty.type);
+        } catch (error) {
+            console.error("Error adding document: ", error);
+            alert("Error: Could not add property.");
+        }
     },
 
-    deleteProperty(propertyId) {
-        const propertyToDelete = this.propertiesData.find(p => p.id === propertyId);
-        if (!propertyToDelete) return;
-        const listingType = propertyToDelete.type;
-
-        this.propertiesData = this.propertiesData.filter(p => p.id !== propertyId);
-        this.saveProperties();
-        this.renderListings(listingType);
-        alert('Property deleted.');
+    async deleteProperty(propertyId) {
+        try {
+            await this.db.collection('properties').doc(propertyId).delete();
+            alert('Property deleted.');
+            await this.loadProperties();
+            this.renderListings(this.currentListingType);
+        } catch (error) {
+            console.error("Error deleting document: ", error);
+            alert("Error: Could not delete property.");
+        }
     },
 
+    handleHeaderScroll() {
+        const isHome = document.getElementById('home')?.offsetParent != null;
+        this.elements.header.classList.toggle('on-hero', isHome && window.scrollY < 50);
+        this.elements.header.classList.toggle('scrolled', !isHome || window.scrollY > 50);
+    },
     showModal() { this.elements.addListingModal.classList.add('active'); },
     hideModal() { this.elements.addListingModal.classList.remove('active'); },
     openMobileMenu() { this.elements.mobileMenu.classList.add('open'); },
     closeMobileMenu() { this.elements.mobileMenu.classList.remove('open'); },
-
-    getDefaultData() {
-       return [{"id":"prop-1","title":"Luxury Pool Villa","type":"rent","category":"Villa","location":"Bangtao, Phuket","bedrooms":4,"bathrooms":5,"area":450,"priceTHB":150000,"images":["https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800"]},{"id":"prop-2","title":"Modern Sea View Condo","type":"rent","category":"Apartment","location":"Kamala, Phuket","bedrooms":2,"bathrooms":2,"area":120,"priceTHB":60000,"images":["https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800"]},{"id":"prop-3","title":"Cozy Townhouse","type":"buy","category":"Townhouse","location":"Rawai, Phuket","bedrooms":3,"bathrooms":2,"area":200,"priceTHB":8500000,"images":["https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800"]},{"id":"prop-4","title":"Elegant Family Villa","type":"buy","category":"Villa","location":"Cherngtalay, Phuket","bedrooms":5,"bathrooms":5,"area":500,"priceTHB":35000000,"images":["https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800"]},{"id":"prop-5","title":"Beachfront Apartment","type":"rent","category":"Apartment","location":"Patong, Phuket","bedrooms":1,"bathrooms":1,"area":80,"priceTHB":45000,"images":["https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800"]}];
-    }
 };
 
 App.init();
