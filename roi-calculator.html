@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ROI Calculator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-white font-sans text-gray-800">
+  <div class="max-w-2xl mx-auto py-12 px-4">
+    <h1 class="text-3xl font-bold mb-6 text-center">ROI Calculator</h1>
+    <form class="space-y-4">
+      <input type="number" id="investment" placeholder="Investment Amount (THB)" class="w-full border px-4 py-2 rounded">
+      <input type="number" id="profit" placeholder="Annual Profit (THB)" class="w-full border px-4 py-2 rounded">
+      <button type="button" onclick="calculateROI()" class="w-full bg-[#FAD59A] text-white font-bold py-2 px-4 rounded hover:bg-yellow-400">Calculate</button>
+    </form>
+    <div class="mt-6">
+      <canvas id="roiChart"></canvas>
+    </div>
+  </div>
+  <script>
+    function calculateROI() {
+      const investment = parseFloat(document.getElementById('investment').value);
+      const profit = parseFloat(document.getElementById('profit').value);
+      const roi = ((profit / investment) * 100).toFixed(2);
+
+      new Chart(document.getElementById("roiChart"), {
+        type: "bar",
+        data: {
+          labels: ["ROI (%)"],
+          datasets: [{
+            label: "Return",
+            data: [roi],
+            backgroundColor: "#FAD59A"
+          }]
+        }
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Post Property</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script type="module">
+    import {{ initializeApp }} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import {{ getFirestore, collection, addDoc }} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+    const firebaseConfig = {{
+      apiKey: "AIzaSyCyTuwcwvEgeD-1z5VS5ZUqn9AkKDVQ3qM",
+      authDomain: "mermaid-homes-67a4d.firebaseapp.com",
+      projectId: "mermaid-homes-67a4d",
+      storageBucket: "mermaid-homes-67a4d.firebasestorage.app",
+      messagingSenderId: "670677026431",
+      appId: "1:670677026431:web:133a2956d8566f52d8a14a",
+      measurementId: "G-L4Y8FBFNK4"
+    }};
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    window.submitProperty = async () => {
+      const title = document.getElementById("title").value;
+      const price = document.getElementById("price").value;
+      const description = document.getElementById("description").value;
+      const image = document.getElementById("image").value;
+
+      try {{
+        await addDoc(collection(db, "properties"), {{
+          title,
+          price,
+          description,
+          image,
+          createdAt: new Date().toISOString()
+        }});
+        alert("✅ Property posted successfully!");
+        document.getElementById("property-form").reset();
+      }} catch (e) {{
+        alert("❌ Failed to post property");
+        console.error("Error adding document: ", e);
+      }}
+    };
+  </script>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800">
+  <div class="max-w-2xl mx-auto py-12 px-4">
+    <h1 class="text-3xl font-bold mb-6 text-center">Post Your Property</h1>
+    <form id="property-form" onsubmit="event.preventDefault(); submitProperty();" class="bg-white shadow-md rounded p-6 space-y-4">
+      <input type="text" id="title" placeholder="Property Title" class="w-full border px-4 py-2 rounded" required>
+      <input type="number" id="price" placeholder="Price (THB)" class="w-full border px-4 py-2 rounded" required>
+      <textarea id="description" placeholder="Description" rows="4" class="w-full border px-4 py-2 rounded" required></textarea>
+      <input type="url" id="image" placeholder="Image URL" class="w-full border px-4 py-2 rounded" required>
+      <button type="submit" class="w-full bg-[#FAD59A] text-white font-bold py-2 px-4 rounded hover:bg-yellow-400">Submit</button>
+    </form>
+  </div>
+</body>
+</html>
