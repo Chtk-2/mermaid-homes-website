@@ -81,6 +81,28 @@ const App = {
             this.showPage(initialPage, true);
         });
     },
+    cacheDOMElements() {
+        this.elements = {
+            loadingText: document.getElementById("loading-text"),
+            addListingModal: document.getElementById("add-listing-modal"),
+            deleteConfirmModal: document.getElementById("delete-confirm-modal"),
+            notification: document.getElementById("notification")
+        };
+    },
+    injectHTML() {},
+    bindEvents() {},
+    showPage() {},
+    hideLoading() {
+        const overlay = document.getElementById('loading-overlay');
+        if (overlay) overlay.style.display = 'none';
+    },
+    showNotification(message, type = 'info') {
+        const el = this.elements.notification;
+        if (!el) return;
+        el.textContent = message;
+        el.classList.remove('hidden');
+        setTimeout(() => el.classList.add('hidden'), 3000);
+    },
     connectToSupabase() {
         const SUPABASE_URL = 'https://ikukwjgqnegtvzwelldnw.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...';
@@ -114,6 +136,9 @@ const App = {
             this.hideLoading();
         }
     },
+    filterAndRenderProperties() {
+        this.hideLoading();
+    }
 };
 
 window.addEventListener('load', () => {
