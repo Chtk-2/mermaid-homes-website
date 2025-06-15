@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>All Properties</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCyTuwcwvEgeD-1z5VS5ZUqn9AkKDVQ3qM",
+      authDomain: "mermaid-homes-67a4d.firebaseapp.com",
+      projectId: "mermaid-homes-67a4d",
+      storageBucket: "mermaid-homes-67a4d.appspot.com",
+      messagingSenderId: "670677026431",
+      appId: "1:670677026431:web:133a2956d8566f52d8a14a",
+      measurementId: "G-L4Y8FBFNK4"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function loadProperties() {
+      const querySnapshot = await getDocs(collection(db, "properties"));
+      const container = document.getElementById("property-list");
+
+      if (querySnapshot.empty) {
+        container.innerHTML = "<p class='text-center text-gray-500'>No properties found.</p>";
+        return;
+      }
+
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        const item = document.createElement("div");
+        item.className = "bg-white shadow-md rounded-lg overflow-hidden";
+        item.innerHTML = `
+          <img src="${data.image}" alt="${data.title}" class="w-full h-60 object-cover"/>
+          <div class="p-4">
+            <h3 class="text-xl font-semibold">${data.title}</h3>
+            <p class="text-gray-600 text-sm mb-2">${data.description}</p>
+            <p class="text-yellow-600 font-bold">฿${parseFloat(data.price).toLocaleString()}</p>
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    window.addEventListener("DOMContentLoaded", loadProperties);
+  </script>
+</head>
+<body class="bg-[#FAF1E6] text-gray-800 font-sans">
+  <header class="bg-white shadow sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+      <h1 class="text-2xl font-bold">All Properties</h1>
+      <a href="index.html" class="text-sm text-[#FAD59A] font-semibold hover:underline">← Back Home</a>
+    </div>
+  </header>
+
+  <main class="py-10 px-6 max-w-6xl mx-auto">
+    <div id="property-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+  </main>
+</body>
+</html>
