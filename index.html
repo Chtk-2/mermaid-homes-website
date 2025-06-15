@@ -2,11 +2,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mermaid Homes - Find Your Dream House in Phuket</title>
+    <title>Mermaid Homes - Find Your Own</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Forum&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Forum&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
@@ -15,149 +15,89 @@
         :root {
             --primary-color: #B17457;
             --primary-color-dark: #9A644A;
-            --bg-main: #FAF7F0;
-            --text-dark: #374151;
+            --bg-main: #FFFFFF;
+            --bg-secondary: #FAF7F0;
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --border-color: #e2e8f0;
         }
         html { scroll-behavior: smooth; }
         body { font-family: 'Poppins', sans-serif; background-color: var(--bg-main); color: var(--text-dark); }
         .font-heading { font-family: 'Forum', serif; }
         .container { max-width: 1280px; margin: 0 auto; padding: 0 1rem; }
+
+        /* --- Animations & Transitions --- */
         #loading-overlay { transition: opacity 0.5s ease-out; }
-        .page-content-section { display: none; }
-        .page-content-section.active { display: block; animation: fadeIn 0.5s ease-out; }
+        .page-content-section.active { animation: fadeIn 0.5s ease-out; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.6s ease-out;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- Header & Logo --- */
         .header { position: sticky; top: 0; z-index: 50; }
-        .header-bottom { background-color: rgba(250, 247, 240, 0.95); backdrop-filter: blur(10px); box-shadow: 0 2px 4px rgba(0,0,0,0.05); padding: 1rem 0; }
-        .hero { position: relative; height: 85vh; display: flex; align-items: center; justify-content: center; text-align: center; color: white; overflow: hidden; background: linear-gradient(135deg, #B17457, #9A644A); }
-        .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); z-index: 2; }
+        .header-bottom { background-color: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); box-shadow: 0 2px 4px rgba(0,0,0,0.05); padding: 1.5rem 0; transition: all 0.3s ease; }
+        .logo-text { font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 1.5rem; letter-spacing: 0.1em; color: var(--text-dark); }
+        .nav-link.nav-active { color: var(--primary-color); font-weight: 600; }
+        #mobile-menu { opacity: 0; max-height: 0; transform: translateY(-10px); overflow: hidden; transition: all 0.3s ease-out; display: block !important; }
+        #mobile-menu.active { opacity: 1; max-height: 500px; transform: translateY(0); }
+
+        /* --- Hero Section with Video --- */
+        .hero { position: relative; height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; color: white; overflow: hidden; }
+        #hero-video { position: absolute; top: 50%; left: 50%; min-width: 100%; min-height: 100%; width: auto; height: auto; z-index: 1; transform: translateX(-50%) translateY(-50%); object-fit: cover; }
+        .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 2; }
         .hero .container { position: relative; z-index: 3; }
-        .properties-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 2rem; }
-        .property-card { background: #fff; border-radius: 0.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow: hidden; transition: all 0.3s ease; display: flex; flex-direction: column; cursor: pointer; }
-        .property-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(177, 116, 87, 0.1); }
-        .card-banner { position: relative; height: 250px; overflow: hidden; }
-        .card-banner img { width: 100%; height: 100%; object-fit: cover; }
-        .card-badge { position: absolute; top: 1rem; left: 1rem; text-transform: capitalize; background-color: var(--primary-color); color: white; padding: 0.25rem 0.75rem; border-radius: 0.25rem; font-size: 0.8rem; font-weight: 500; }
+        .hero .hero-content h1 { font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 3rem; md:font-size: 3.5rem; letter-spacing: 0.1em; color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        .hero .hero-content p { font-family: 'Poppins', sans-serif; font-weight: 300; font-size: 1rem; md:font-size: 1.25rem; letter-spacing: 0.3em; text-transform: uppercase; color: #eee; margin-top: 1rem; }
+        
+        /* --- General Styling & Buttons --- */
+        .section-heading { font-family: 'Forum', serif; font-size: 3rem; color: var(--text-dark); }
+        .btn-primary { background: var(--primary-color); color: white; padding: 0.75rem 1.5rem; border-radius: 0.5rem; cursor: pointer; transition: all 0.3s ease; font-weight: 500; text-decoration: none; display: inline-block; box-shadow: 0 4px 15px rgba(177, 116, 87, 0.2); }
+        .btn-primary:hover { background-color: var(--primary-color-dark); transform: translateY(-2px); box-shadow: 0 7px 20px rgba(177, 116, 87, 0.3); }
+
+        /* --- Property Card --- */
+        .properties-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 2.5rem; }
+        .property-card { background: #fff; border-radius: 0.75rem; border: 1px solid var(--border-color); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03); overflow: hidden; transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); display: flex; flex-direction: column; cursor: pointer; }
+        .property-card:hover { transform: translateY(-8px); box-shadow: 0 14px 28px rgba(0,0,0,0.07); }
+        .card-banner { position: relative; height: 220px; overflow: hidden; }
+        .card-banner img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+        .property-card:hover .card-banner img { transform: scale(1.05); }
+        .card-badge { position: absolute; top: 1rem; left: 1rem; text-transform: capitalize; background-color: var(--primary-color); color: white; padding: 0.25rem 0.75rem; border-radius: 99px; font-size: 0.8rem; font-weight: 500; }
         .delete-property-btn { position: absolute; top: 10px; right: 10px; background-color: rgba(220, 53, 69, 0.8); color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; transition: all 0.2s; opacity: 0; z-index: 5; }
         .property-card:hover .delete-property-btn { opacity: 1; }
         .card-content { padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column; }
-        .card-price { font-size: 1.5rem; font-weight: 700; color: var(--primary-color); margin-top: auto; }
-        .nav-link.nav-active { color: var(--primary-color); font-weight: 700; }
-        #mobile-menu { opacity: 0; max-height: 0; transform: translateY(-10px); overflow: hidden; transition: all 0.3s ease-out; display: block !important; }
-        #mobile-menu.active { opacity: 1; max-height: 500px; transform: translateY(0); }
-        .btn-primary { background: var(--primary-color); color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 0.375rem; cursor: pointer; transition: all 0.3s ease; font-weight: 500; text-decoration: none; display: inline-block; }
-        .btn-primary:hover { background-color: var(--primary-color-dark); transform: translateY(-1px); }
+        .card-price { font-size: 1.5rem; font-weight: 600; color: var(--primary-color); margin-top: auto; }
         
-        /* Fixed Add Listing Button */
-        .add-listing-btn {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            width: 60px;
-            height: 60px;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            font-size: 1.5rem;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            transition: all 0.3s ease;
-            z-index: 40;
-        }
-        .add-listing-btn:hover {
-            background: var(--primary-color-dark);
-            transform: scale(1.1);
-        }
+        /* --- Floating Buttons --- */
+        .add-listing-btn, .whatsapp-float { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; text-decoration: none; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: all 0.3s ease; z-index: 40; position: fixed; bottom: 2rem; }
+        .add-listing-btn { right: 2rem; background: var(--primary-color); color: white; border: none; cursor: pointer; }
+        .add-listing-btn:hover { background: var(--primary-color-dark); transform: scale(1.1); }
+        .whatsapp-float { left: 2rem; background: #25D366; color: white; }
+        .whatsapp-float:hover { background: #20BA5A; transform: scale(1.1); }
         
-        /* WhatsApp Float Button */
-        .whatsapp-float {
-            position: fixed;
-            bottom: 2rem;
-            left: 2rem;
-            width: 60px;
-            height: 60px;
-            background: #25D366;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            text-decoration: none;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            transition: all 0.3s ease;
-            z-index: 40;
-        }
-        .whatsapp-float:hover {
-            background: #20BA5A;
-            transform: scale(1.1);
-        }
-        
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 100;
-            padding: 2rem;
-            overflow-y: auto;
-        }
-        .modal.active {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .modal-content {
-            background: white;
-            border-radius: 0.5rem;
-            padding: 2rem;
-            width: 100%;
-            max-width: 600px;
-            max-height: 90vh;
-            overflow-y: auto;
-            position: relative;
-        }
-        
-        /* Form Styles */
-        .modal-content label {
-            display: block;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-            color: var(--text-dark);
-        }
-        .modal-content input,
-        .modal-content select,
-        .modal-content textarea {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #d1d5db;
-            border-radius: 0.375rem;
-            font-size: 1rem;
-        }
-        .modal-content input:focus,
-        .modal-content select:focus,
-        .modal-content textarea:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(177, 116, 87, 0.1);
-        }
+        /* --- Modal Styles --- */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 100; padding: 2rem; overflow-y: auto; }
+        .modal.active { display: flex; align-items: center; justify-content: center; }
+        .modal-content { background: white; border-radius: 0.75rem; padding: 2rem; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .modal-content label { display: block; font-weight: 500; margin-bottom: 0.5rem; color: var(--text-dark); }
+        .modal-content input, .modal-content select, .modal-content textarea { width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.5rem; font-size: 1rem; transition: all 0.2s ease; }
+        .modal-content input:focus, .modal-content select:focus, .modal-content textarea:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(177, 116, 87, 0.1); }
     </style>
 </head>
 <body>
 
     <div id="loading-overlay" class="fixed top-0 left-0 w-full h-full bg-white flex flex-col items-center justify-center z-[100]">
-        <div class="w-20 h-20 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center mb-4">
-            <i class="fas fa-home text-white text-2xl"></i>
-        </div>
-        <div class="text-2xl font-bold mb-2" style="color: var(--primary-color);">Mermaid Homes</div>
-        <div id="loading-text" class="animate-pulse text-gray-500">Initializing...</div>
+        <div class="w-16 h-16 border-4 border-t-4 border-gray-200 border-t-[var(--primary-color)] rounded-full animate-spin"></div>
+        <div id="loading-text" class="mt-4 text-gray-500">Initializing...</div>
     </div>
     
-    <div id="notification" class="fixed top-4 right-4 z-[110] p-4 rounded-lg shadow-lg hidden"></div>
+    <div id="notification" class="fixed top-5 right-5 z-[110] p-4 rounded-lg shadow-lg text-white opacity-0 transition-opacity duration-300 -translate-y-10" style="transform: translateY(-50px);"></div>
 
     <header id="header" class="header"></header>
     <main id="main-content"></main>
@@ -185,6 +125,7 @@ const App = {
             this.loadProperties();
             const initialPage = window.location.hash.substring(1) || 'hero-section';
             this.showPage(initialPage, true);
+            this.scrollReveal();
         });
     },
 
@@ -199,30 +140,19 @@ const App = {
         event.preventDefault();
         const form = event.target;
         const formData = new FormData(form);
-        
         const fileInput = form.querySelector('input[type="file"]');
-        const tempImage = fileInput && fileInput.files && fileInput.files.length > 0 
-            ? URL.createObjectURL(fileInput.files[0]) 
-            : 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800';
-
-        const newProperty = {
-            id: 'temp-' + Date.now(),
-            title: formData.get('title'), 
-            type: formData.get('type'), 
-            category: formData.get('category'), 
-            location: formData.get('location'), 
-            bedrooms: parseInt(formData.get('bedrooms')) || 0, 
-            bathrooms: parseInt(formData.get('bathrooms')) || 0, 
-            area: parseInt(formData.get('area')) || 0,
-            priceTHB: parseInt(formData.get('priceTHB')) || 0, 
-            description: formData.get('description') || '',
-            images: [tempImage]
-        };
+        const tempImage = fileInput?.files?.[0] ? URL.createObjectURL(fileInput.files[0]) : 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800';
+        const newProperty = Object.fromEntries(formData.entries());
+        newProperty.id = 'temp-' + Date.now();
+        newProperty.images = [tempImage];
+        ['bedrooms', 'bathrooms', 'area', 'priceTHB'].forEach(key => {
+            newProperty[key] = parseInt(newProperty[key]) || 0;
+        });
         
         this.propertiesData.unshift(newProperty);
         this.filterAndRenderProperties();
         this.hideModal(this.elements.addListingModal);
-        this.showNotification('Property added for this session.', 'success');
+        this.showNotification('Property added successfully.', 'success');
         form.reset();
     },
 
@@ -230,346 +160,211 @@ const App = {
         this.propertiesData = this.propertiesData.filter(p => p.id !== propId);
         this.filterAndRenderProperties();
         this.hideModal(this.elements.deleteConfirmModal);
-        this.showNotification('Property removed for this session.', 'success');
+        this.showNotification('Property removed.', 'success');
     },
     
-    // --- UI and Helper Functions ---
     cacheDOMElements() {
         const ids = ['loading-overlay', 'loading-text', 'notification', 'header', 'main-content', 'footer', 'add-listing-btn', 'add-listing-modal', 'property-detail-modal', 'delete-confirm-modal'];
         ids.forEach(id => {
-            const element = document.getElementById(id);
-            if (element) {
-                this.elements[id.replace(/-(\w)/g, (_, l) => l.toUpperCase())] = element;
-            }
+            this.elements[id.replace(/-(\w)/g, (_, l) => l.toUpperCase())] = document.getElementById(id);
         });
     },
 
     cacheInjectedElements() {
-        const ids = ['mobile-menu', 'mobile-menu-button', 'properties-grid', 'roi-calculator-content', 'contact-content', 'property-form', 'roiChart'];
+        const ids = ['mobile-menu', 'mobile-menu-button', 'properties-grid', 'roi-calculator-content', 'property-form', 'roiChart'];
         ids.forEach(id => {
             const el = document.getElementById(id);
             if(el) this.elements[id.replace(/-(\w)/g, (_,l) => l.toUpperCase())] = el;
         });
-        this.elements.navLinks = document.querySelectorAll('.nav-link');
     },
 
     injectHTML() {
         if(this.elements.header) {
             this.elements.header.innerHTML = `
                 <div class="header-bottom">
-                    <div class="container mx-auto px-4 flex justify-between items-center py-2">
-                        <a href="#hero-section" class="nav-link">
-                            <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center">
-                                <i class="fas fa-home text-white text-xl"></i>
-                            </div>
-                        </a>
-                        <nav class="hidden lg:flex items-center space-x-8 text-lg font-heading text-gray-700">
+                    <div class="container mx-auto px-4 flex justify-between items-center">
+                        <a href="#hero-section" class="nav-link logo-text">MERMAID HOMES</a>
+                        <nav class="hidden lg:flex items-center space-x-8 text-md font-medium text-gray-600">
                             <a href="#properties" class="nav-link hover:text-[var(--primary-color)] transition-colors">Properties</a>
                             <a href="#roi-calculator" class="nav-link hover:text-[var(--primary-color)] transition-colors">ROI Calculator</a>
                             <a href="#contact" class="nav-link hover:text-[var(--primary-color)] transition-colors">Contact</a>
                         </nav>
-                        <button id="mobile-menu-button" class="lg:hidden text-gray-600">
-                            <i class="fas fa-bars text-2xl"></i>
-                        </button>
+                        <button id="mobile-menu-button" class="lg:hidden text-gray-600"><i class="fas fa-bars text-2xl"></i></button>
                     </div>
                 </div>
                 <div id="mobile-menu" class="lg:hidden bg-white border-t">
-                    <a href="#properties" class="nav-link block text-center py-3 text-gray-700 hover:bg-gray-100 font-heading">Properties</a>
-                    <a href="#roi-calculator" class="nav-link block text-center py-3 text-gray-700 hover:bg-gray-100 font-heading">ROI Calculator</a>
-                    <a href="#contact" class="nav-link block text-center py-3 text-gray-700 hover:bg-gray-100 font-heading">Contact</a>
-                </div>
-            `;
+                    <a href="#properties" class="nav-link block text-center py-4 text-gray-700 hover:bg-gray-100">Properties</a>
+                    <a href="#roi-calculator" class="nav-link block text-center py-4 text-gray-700 hover:bg-gray-100">ROI Calculator</a>
+                    <a href="#contact" class="nav-link block text-center py-4 text-gray-700 hover:bg-gray-100">Contact</a>
+                </div>`;
         }
         
         if(this.elements.mainContent) {
             this.elements.mainContent.innerHTML = `
                 <section id="hero-section" class="page-content-section hero">
+                    <video autoplay muted loop playsinline id="hero-video">
+                        // Replace this with your video file, e.g., src="opening.mp4"
+                        <source src="https://storage.coverr.co/videos/coverr-a-beautiful-house-in-the-middle-of-a-forest-5463/1080p.mp4" type="video/mp4">
+                    </video>
                     <div class="hero-overlay"></div>
                     <div class="container mx-auto px-4">
-                        <div class="hero-content">
-                            <h1 class="text-5xl md:text-6xl font-bold mb-6 font-heading">Find Your Dream House By Us</h1>
-                            <p class="mt-4 text-lg text-gray-200">Thailand best luxury homes | Sell and Rent 🏡</p>
-                            <a href="#properties" class="nav-link btn-primary inline-block mt-8 font-bold py-3 px-8 rounded-full">Explore Properties</a>
+                        <div class="hero-content reveal visible">
+                            <h1>MERMAID HOMES</h1>
+                            <p>FIND YOUR OWN</p>
+                            <a href="#properties" class="nav-link btn-primary inline-block mt-8 font-bold py-3 px-8 rounded-full">Explore Listings</a>
                         </div>
                     </div>
                 </section>
                 
-                <section id="properties" class="page-content-section py-12 md:py-20">
+                <section id="properties" class="page-content-section py-16 md:py-24 bg-[var(--bg-secondary)]">
                     <div class="container mx-auto px-4">
-                        <h2 class="text-4xl md:text-5xl font-bold text-center mb-12" style="color:var(--primary-color);">Featured Listings</h2>
-                        <div id="properties-grid" class="properties-grid"></div>
+                        <h2 class="section-heading text-center mb-12 reveal">Featured Listings</h2>
+                        <div id="properties-grid" class="properties-grid reveal"></div>
                     </div>
                 </section>
                 
-                <section id="roi-calculator" class="page-content-section py-12 md:py-20">
+                <section id="roi-calculator" class="page-content-section py-16 md:py-24">
                     <div class="container mx-auto px-4">
-                        <h2 class="text-4xl md:text-5xl font-bold text-center mb-10 text-gray-800">Return on Investment Calculator</h2>
-                        <div id="roi-calculator-content" class="max-w-xl mx-auto bg-white rounded-2xl shadow-lg p-8"></div>
+                        <h2 class="section-heading text-center mb-12 reveal">Investment Calculator</h2>
+                        <div id="roi-calculator-content" class="max-w-xl mx-auto bg-white rounded-2xl shadow-lg p-8 reveal"></div>
                     </div>
                 </section>
                 
-                <section id="contact" class="page-content-section py-12 md:py-20 bg-white">
+                <section id="contact" class="page-content-section py-16 md:py-24 bg-[var(--bg-secondary)]">
                     <div class="container mx-auto px-4">
-                        <h2 class="text-4xl md:text-5xl font-bold text-center mb-4 text-gray-800">Get In Touch</h2>
-                        <p class="text-center text-gray-500 mb-12 max-w-2xl mx-auto">We are here to help you find your perfect property in Phuket.</p>
-                        <div id="contact-content" class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            <div class="text-center">
-                                <i class="fas fa-phone text-4xl text-[var(--primary-color)] mb-4"></i>
-                                <h3 class="text-xl font-bold mb-2">Phone</h3>
-                                <p class="text-gray-600">+66 65 476 5114</p>
-                            </div>
-                            <div class="text-center">
-                                <i class="fas fa-envelope text-4xl text-[var(--primary-color)] mb-4"></i>
-                                <h3 class="text-xl font-bold mb-2">Email</h3>
-                                <p class="text-gray-600">info@mermaidhomes.com</p>
-                            </div>
-                            <div class="text-center">
-                                <i class="fas fa-map-marker-alt text-4xl text-[var(--primary-color)] mb-4"></i>
-                                <h3 class="text-xl font-bold mb-2">Location</h3>
-                                <p class="text-gray-600">Phuket, Thailand</p>
-                            </div>
+                        <h2 class="section-heading text-center mb-4 reveal">Get In Touch</h2>
+                        <p class="text-center text-gray-500 mb-12 max-w-2xl mx-auto reveal">We are here to help you find your perfect property in Phuket.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 reveal">
+                            <div class="text-center p-6"><i class="fas fa-phone text-4xl text-[var(--primary-color)] mb-4"></i><h3 class="text-xl font-bold mb-2">Phone</h3><p class="text-gray-600">+66 65 476 5114</p></div>
+                            <div class="text-center p-6"><i class="fas fa-envelope text-4xl text-[var(--primary-color)] mb-4"></i><h3 class="text-xl font-bold mb-2">Email</h3><p class="text-gray-600">info@mermaidhomes.com</p></div>
+                            <div class="text-center p-6"><i class="fas fa-map-marker-alt text-4xl text-[var(--primary-color)] mb-4"></i><h3 class="text-xl font-bold mb-2">Location</h3><p class="text-gray-600">Phuket, Thailand</p></div>
                         </div>
                     </div>
-                </section>
-            `;
+                </section>`;
         }
         
         if(this.elements.footer) {
             this.elements.footer.innerHTML = `
-                <div class="footer-top py-12 bg-[#D8D2C2]">
+                <div class="py-12 bg-gray-800 text-white">
                     <div class="container mx-auto px-4 text-center">
-                        <div class="w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-home text-white text-2xl"></i>
-                        </div>
-                        <h3 class="text-2xl font-bold mb-2">Mermaid Homes</h3>
-                        <p class="text-gray-600">Your trusted real estate partner in Phuket</p>
+                        <h3 class="logo-text text-white text-2xl mb-2">MERMAID HOMES</h3>
+                        <p class="text-gray-400">Your trusted real estate partner in Phuket</p>
                     </div>
                 </div>
-                <div class="footer-bottom py-4 bg-[#c9c2b4] text-center">
+                <div class="py-4 bg-gray-900 text-center text-gray-500 text-sm">
                     <p>&copy; ${new Date().getFullYear()} Mermaid Homes. All Rights Reserved.</p>
-                </div>
-            `;
+                </div>`;
         }
         
         if(this.elements.addListingModal) {
-            this.elements.addListingModal.innerHTML = `
-                <div class="modal-content">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-2xl font-bold">Add New Property</h3>
-                        <button onclick="App.hideModal(App.elements.addListingModal)" class="text-gray-500 hover:text-gray-700 text-3xl">&times;</button>
-                    </div>
-                    <form id="property-form" class="space-y-4">
-                        <div><label>Title</label><input type="text" name="title" required></div>
-                        <div><label>Type</label><select name="type" required><option value="sale">Sale</option><option value="rent">Rent</option></select></div>
-                        <div><label>Category</label><input type="text" name="category" required placeholder="Villa, Condo, House"></div>
-                        <div><label>Location</label><input type="text" name="location" required placeholder="Kamala, Bangtao, Rawai"></div>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div><label>Bedrooms</label><input type="number" name="bedrooms" required min="1"></div>
-                            <div><label>Bathrooms</label><input type="number" name="bathrooms" required min="1"></div>
-                        </div>
-                        <div><label>Area (sqm)</label><input type="number" name="area" required min="1"></div>
-                        <div><label>Price (THB)</label><input type="number" name="priceTHB" required min="1"></div>
-                        <div><label>Description</label><textarea name="description" rows="3" required placeholder="Describe the property..."></textarea></div>
-                        <div><label>Images</label><input type="file" name="images" accept="image/*"></div>
-                        <button type="submit" class="btn-primary w-full">Add Property</button>
-                    </form>
-                </div>
-            `;
+            this.elements.addListingModal.innerHTML = this.getFormHTML();
         }
         
         if(this.elements.propertyDetailModal) {
-            this.elements.propertyDetailModal.innerHTML = `
-                <div class="modal-content max-w-4xl">
-                    <button onclick="App.hideModal(App.elements.propertyDetailModal)" class="absolute top-4 right-4 text-2xl text-gray-500 hover:text-gray-700">&times;</button>
-                    <div id="property-detail-content"></div>
-                </div>
-            `;
+            this.elements.propertyDetailModal.innerHTML = `<div class="modal-content max-w-4xl"><button onclick="App.hideModal(App.elements.propertyDetailModal)" class="absolute top-4 right-4 text-2xl text-gray-500 hover:text-gray-700">&times;</button><div id="property-detail-content"></div></div>`;
         }
         
         if(this.elements.deleteConfirmModal) {
-            this.elements.deleteConfirmModal.innerHTML = `
-                <div class="modal-content max-w-md text-center">
-                    <h3 class="text-xl font-bold mb-4">Are you sure?</h3>
-                    <p class="text-gray-600 mb-6">This action cannot be undone.</p>
-                    <div class="flex gap-4 justify-center">
-                        <button id="confirm-delete-btn" class="btn-primary bg-red-600 hover:bg-red-700">Delete</button>
-                        <button onclick="App.hideModal(App.elements.deleteConfirmModal)" class="px-6 py-3 border rounded hover:bg-gray-50">Cancel</button>
-                    </div>
-                </div>
-            `;
+            this.elements.deleteConfirmModal.innerHTML = `<div class="modal-content max-w-md text-center"><h3 class="text-xl font-bold mb-4">Are you sure?</h3><p class="text-gray-600 mb-6">This action cannot be undone.</p><div class="flex gap-4 justify-center"><button id="confirm-delete-btn" class="btn-primary bg-red-600 hover:bg-red-700">Delete</button><button onclick="App.hideModal(App.elements.deleteConfirmModal)" class="px-6 py-3 border rounded hover:bg-gray-50">Cancel</button></div></div>`;
         }
         
         const roiContent = document.getElementById('roi-calculator-content');
         if(roiContent) {
-            roiContent.innerHTML = `
-                <div class="space-y-4">
-                    <div><label for="investment" class="block text-lg font-medium text-gray-700 mb-1">Total Investment (THB)</label><input id="investment" type="number" placeholder="5000000"></div>
-                    <div><label for="income" class="block text-lg font-medium text-gray-700 mb-1">Monthly Rental Income (THB)</label><input id="income" type="number" placeholder="30000"></div>
-                    <div><label for="expenses" class="block text-lg font-medium text-gray-700 mb-1">Annual Expenses (THB)</label><input id="expenses" type="number" placeholder="25000"></div>
-                    <div id="roi-result" class="mt-4 text-center font-bold text-3xl h-10" style="color: var(--primary-color);"></div>
-                    <div id="roiChartContainer" class="h-80 mt-6"><canvas id="roiChart"></canvas></div>
-                </div>
-            `;
+            roiContent.innerHTML = `<div class="space-y-4"><div><label for="investment" class="block text-lg font-medium text-gray-700 mb-1">Total Investment (THB)</label><input id="investment" type="number" placeholder="5000000"></div><div><label for="income" class="block text-lg font-medium text-gray-700 mb-1">Monthly Rental Income (THB)</label><input id="income" type="number" placeholder="30000"></div><div><label for="expenses" class="block text-lg font-medium text-gray-700 mb-1">Annual Expenses (THB)</label><input id="expenses" type="number" placeholder="25000"></div><div id="roi-result" class="mt-4 text-center font-bold text-3xl h-10" style="color: var(--primary-color);"></div><div id="roiChartContainer" class="h-64 md:h-80 mt-6"><canvas id="roiChart"></canvas></div></div>`;
         }
+    },
+    
+    getFormHTML(property = {}) {
+        return `<div class="modal-content"><div class="flex justify-between items-center mb-6"><h3 class="text-2xl font-bold">Add New Property</h3><button onclick="App.hideModal(App.elements.addListingModal)" class="text-gray-500 hover:text-gray-700 text-3xl">&times;</button></div><form id="property-form" class="space-y-4"><div><label>Title</label><input type="text" name="title" required></div><div><label>Type</label><select name="type" required><option value="sale">For Sale</option><option value="rent">For Rent</option></select></div><div><label>Category</label><input type="text" name="category" required placeholder="e.g., Villa, Condo"></div><div><label>Location</label><input type="text" name="location" required placeholder="e.g., Kamala, Phuket"></div><div class="grid grid-cols-2 gap-4"><div><label>Bedrooms</label><input type="number" name="bedrooms" required min="0"></div><div><label>Bathrooms</label><input type="number" name="bathrooms" required min="0"></div></div><div><label>Area (m²)</label><input type="number" name="area" required min="0"></div><div><label>Price (THB)</label><input type="number" name="priceTHB" required min="0"></div><div><label>Description</label><textarea name="description" rows="3" required></textarea></div><div><label>Image</label><input type="file" name="images" accept="image/*"></div><button type="submit" class="btn-primary w-full !mt-6">Add Property</button></form></div>`;
     },
 
     bindEvents() {
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('nav-link') || e.target.closest('.nav-link')) {
+        document.addEventListener('click', e => {
+            const navLink = e.target.closest('.nav-link');
+            if (navLink) {
                 e.preventDefault();
-                const link = e.target.classList.contains('nav-link') ? e.target : e.target.closest('.nav-link');
-                const href = link.getAttribute('href');
-                if (href && href.startsWith('#')) {
-                    this.showPage(href.substring(1));
-                }
+                const href = navLink.getAttribute('href');
+                if (href && href.startsWith('#')) this.showPage(href.substring(1));
             }
         });
         
-        if (this.elements.mobileMenuButton) {
-            this.elements.mobileMenuButton.addEventListener('click', () => {
-                this.elements.mobileMenu.classList.toggle('active');
-            });
-        }
+        this.elements.mobileMenuButton?.addEventListener('click', () => this.elements.mobileMenu.classList.toggle('active'));
+        this.elements.addListingBtn?.addEventListener('click', () => this.showModal(this.elements.addListingModal));
         
-        if (this.elements.addListingBtn) {
-            this.elements.addListingBtn.addEventListener('click', () => {
-                this.showModal(this.elements.addListingModal);
-            });
-        }
-        
-        document.addEventListener('submit', (e) => {
-            if (e.target.id === 'property-form') {
-                this.handlePropertySubmit(e);
-            }
-        });
-        
-        document.addEventListener('input', (e) => {
-            if (['investment', 'income', 'expenses'].includes(e.target.id)) {
-                this.calculateROI();
-            }
-        });
-        
-        window.addEventListener('popstate', e => {
-            this.showPage(e.state?.page || 'hero-section', true);
-        });
-        
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('modal') && e.target.classList.contains('active')) {
-                this.hideModal(e.target);
-            }
-        });
+        document.addEventListener('submit', e => { if (e.target.id === 'property-form') this.handlePropertySubmit(e); });
+        document.addEventListener('input', e => { if (['investment', 'income', 'expenses'].includes(e.target.id)) this.calculateROI(); });
+        window.addEventListener('popstate', e => this.showPage(e.state?.page || 'hero-section', true));
+        document.addEventListener('click', e => { if (e.target.classList.contains('modal')) this.hideModal(e.target); });
     },
 
     showPage(pageId, isInitial = false) {
-        document.querySelectorAll('.page-content-section').forEach(section => {
-            section.classList.remove('active');
-        });
-        
+        document.querySelectorAll('.page-content-section').forEach(s => s.classList.remove('active'));
         const targetSection = document.getElementById(pageId);
         if (targetSection) {
             targetSection.classList.add('active');
-            if (!isInitial) {
-                // Smooth scroll to top might be jarring on page load
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
+            if (!isInitial) window.scrollTo({ top: 0, behavior: 'smooth' });
             history.pushState({ page: pageId }, '', `#${pageId}`);
-            
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.classList.toggle('nav-active', link.getAttribute('href') === `#${pageId}`);
-            });
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.toggle('nav-active', l.getAttribute('href') === `#${pageId}`));
         }
-        
-        if (this.elements.mobileMenu) this.elements.mobileMenu.classList.remove('active');
+        this.elements.mobileMenu?.classList.remove('active');
     },
 
     showNotification(message, type = 'info') {
         const el = this.elements.notification;
         if (!el) return;
-        
         const colors = { success: 'bg-green-500', error: 'bg-red-500', info: 'bg-blue-500' };
-        
-        el.className = `fixed top-4 right-4 z-[110] p-4 rounded-lg shadow-lg text-white ${colors[type]}`;
+        el.className = `fixed top-5 right-5 z-[110] p-4 rounded-lg shadow-lg text-white ${colors[type]} transition-all duration-300`;
         el.textContent = message;
-        el.classList.remove('hidden');
-        
-        setTimeout(() => el.classList.add('hidden'), 3000);
+        el.style.opacity = '1';
+        el.style.transform = 'translateY(0)';
+        setTimeout(() => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(-50px)';
+        }, 3000);
     },
 
     filterAndRenderProperties() {
         const grid = this.elements.propertiesGrid;
         if (!grid) return;
-        
-        grid.innerHTML = '';
-        if (this.propertiesData.length === 0) {
-            grid.innerHTML = `<div class="col-span-full text-center py-10 text-gray-500">No properties found.</div>`;
-        } else {
-            this.propertiesData.forEach(prop => grid.appendChild(this.renderPropertyCard(prop)));
-        }
+        grid.innerHTML = this.propertiesData.length === 0 
+            ? `<div class="col-span-full text-center py-10 text-gray-500">No properties found.</div>`
+            : this.propertiesData.map(p => this.renderPropertyCard(p)).join('');
     },
 
     renderPropertyCard(property) {
-        const priceFormatted = new Intl.NumberFormat('en-US').format(property.priceTHB);
-        const card = document.createElement('div');
-        card.className = 'property-card';
-        card.innerHTML = `
-            <div class="card-banner">
-                <img src="${property.images[0]}" alt="${property.title}" loading="lazy">
-                <div class="card-badge">${property.type}</div>
-                <button class="delete-property-btn" data-id="${property.id}"><i class="fas fa-trash-alt"></i></button>
-            </div>
-            <div class="card-content">
-                <h3 class="text-xl font-bold mb-2">${property.title}</h3>
-                <p class="text-gray-500 mb-4"><i class="fas fa-map-marker-alt mr-2"></i>${property.location}</p>
-                <div class="flex justify-between text-sm text-gray-600 mb-4">
-                    <span><i class="fas fa-bed mr-2"></i>${property.bedrooms} Beds</span>
-                    <span><i class="fas fa-bath mr-2"></i>${property.bathrooms} Baths</span>
-                    <span><i class="fas fa-ruler-combined mr-2"></i>${property.area} m²</span>
+        const price = `฿${new Intl.NumberFormat('en-US').format(property.priceTHB)}`;
+        return `
+            <div class="property-card" onclick="App.showPropertyDetail('${property.id}')">
+                <div class="card-banner">
+                    <img src="${property.images[0]}" alt="${property.title}" loading="lazy">
+                    <div class="card-badge">${property.type}</div>
+                    <button class="delete-property-btn" onclick="event.stopPropagation(); App.showDeleteConfirm('${property.id}');"><i class="fas fa-trash-alt"></i></button>
                 </div>
-                <div class="card-price">฿${priceFormatted}</div>
+                <div class="card-content">
+                    <h3 class="text-xl font-semibold mb-2 truncate">${property.title}</h3>
+                    <p class="text-gray-500 mb-4"><i class="fas fa-map-marker-alt mr-2"></i>${property.location}</p>
+                    <div class="flex justify-between text-sm text-gray-600 mb-4 border-t pt-4">
+                        <span><i class="fas fa-bed mr-2"></i>${property.bedrooms} Beds</span>
+                        <span><i class="fas fa-bath mr-2"></i>${property.bathrooms} Baths</span>
+                        <span><i class="fas fa-ruler-combined mr-2"></i>${property.area} m²</span>
+                    </div>
+                    <div class="card-price">${price}</div>
+                </div>
             </div>`;
-
-        card.addEventListener('click', e => {
-            if (!e.target.closest('.delete-property-btn')) this.showPropertyDetail(property.id);
-        });
-        card.querySelector('.delete-property-btn').addEventListener('click', e => {
-            e.stopPropagation();
-            this.showDeleteConfirm(property.id);
-        });
-        return card;
     },
 
     showPropertyDetail(propId) {
-        const property = this.propertiesData.find(p => p.id === propId);
+        const property = this.propertiesData.find(p => p.id == propId);
         if (!property) return;
-
-        const content = document.getElementById('property-detail-content');
-        if (!content) return;
-
-        content.innerHTML = `
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div><img src="${property.images[0]}" alt="${property.title}" class="w-full h-auto rounded-lg shadow-lg"></div>
-                <div>
-                    <h2 class="text-3xl font-bold mb-2">${property.title}</h2>
-                    <p class="text-xl text-[var(--primary-color)] font-bold mb-4">฿${new Intl.NumberFormat().format(property.priceTHB)}</p>
-                    <p class="text-gray-600 mb-4"><i class="fas fa-map-marker-alt mr-2 text-gray-400"></i>${property.location}</p>
-                    <div class="flex justify-start space-x-6 text-md text-gray-700 mb-6 border-y py-4">
-                        <span><i class="fas fa-bed mr-2 text-[var(--primary-color)]"></i>${property.bedrooms} Beds</span>
-                        <span><i class="fas fa-bath mr-2 text-[var(--primary-color)]"></i>${property.bathrooms} Baths</span>
-                        <span><i class="fas fa-ruler-combined mr-2 text-[var(--primary-color)]"></i>${property.area} m²</span>
-                    </div>
-                    <h3 class="font-bold text-lg mb-2">Description</h3>
-                    <p class="text-gray-600 whitespace-pre-wrap">${property.description}</p>
-                </div>
-            </div>`;
+        document.getElementById('property-detail-content').innerHTML = `
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8"><div><img src="${property.images[0]}" alt="${property.title}" class="w-full h-auto rounded-lg shadow-lg"></div><div><h2 class="text-3xl font-bold mb-2">${property.title}</h2><p class="text-2xl text-[var(--primary-color)] font-bold mb-4">฿${new Intl.NumberFormat().format(property.priceTHB)}</p><p class="text-gray-600 mb-4"><i class="fas fa-map-marker-alt mr-2 text-gray-400"></i>${property.location}</p><div class="flex justify-start space-x-6 text-md text-gray-700 mb-6 border-y py-4"><span><i class="fas fa-bed mr-2 text-[var(--primary-color)]"></i>${property.bedrooms} Beds</span><span><i class="fas fa-bath mr-2 text-[var(--primary-color)]"></i>${property.bathrooms} Baths</span><span><i class="fas fa-ruler-combined mr-2 text-[var(--primary-color)]"></i>${property.area} m²</span></div><h3 class="font-bold text-lg mb-2">Description</h3><p class="text-gray-600 whitespace-pre-wrap">${property.description}</p></div></div>`;
         this.showModal(this.elements.propertyDetailModal);
     },
 
     showDeleteConfirm(propId) {
         this.showModal(this.elements.deleteConfirmModal);
-        const confirmBtn = document.getElementById('confirm-delete-btn');
-        const newConfirmBtn = confirmBtn.cloneNode(true);
-        confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
-        newConfirmBtn.onclick = () => this.deleteProperty(propId);
+        const btn = document.getElementById('confirm-delete-btn');
+        btn.onclick = () => this.deleteProperty(propId);
     },
 
     calculateROI() {
@@ -577,76 +372,40 @@ const App = {
         const monthlyIncome = parseFloat(document.getElementById('income').value) || 0;
         const annualExpenses = parseFloat(document.getElementById('expenses').value) || 0;
         const resultEl = document.getElementById('roi-result');
-
         if (investment === 0) {
             resultEl.textContent = '';
-            if (this.roiChart) this.roiChart.destroy();
-            this.roiChart = null;
-            return;
+            if (this.roiChart) this.roiChart.destroy(); this.roiChart = null; return;
         }
-        const annualIncome = monthlyIncome * 12;
-        const netProfit = annualIncome - annualExpenses;
-        const roi = (netProfit / investment) * 100;
+        const roi = ((monthlyIncome * 12 - annualExpenses) / investment) * 100;
         resultEl.textContent = `Annual ROI: ${roi.toFixed(2)}%`;
-        this.updateRoiChart(investment, netProfit);
+        this.updateRoiChart(investment, (monthlyIncome * 12 - annualExpenses));
     },
 
     updateRoiChart(investment, netProfit) {
         const ctx = document.getElementById('roiChart')?.getContext('2d');
         if (!ctx) return;
         if (this.roiChart) this.roiChart.destroy();
-        this.roiChart = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Net Profit', 'Total Investment'],
-                datasets: [{
-                    data: [netProfit > 0 ? netProfit : 0, investment],
-                    backgroundColor: ['#4CAF50', '#E0E0E0'],
-                    borderColor: ['#FFFFFF']
-                }]
-            },
-            options: { responsive: true, maintainAspectRatio: false, cutout: '70%' }
-        });
+        this.roiChart = new Chart(ctx, { type: 'doughnut', data: { labels: ['Net Profit', 'Investment'], datasets: [{ data: [netProfit > 0 ? netProfit : 0, investment], backgroundColor: ['#4CAF50', '#E0E0E0'], borderWidth: 2 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { display: false } } } });
     },
 
-    hideLoading() {
-        if (this.elements.loadingOverlay) {
-            this.elements.loadingOverlay.style.opacity = '0';
-            setTimeout(() => {
-                this.elements.loadingOverlay.style.display = 'none';
-            }, 500);
-        }
+    scrollReveal() {
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
     },
 
-    showModal(modalElement) {
-        if (modalElement) modalElement.classList.add('active');
-    },
-
-    hideModal(modalElement) {
-        if (modalElement) modalElement.classList.remove('active');
-    },
+    hideLoading() { this.elements.loadingOverlay.style.opacity = '0'; setTimeout(() => this.elements.loadingOverlay.style.display = 'none', 500); },
+    showModal(modal) { if (modal) modal.classList.add('active'); },
+    hideModal(modal) { if (modal) modal.classList.remove('active'); },
 
     getDefaultData() {
-        return [{
-                id: 1, title: 'Luxury Pool Villa in Bangtao', type: 'sale', category: 'Villa',
-                location: 'Bangtao, Phuket', bedrooms: 4, bathrooms: 5, area: 450, priceTHB: 25000000,
-                description: 'Stunning modern villa with a private pool and garden. Close to the beach and international schools.',
-                images: ['https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800']
-            }, {
-                id: 2, title: 'Modern Sea View Condo', type: 'rent', category: 'Condo',
-                location: 'Kamala, Phuket', bedrooms: 2, bathrooms: 2, area: 120, priceTHB: 60000,
-                description: 'A beautifully furnished condominium offering panoramic sea views from the balcony. Full access to facilities.',
-                images: ['https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800']
-            }, {
-                id: 3, title: 'Cozy House near Rawai Beach', type: 'sale', category: 'House',
-                location: 'Rawai, Phuket', bedrooms: 3, bathrooms: 2, area: 200, priceTHB: 8500000,
-                description: 'Charming and private house in a quiet residential area, minutes from Rawai beach.',
-                images: ['https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800']
-            }];
+        return [{"id":1,"title":"Luxury Pool Villa in Bangtao","type":"sale","category":"Villa","location":"Bangtao, Phuket","bedrooms":4,"bathrooms":5,"area":450,"priceTHB":25000000,"description":"Stunning modern villa with a private pool and garden. Close to the beach and international schools.","images":["https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800"]},{"id":2,"title":"Modern Sea View Condo","type":"rent","category":"Condo","location":"Kamala, Phuket","bedrooms":2,"bathrooms":2,"area":120,"priceTHB":60000,"description":"A beautifully furnished condominium offering panoramic sea views from the balcony. Full access to facilities.","images":["https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800"]},{"id":3,"title":"Cozy House near Rawai Beach","type":"sale","category":"House","location":"Rawai, Phuket","bedrooms":3,"bathrooms":2,"area":200,"priceTHB":8500000,"description":"Charming and private house in a quiet residential area, minutes from Rawai beach.","images":["https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800"]}];
     }
 };
 
-// **FIX:** Start the application
 App.init();
 
 </script>
