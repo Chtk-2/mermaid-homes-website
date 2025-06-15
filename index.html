@@ -10,9 +10,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Forum&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     
-    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js" defer></script>
-    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database-compat.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         :root {
@@ -26,7 +26,7 @@
         html { scroll-behavior: smooth; }
         body { font-family: 'Poppins', sans-serif; background-color: var(--bg-main); color: var(--text-dark); }
         .font-heading { font-family: 'Forum', serif; }
-        .container { max-width: 1280px; }
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 1rem; }
         #loading-overlay { transition: opacity 0.5s ease-out; }
         .page-content-section { display: none; }
         .page-content-section.active { display: block; animation: fadeIn 0.5s ease-out; }
@@ -34,11 +34,10 @@
         .header { position: sticky; top: 0; z-index: 50; }
         .header-top { background: var(--primary-color); color: white; padding: 0.5rem 0; font-size: 0.8rem; }
         .header-top a:hover { color: #f3e5e0; }
-        .header-bottom { background-color: rgba(250, 247, 240, 0.8); backdrop-filter: blur(10px); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .hero { position: relative; height: 85vh; min-height: 600px; display: flex; align-items: center; justify-content: center; text-align: center; color: white; overflow: hidden; background-color: #333; }
+        .header-bottom { background-color: rgba(250, 247, 240, 0.95); backdrop-filter: blur(10px); box-shadow: 0 2px 4px rgba(0,0,0,0.05); padding: 1rem 0; }
+        .hero { position: relative; height: 85vh; min-height: 600px; display: flex; align-items: center; justify-content: center; text-align: center; color: white; overflow: hidden; background: linear-gradient(135deg, #B17457, #9A644A); }
         .hero .container { display: flex; justify-content: center; align-items: center; }
-        #hero-video { position: absolute; top: 50%; left: 50%; width: 100%; height: 100%; object-fit: cover; transform: translate(-50%, -50%); z-index: 1; }
-        .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 2; }
+        .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); z-index: 2; }
         .hero .container { position: relative; z-index: 3; }
         .property-card { background: #fff; border-radius: 0.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow: hidden; transition: all 0.3s ease; }
         .property-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(177, 116, 87, 0.1); }
@@ -51,166 +50,441 @@
         .nav-link.nav-active { color: var(--primary-color); font-weight: 700; }
         #mobile-menu { opacity: 0; max-height: 0; transform: translateY(-10px); overflow: hidden; transition: all 0.3s ease-out; display: block !important; }
         #mobile-menu.active { opacity: 1; max-height: 500px; transform: translateY(0); }
+        
+        .add-listing-btn { position: fixed; bottom: 2rem; right: 2rem; width: 60px; height: 60px; background: var(--primary-color); color: white; border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; box-shadow: 0 4px 12px rgba(177, 116, 87, 0.3); transition: all 0.3s ease; z-index: 40; }
+        .add-listing-btn:hover { transform: scale(1.1); box-shadow: 0 6px 20px rgba(177, 116, 87, 0.4); }
+        
+        .whatsapp-float { position: fixed; bottom: 2rem; left: 2rem; width: 60px; height: 60px; background: #25D366; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; text-decoration: none; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3); transition: all 0.3s ease; z-index: 40; }
+        .whatsapp-float:hover { transform: scale(1.1); box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4); }
+        
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 60; }
+        .modal.active { display: flex; }
+        .modal-content { background: white; border-radius: 0.5rem; padding: 2rem; max-width: 500px; width: 90%; max-height: 90%; overflow-y: auto; }
+        
+        .properties-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 2rem; }
+        
+        .btn-primary { background: var(--primary-color); color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 0.375rem; cursor: pointer; transition: all 0.3s ease; font-weight: 500; }
+        .btn-primary:hover { background: var(--primary-color-dark); transform: translateY(-1px); }
+        
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: var(--text-dark); }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem; font-size: 1rem; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(177, 116, 87, 0.1); }
+        
+        .section-padding { padding: 4rem 0; }
+        
+        .footer { background: var(--bg-header-footer); padding: 3rem 0 1rem; }
     </style>
 </head>
 <body>
 
     <div id="loading-overlay" class="fixed top-0 left-0 w-full h-full bg-white flex flex-col items-center justify-center z-[100]">
-        <img src="Ui1.png" alt="Mermaid Homes Logo" class="h-20 mx-auto">
-        <div class="text-lg mt-2" style="color: var(--primary-color);">Your Gateway to Luxury Properties</div>
-        <div class="mt-6 text-gray-500 animate-pulse">Connecting to the database...</div>
+        <div class="text-6xl mb-4" style="color: var(--primary-color);">🏠</div>
+        <div class="text-2xl font-bold mb-2" style="color: var(--primary-color);">Mermaid Homes</div>
+        <div class="text-lg mb-6" style="color: var(--primary-color);">Your Gateway to Luxury Properties</div>
+        <div class="animate-pulse text-gray-500">Loading properties...</div>
     </div>
 
     <div id="fatal-error-overlay" class="hidden fixed top-0 left-0 w-full h-full bg-red-800 text-white flex flex-col items-center justify-center z-[99] p-8 text-center">
-        <h2 class="text-4xl font-bold mb-4">การเชื่อมต่อฐานข้อมูลล้มเหลว (Connection Failed)</h2>
-        <p class="text-xl mb-6">ปัญหานี้เกิดจาก **Firebase Security Rules** ของคุณยังไม่ถูกต้อง</p>
+        <h2 class="text-4xl font-bold mb-4">Connection Failed</h2>
+        <p class="text-xl mb-6">Unable to connect to the database</p>
         <div class="bg-red-900 p-6 rounded-lg text-left max-w-2xl">
-            <h3 class="text-2xl font-semibold mb-3">วิธีแก้ไข (โปรดทำตามอย่างละเอียด):</h3>
-            <ol class="list-decimal list-inside space-y-3">
-                <li>ไปที่โปรเจกต์ของคุณใน **Firebase Console**</li>
-                <li>ไปที่เมนู **Build > Realtime Database > Rules**</li>
-                <li>**ลบโค้ดเก่าทั้งหมด** และวางโค้ดนี้ลงไป:
-                    <pre class="bg-gray-800 text-green-400 p-3 rounded mt-2 text-sm"><code>{
-  "rules": {
-    ".read": true,
-    ".write": true
-  }
-}</code></pre>
-                </li>
-                <li>กดปุ่ม **PUBLISH** สีฟ้าเพื่อบันทึก</li>
-                <li>กลับมาที่หน้าเว็บนี้แล้ว **รีเฟรช (กด Ctrl+Shift+R)**</li>
-            </ol>
+            <h3 class="text-2xl font-semibold mb-3">Possible Solutions:</h3>
+            <ul class="list-disc list-inside space-y-2">
+                <li>Check your internet connection</li>
+                <li>Verify Firebase configuration</li>
+                <li>Check Firebase Security Rules</li>
+                <li>Try refreshing the page</li>
+            </ul>
         </div>
     </div>
 
     <div id="notification" class="fixed top-4 right-4 z-[110] p-4 rounded-lg shadow-lg hidden"></div>
 
-    <header class="header"></header>
-    <main id="main-content"></main>
-    <footer class="footer"></footer>
+    <header id="header" class="header">
+        <div class="header-top">
+            <div class="container flex justify-between items-center text-sm">
+                <div>📧 info@mermaidhomes.com | 📞 +66 65 476 5114</div>
+                <div>
+                    <button onclick="App.setLanguage('en')" class="mr-2 hover:text-orange-200">EN</button>
+                    <button onclick="App.setLanguage('th')" class="hover:text-orange-200">TH</button>
+                </div>
+            </div>
+        </div>
+        <div class="header-bottom">
+            <div class="container flex justify-between items-center">
+                <div class="flex items-center">
+                    <div class="text-2xl mr-2">🏠</div>
+                    <div class="text-xl font-bold" style="color: var(--primary-color);">Mermaid Homes</div>
+                </div>
+                <nav class="hidden md:flex space-x-6">
+                    <a href="#hero-section" class="nav-link hover:text-orange-600 transition-colors">Home</a>
+                    <a href="#properties-section" class="nav-link hover:text-orange-600 transition-colors">Properties</a>
+                    <a href="#about-section" class="nav-link hover:text-orange-600 transition-colors">About</a>
+                    <a href="#contact-section" class="nav-link hover:text-orange-600 transition-colors">Contact</a>
+                </nav>
+                <button class="md:hidden" onclick="App.toggleMobileMenu()">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+            <div id="mobile-menu" class="md:hidden">
+                <div class="container py-4">
+                    <nav class="flex flex-col space-y-4">
+                        <a href="#hero-section" class="nav-link hover:text-orange-600 transition-colors">Home</a>
+                        <a href="#properties-section" class="nav-link hover:text-orange-600 transition-colors">Properties</a>
+                        <a href="#about-section" class="nav-link hover:text-orange-600 transition-colors">About</a>
+                        <a href="#contact-section" class="nav-link hover:text-orange-600 transition-colors">Contact</a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
 
-    <button id="add-listing-btn" class="add-listing-btn"><i class="fas fa-plus"></i></button>
-    <a href="https://wa.me/66654765114" target="_blank" class="whatsapp-float"><i class="fab fa-whatsapp"></i></a>
+    <main id="main-content">
+        <!-- Hero Section -->
+        <section id="hero-section" class="page-content-section active">
+            <div class="hero">
+                <div class="hero-overlay"></div>
+                <div class="container">
+                    <div class="text-center">
+                        <h1 class="text-5xl md:text-6xl font-bold mb-6 font-heading">Find Your Dream Home</h1>
+                        <p class="text-xl md:text-2xl mb-8 max-w-2xl mx-auto">Discover luxury properties in the heart of Phuket. Your perfect home awaits.</p>
+                        <button onclick="App.showPage('properties-section')" class="btn-primary text-lg px-8 py-3">
+                            Explore Properties <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    <div id="add-listing-modal" class="modal"></div>
-    <div id="property-detail-modal" class="modal"></div>
-    <div id="delete-confirm-modal" class="modal"></div>
+        <!-- Properties Section -->
+        <section id="properties-section" class="page-content-section section-padding">
+            <div class="container">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold mb-4 font-heading">Featured Properties</h2>
+                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">Explore our curated selection of premium properties in Phuket</p>
+                </div>
+                
+                <div class="mb-8">
+                    <div class="flex flex-wrap gap-4 justify-center">
+                        <select id="type-filter" class="px-4 py-2 border border-gray-300 rounded-lg">
+                            <option value="">All Types</option>
+                            <option value="sale">For Sale</option>
+                            <option value="rent">For Rent</option>
+                        </select>
+                        <select id="location-filter" class="px-4 py-2 border border-gray-300 rounded-lg">
+                            <option value="">All Locations</option>
+                        </select>
+                        <input type="number" id="min-price" placeholder="Min Price" class="px-4 py-2 border border-gray-300 rounded-lg">
+                        <input type="number" id="max-price" placeholder="Max Price" class="px-4 py-2 border border-gray-300 rounded-lg">
+                        <button onclick="App.filterProperties()" class="btn-primary">
+                            <i class="fas fa-search mr-2"></i>Filter
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="properties-grid" class="properties-grid">
+                    <div class="col-span-full text-center py-8">
+                        <div class="animate-spin w-8 h-8 border-4 border-orange-200 border-t-orange-600 rounded-full mx-auto mb-4"></div>
+                        <p>Loading properties...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about-section" class="page-content-section section-padding bg-white">
+            <div class="container">
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h2 class="text-4xl font-bold mb-6 font-heading">About Mermaid Homes</h2>
+                        <p class="text-lg mb-6">We are Phuket's premier real estate agency, specializing in luxury properties and exceptional service. With years of experience in the local market, we help you find the perfect home or investment opportunity.</p>
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-orange-600 mb-2">500+</div>
+                                <div class="text-gray-600">Properties Sold</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-orange-600 mb-2">15+</div>
+                                <div class="text-gray-600">Years Experience</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-9xl mb-4">🏖️</div>
+                        <p class="text-lg text-gray-600">Your gateway to paradise living in Phuket</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact-section" class="page-content-section section-padding">
+            <div class="container">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold mb-4 font-heading">Contact Us</h2>
+                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">Ready to find your dream home? Get in touch with our expert team.</p>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-12">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-6">Get in Touch</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center">
+                                <i class="fas fa-phone text-orange-600 w-6"></i>
+                                <span class="ml-3">+66 65 476 5114</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-envelope text-orange-600 w-6"></i>
+                                <span class="ml-3">info@mermaidhomes.com</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-map-marker-alt text-orange-600 w-6"></i>
+                                <span class="ml-3">Phuket, Thailand</span>
+                            </div>
+                        </div>
+                        <div class="mt-8">
+                            <a href="https://wa.me/66654765114" target="_blank" class="btn-primary inline-flex items-center">
+                                <i class="fab fa-whatsapp mr-2"></i>
+                                Chat on WhatsApp
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <form id="contact-form" class="space-y-4">
+                            <div class="form-group">
+                                <label for="contact-name">Name</label>
+                                <input type="text" id="contact-name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="contact-email">Email</label>
+                                <input type="email" id="contact-email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="contact-message">Message</label>
+                                <textarea id="contact-message" rows="5" required></textarea>
+                            </div>
+                            <button type="submit" class="btn-primary w-full">Send Message</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="footer" class="footer">
+        <div class="container">
+            <div class="grid md:grid-cols-3 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <div class="text-2xl mr-2">🏠</div>
+                        <div class="text-xl font-bold" style="color: var(--primary-color);">Mermaid Homes</div>
+                    </div>
+                    <p class="text-gray-600">Your trusted partner in finding the perfect property in Phuket.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#hero-section" class="text-gray-600 hover:text-orange-600">Home</a></li>
+                        <li><a href="#properties-section" class="text-gray-600 hover:text-orange-600">Properties</a></li>
+                        <li><a href="#about-section" class="text-gray-600 hover:text-orange-600">About</a></li>
+                        <li><a href="#contact-section" class="text-gray-600 hover:text-orange-600">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Contact Info</h4>
+                    <ul class="space-y-2 text-gray-600">
+                        <li><i class="fas fa-phone mr-2"></i>+66 65 476 5114</li>
+                        <li><i class="fas fa-envelope mr-2"></i>info@mermaidhomes.com</li>
+                        <li><i class="fas fa-map-marker-alt mr-2"></i>Phuket, Thailand</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-300 pt-4 text-center text-gray-600">
+                <p>&copy; 2024 Mermaid Homes. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <button id="add-listing-btn" class="add-listing-btn" onclick="App.showAddListingModal()">
+        <i class="fas fa-plus"></i>
+    </button>
+    
+    <a href="https://wa.me/66654765114" target="_blank" class="whatsapp-float">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Add Listing Modal -->
+    <div id="add-listing-modal" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold">Add New Property</h3>
+                <button onclick="App.hideAddListingModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="add-property-form">
+                <div class="form-group">
+                    <label for="property-title">Title</label>
+                    <input type="text" id="property-title" required>
+                </div>
+                <div class="form-group">
+                    <label for="property-type">Type</label>
+                    <select id="property-type" required>
+                        <option value="">Select Type</option>
+                        <option value="sale">For Sale</option>
+                        <option value="rent">For Rent</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="property-location">Location</label>
+                    <input type="text" id="property-location" required>
+                </div>
+                <div class="form-group">
+                    <label for="property-price">Price (THB)</label>
+                    <input type="number" id="property-price" required>
+                </div>
+                <div class="form-group">
+                    <label for="property-bedrooms">Bedrooms</label>
+                    <input type="number" id="property-bedrooms" required>
+                </div>
+                <div class="form-group">
+                    <label for="property-bathrooms">Bathrooms</label>
+                    <input type="number" id="property-bathrooms" required>
+                </div>
+                <div class="form-group">
+                    <label for="property-area">Area (sqm)</label>
+                    <input type="number" id="property-area" required>
+                </div>
+                <div class="form-group">
+                    <label for="property-image">Image URL</label>
+                    <input type="url" id="property-image" required>
+                </div>
+                <div class="form-group">
+                    <label for="property-description">Description</label>
+                    <textarea id="property-description" rows="4" required></textarea>
+                </div>
+                <div class="flex gap-4">
+                    <button type="submit" class="btn-primary flex-1">Add Property</button>
+                    <button type="button" onclick="App.hideAddListingModal()" class="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Property Detail Modal -->
+    <div id="property-detail-modal" class="modal">
+        <div class="modal-content max-w-4xl">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold">Property Details</h3>
+                <button onclick="App.hidePropertyDetailModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div id="property-detail-content">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-confirm-modal" class="modal">
+        <div class="modal-content max-w-md">
+            <div class="text-center">
+                <div class="text-6xl text-red-500 mb-4">⚠️</div>
+                <h3 class="text-xl font-bold mb-4">Delete Property</h3>
+                <p class="text-gray-600 mb-6">Are you sure you want to delete this property? This action cannot be undone.</p>
+                <div class="flex gap-4">
+                    <button id="confirm-delete-btn" class="btn-primary bg-red-600 hover:bg-red-700 flex-1">Delete</button>
+                    <button onclick="App.hideDeleteConfirmModal()" class="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 flex-1">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 <script>
 const App = {
     elements: {},
     propertiesData: [],
     database: null,
-    roiChartInstance: null,
+    currentLanguage: 'en',
+    filteredProperties: [],
+    propertyToDelete: null,
     
     init() {
-        document.addEventListener('DOMContentLoaded', () => {
-            this.cacheDOMElements();
-            this.injectHTML();
-            this.connectToDatabase();
-            this.bindEvents();
-            this.setLanguage('en');
-            const initialPage = window.location.hash.substring(1) || 'hero-section';
-            this.showPage(initialPage, true);
-        });
-    },
-
-    connectToDatabase() {
-        // Your personal Firebase configuration has been placed here.
-        const firebaseConfig = {
-            apiKey: "AIzaSyDvXpEMjcQD9QPJYHRPUk6ohVKv9ohjNBI",
-            authDomain: "mermaid-homes.firebaseapp.com",
-            databaseURL: "https://mermaid-homes-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "mermaid-homes",
-            storageBucket: "mermaid-homes.appspot.com",
-            messagingSenderId: "652689387599",
-            appId: "1:652689387599:web:5bd946f479a0ee92a87a3a",
-            measurementId: "G-FDJBSJFP9G"
-        };
-
-        try {
-            firebase.initializeApp(firebaseConfig);
-            this.database = firebase.database();
-            
-            this.checkFirebaseConnection().then(isOK => {
-                if (isOK) this.initRealtimeListener();
-            });
-        } catch (error) {
-            console.error("Firebase initialization failed:", error);
-            this.showFatalError();
-        }
-    },
-
-    async checkFirebaseConnection() {
-        const testRef = this.database.ref('connection_test/' + Date.now());
-        try {
-            await testRef.set({ status: 'ok' });
-            await testRef.remove();
-            console.log("Firebase connection and write rules are OK.");
-            return true;
-        } catch (error) {
-            console.error("Firebase Rule Check Failed:", error.message);
-            this.showFatalError();
-            return false;
-        }
-    },
-
-    initRealtimeListener() {
-        const propertiesRef = this.database.ref('properties');
-        console.log("Attaching Firebase listener...");
-        propertiesRef.on('value', (snapshot) => {
-            console.log("Data received from Firebase.");
-            const data = snapshot.val() || {};
-            this.propertiesData = Object.keys(data).map(key => ({ id: key, ...data[key] })).reverse();
-            this.filterAndRenderProperties();
-            this.hideLoading();
-        }, (error) => {
-            console.error("Firebase read failed:", error);
-            this.showNotification("Failed to load properties. Check Firebase Rules.", "error");
-            this.hideLoading(true);
-        });
-    },
-
-    showFatalError() {
-        if(this.elements.loadingOverlay) this.elements.loadingOverlay.style.display = 'none';
-        if(this.elements.fatalErrorOverlay) this.elements.fatalErrorOverlay.classList.remove('hidden');
-    },
-
-    hideLoading(isTimeout = false) {
-        const overlay = this.elements.loadingOverlay;
-        if (overlay && overlay.style.display !== 'none') {
-            overlay.style.opacity = '0';
-            overlay.addEventListener('transitionend', () => {
-                overlay.style.display = 'none';
-                if (isTimeout && this.propertiesData.length === 0) {
-                     this.elements.propertiesGrid.innerHTML = `<div class="col-span-full text-center text-red-500 py-8">Error: Could not load properties. Please check your Firebase Security Rules and configuration.</div>`;
-                }
-            }, { once: true });
-        }
+        this.cacheDOMElements();
+        this.bindEvents();
+        this.initializeFallbackData();
+        this.connectToDatabase();
+        this.setLanguage('en');
+        
+        // Set initial page
+        const initialPage = window.location.hash.substring(1) || 'hero-section';
+        this.showPage(initialPage, true);
+        
+        // Hide loading after a timeout if Firebase fails
+        setTimeout(() => {
+            if (this.elements.loadingOverlay && this.elements.loadingOverlay.style.display !== 'none') {
+                console.warn('Database connection timeout, showing fallback data');
+                this.hideLoading();
+                this.renderProperties();
+            }
+        }, 5000);
     },
 
     cacheDOMElements() {
-        const ids = ['loading-overlay', 'fatal-error-overlay', 'notification', 'header', 'main-content', 'footer', 'add-listing-btn', 'whatsapp-float', 'add-listing-modal', 'property-detail-modal', 'delete-confirm-modal'];
-        ids.forEach(id => this.elements[id.replace(/-(\w)/g, (_,l) => l.toUpperCase())] = document.getElementById(id));
+        const ids = [
+            'loading-overlay', 'fatal-error-overlay', 'notification', 
+            'header', 'main-content', 'footer', 'add-listing-btn', 
+            'add-listing-modal', 'property-detail-modal', 'delete-confirm-modal',
+            'properties-grid', 'type-filter', 'location-filter', 
+            'min-price', 'max-price', 'add-property-form', 'contact-form'
+        ];
+        
+        ids.forEach(id => {
+            const element = document.getElementById(id);
+            if (element) {
+                const camelCase = id.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
+                this.elements[camelCase] = element;
+            }
+        });
     },
 
-    injectHTML() {
-        // This function injects all static HTML content to keep the body clean.
-        // ... Implementation is omitted for brevity but is included in the full code.
-    },
-    
-    bindEvents() {
-        // This function binds all necessary event listeners.
-        // ... Implementation is omitted for brevity but is included in the full code.
-    },
-    
-    // ... All other helper and feature functions go here ...
-    // ... (showPage, calculateROI, handlePropertySubmit, etc.) ...
-
-};
-
-App.init();
-</script>
-
-</body>
-</html>
+    initializeFallbackData() {
+        // Sample data for demonstration
+        this.propertiesData = [
+            {
+                id: 'sample1',
+                title: 'Luxury Villa with Sea View',
+                type: 'sale',
+                location: 'Patong Beach',
+                price: 15000000,
+                bedrooms: 3,
+                bathrooms: 2,
+                area: 250,
+                image: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800',
+                description: 'Beautiful luxury villa with stunning sea views in prime Patong location.'
+            },
+            {
+                id: 'sample2',
+                title: 'Modern Condo in Kata',
+                type: 'rent',
+                location: 'Kata Beach',
+                price: 35000,
+                bedrooms: 2,
+                bathrooms: 1,
+                area: 120,
+                image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800',
+                description: 'Modern condominium perfect for vacation rental or permanent residence.'
+            },
+            {
+                id: 'sample3',
+                title: 'Beachfront House',
+                type: 'sale',
+                location: 'Kamala Beach',
+                price: 25000000,
+                bedrooms: 4,
+                bathrooms: 3,
+                area: 300,
+                image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800',
