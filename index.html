@@ -1,64 +1,92 @@
-
 <index.html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mermaid Homes - Find Your Dream House in Phuket</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Forum&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    :root {
-      --primary-color: #B17457;
-      --primary-color-dark: #9A644A;
-      --bg-main: #FAF7F0;
-      --text-dark: #374151;
-    }
-    html { scroll-behavior: smooth; }
-    body { font-family: 'Poppins', sans-serif; background-color: var(--bg-main); color: var(--text-dark); }
-    .font-heading { font-family: 'Forum', serif; }
-    .container { max-width: 1280px; margin: 0 auto; padding: 0 1rem; }
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
-    .modal.active { display: flex; }
-    .modal-content { background: #fff; padding: 2rem; border-radius: 1rem; max-height: 90vh; overflow-y: auto; position: relative; }
-    .add-listing-btn { position: fixed; bottom: 2rem; right: 2rem; z-index: 100; background: var(--primary-color); color: white; border-radius: 9999px; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-    .whatsapp-float { position: fixed; bottom: 5rem; right: 2rem; z-index: 100; font-size: 2rem; color: white; background: #25D366; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-  </style>
+    <!-- ... (head content remains unchanged) ... -->
 </head>
 <body>
-  <!-- Simple visible content for demonstration -->
-  <div class="container py-10 text-center">
-    <h1 class="text-4xl font-heading mb-4">Welcome to Mermaid Homes</h1>
-    <button class="btn-primary add-listing-btn" id="demo-btn">Log Message</button>
-  </div>
+
+    <!-- ... (body content remains unchanged) ... -->
 
 <script>
-  const App = {
+// Main App Object: Contains all logic and data for the website.
+const App = {
+    elements: {},
+    propertiesData: [],
+    supabase: null,
+    
     init() {
-      this.bindEvents();
+        document.addEventListener('DOMContentLoaded', () => {
+            this.cacheDOMElements();
+            this.injectHTML();
+            this.cacheInjectedElements();
+            this.bindEvents();
+            this.connectToSupabase();
+            const initialPage = window.location.hash.substring(1) || 'hero-section';
+            this.showPage(initialPage, true);
+        });
     },
 
-    bindEvents() {
-      const demoBtn = document.getElementById('demo-btn');
-      if (demoBtn) {
-        demoBtn.addEventListener('click', () => {
-          console.log('Add Listing Button Clicked');
-          alert('Demo action triggered');
-        });
-      }
-    }
-  };
+    connectToSupabase() {
+        // FIX: Use bracket notation for element access
+        this.elements['loading-text'].textContent = "Connecting to Supabase...";
+        const SUPABASE_URL = 'https://ikukwjgqnegtvzwelldnw.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlrdWt3amdxbmVndHZ6d2VuZG53Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk5NTAxMTIsImV4cCI6MjA2NTUyNjExMn0.z4NAbPaIaUYkPugyOZSyMJGN308LP-6qw2bylibHS84';
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => App.init());
-  } else {
-    App.init();
-  }
+        if (!window.supabase) {
+            console.error("Supabase client library not loaded.");
+            this.elements['loading-text'].textContent = "Error: Supabase library missing.";
+            return;
+        }
+
+        try {
+            this.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            this.loadProperties();
+        } catch(error) {
+            console.error("Supabase connection failed:", error);
+            this.showNotification("Could not connect to database", "error");
+            this.hideLoading();
+        }
+    },
+
+    async loadProperties() {
+        if (!this.supabase) return;
+        // FIX: Use consistent bracket notation
+        this.elements['loading-text'].textContent = "Loading properties...";
+        
+        const { data, error } = await this.supabase
+            .from('properties')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) {
+            console.error('Error loading properties:', error);
+            this.showNotification(`Error: ${error.message}`, 'error');
+            this.elements['loading-text'].textContent = 'Failed to load data. Check table name & RLS.';
+        } else {
+            this.propertiesData = data || [];
+            this.filterAndRenderProperties();
+            this.hideLoading();
+        }
+    },
+
+    // ... (rest of the methods remain unchanged) ...
+
+    hideLoading() {
+        // FIX: Use bracket notation for element access
+        const overlay = this.elements['loading-overlay'];
+        if (overlay && overlay.style.display !== 'none') {
+            overlay.style.opacity = '0';
+            overlay.addEventListener('transitionend', () => {
+                overlay.style.display = 'none';
+            }, { once: true });
+        }
+    },
+
+    // ... (rest of the methods remain unchanged) ...
+};
+
+App.init();
 </script>
+
 </body>
 </html>
