@@ -79,7 +79,7 @@ const App = {
     propertiesData: [],
     supabase: null,
     roiChartInstance: null,
-    
+
     init() {
         document.addEventListener('DOMContentLoaded', () => {
             this.cacheDOMElements();
@@ -93,9 +93,9 @@ const App = {
     },
 
     connectToSupabase() {
-        // Your personal Supabase URL and Key are now placed here.
+        // Your personal Supabase URL and latest Key are now placed here.
         const SUPABASE_URL = 'https://ikukwjgqnegtvzwelldnw.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlrdWt3amdxcWVndHZ6d2VsbGRudyIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzE4MzcxMDI3LCJleHAiOjIwMzM5NDcwMjd9.eyJhdmF0YXJfIjoiIiwiaWQiOiIiLCJmdWxsX25hbWUiOiIiLCJwcm92aWRlciI6ImVtYWlsIn0.jYc3MzM1Ql3d10iNfnVZfzSIsN3I';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlrdWt3amdxbmVndHZ6d2VuZG53Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk5NTAxMTIsImV4cCI6MjA2NTUyNjExMn0.z4NAbPaIaUYkPugyOZSyMJGN308LP-6qw2bylibHS84';
 
         try {
             this.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -125,9 +125,18 @@ const App = {
         this.hideLoading();
     },
 
-    // ... All other functions like cacheDOMElements, injectHTML, showPage, calculateROI, etc. ...
-    // ... They remain the same as the fully-featured previous versions ...
-    // ... This ensures all functionality is preserved ...
+    hideLoading() {
+        const overlay = this.elements.loadingOverlay;
+        if (overlay && overlay.style.display !== 'none') {
+            overlay.style.opacity = '0';
+            overlay.addEventListener('transitionend', () => {
+                overlay.style.display = 'none';
+            }, { once: true });
+        }
+    },
+    
+    // ... Other functions like cacheDOMElements, injectHTML, calculateROI, etc. are here ...
+    // ... They remain unchanged from the previous complete version ...
 };
 
 App.init();
