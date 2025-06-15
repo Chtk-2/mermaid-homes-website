@@ -10,18 +10,19 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     html { scroll-behavior: smooth; }
-    body { font-family: 'Poppins', sans-serif; margin: 0; background: #fff; }
-    .nav-link:hover { color: #FAD59A; }
+    body { font-family: 'Poppins', sans-serif; margin: 0; background: #FAF1E6; }
+    .nav-link:hover { color: #F8F4E1; }
   </style>
 </head>
-<body>
+<body class="bg-[#FAF1E6] text-gray-800">
+
   <header class="sticky top-0 bg-white shadow z-50">
-    <div class="max-w-screen-xl mx-auto px-4 flex items-center justify-between h-16">
-      <a href="/" class="flex items-center space-x-2">
-        <img src="logo.png" alt="Mermaid Homes Logo" class="h-10 w-auto"/>
-        <span class="font-bold text-lg text-gray-800">Mermaid Homes</span>
+    <div class="max-w-screen-xl mx-auto px-4 flex items-center justify-between h-20">
+      <a href="/" class="flex items-center space-x-3">
+        <img src="logo.png" alt="Mermaid Homes Logo" class="h-12 w-auto" onerror="this.src='https://placehold.co/150x50?text=Logo';"/>
+        <span class="font-bold text-xl text-gray-800">Mermaid Homes</span>
       </a>
-      <nav class="hidden md:flex items-center space-x-6 text-sm font-semibold text-gray-700">
+      <nav class="hidden md:flex items-center space-x-8 text-sm font-semibold text-gray-700">
         <a href="#hero" class="nav-link">Home</a>
         <a href="#properties" class="nav-link">Properties</a>
         <a href="post-property.html" class="nav-link">Post Property</a>
@@ -31,39 +32,48 @@
     </div>
   </header>
 
-  <section id="hero" class="relative h-[90vh] bg-[#FAD59A] overflow-hidden">
+  <section id="hero" class="relative h-[100vh] bg-[#F8F4E1] overflow-hidden">
     <div class="absolute inset-0">
       <iframe src="https://player.vimeo.com/video/1093161578?autoplay=1&loop=1&muted=1&playsinline=1&background=1"
-              frameborder="0" allow="autoplay; fullscreen; picture-in-picture"
-              allowfullscreen class="w-full h-full object-cover"></iframe>
+              frameborder="0"
+              allow="autoplay; fullscreen; picture-in-picture"
+              allowfullscreen
+              class="w-full h-full object-cover">
+      </iframe>
     </div>
     <div class="relative z-10 h-full flex flex-col justify-center items-center text-center px-4 text-white">
-      <h1 class="text-4xl md:text-6xl font-bold drop-shadow mb-4">Find Your Dream Home in Phuket</h1>
-      <p class="text-lg md:text-xl drop-shadow mb-8">Stunning beachfront villas & luxury condos await you.</p>
-      <a href="#properties" class="bg-white text-[#FAD59A] font-bold py-3 px-6 rounded-full shadow hover:bg-[#fad680] hover:text-white transition">
+      <h1 class="text-5xl md:text-7xl font-bold drop-shadow mb-6">Find Your Dream Home in Phuket</h1>
+      <p class="text-2xl md:text-3xl drop-shadow mb-10">Luxury properties, beachside living, and more.</p>
+      <a href="#properties" class="bg-white text-[#F8F4E1] font-bold py-4 px-10 rounded-full shadow hover:bg-[#F8F4E1] hover:text-gray-900 transition">
         Browse Properties
       </a>
     </div>
   </section>
 
-  <section id="properties" class="py-20 bg-gray-50 text-center">
-    <h2 class="text-3xl font-bold text-gray-800 mb-10">Featured Properties</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-4 max-w-6xl mx-auto">
-      <div class="bg-white shadow rounded p-4">
-        <img src="https://placehold.co/300x200" alt="Property 1" class="w-full mb-4 rounded">
-        <h3 class="font-semibold text-lg text-gray-700">Beachfront Villa</h3>
+  <section id="properties" class="py-24 bg-white text-center">
+    <h2 class="text-4xl font-bold text-gray-800 mb-12">Featured Properties</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 px-6 max-w-7xl mx-auto">
+      <div class="bg-[#FAF1E6] shadow rounded-lg p-6">
+        <img src="https://placehold.co/400x300" alt="Property 1" class="w-full mb-4 rounded">
+        <h3 class="font-semibold text-xl">Beachfront Villa</h3>
         <p class="text-sm text-gray-500">฿25,000,000</p>
       </div>
-      <div class="bg-white shadow rounded p-4">
-        <img src="https://placehold.co/300x200" alt="Property 2" class="w-full mb-4 rounded">
-        <h3 class="font-semibold text-lg text-gray-700">Modern Condo</h3>
+      <div class="bg-[#FAF1E6] shadow rounded-lg p-6">
+        <img src="https://placehold.co/400x300" alt="Property 2" class="w-full mb-4 rounded">
+        <h3 class="font-semibold text-xl">Modern Condo</h3>
         <p class="text-sm text-gray-500">฿8,500,000</p>
+      </div>
+      <div class="bg-[#FAF1E6] shadow rounded-lg p-6">
+        <img src="https://placehold.co/400x300" alt="Property 3" class="w-full mb-4 rounded">
+        <h3 class="font-semibold text-xl">Sea View Apartment</h3>
+        <p class="text-sm text-gray-500">฿12,000,000</p>
       </div>
     </div>
   </section>
 
-  <footer id="contact" class="bg-gray-800 text-white py-6 text-center">
-    <p>&copy; 2025 Mermaid Homes. All rights reserved.</p>
+  <footer id="contact" class="bg-gray-900 text-white py-10 text-center">
+    <p class="text-sm">&copy; 2025 Mermaid Homes. All rights reserved.</p>
   </footer>
+
 </body>
 </html>
