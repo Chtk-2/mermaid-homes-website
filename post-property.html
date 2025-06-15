@@ -3,45 +3,62 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Post Property</title>
+  <title>Post Property - Multiple Images</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script type="module">
-    import {{ initializeApp }} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-    import {{ getFirestore, collection, addDoc }} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
 
-    const firebaseConfig = {{
+    const firebaseConfig = {
       apiKey: "AIzaSyCyTuwcwvEgeD-1z5VS5ZUqn9AkKDVQ3qM",
       authDomain: "mermaid-homes-67a4d.firebaseapp.com",
       projectId: "mermaid-homes-67a4d",
-      storageBucket: "mermaid-homes-67a4d.firebasestorage.app",
+      storageBucket: "mermaid-homes-67a4d.appspot.com",
       messagingSenderId: "670677026431",
       appId: "1:670677026431:web:133a2956d8566f52d8a14a",
       measurementId: "G-L4Y8FBFNK4"
-    }};
+    };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const storage = getStorage(app);
 
     window.submitProperty = async () => {
       const title = document.getElementById("title").value;
       const price = document.getElementById("price").value;
       const description = document.getElementById("description").value;
-      const image = document.getElementById("image").value;
+      const imageFiles = document.getElementById("images").files;
 
-      try {{
-        await addDoc(collection(db, "properties"), {{
+      if (!imageFiles.length || imageFiles.length > 10) {
+        alert("Please select between 1 and 10 images.");
+        return;
+      }
+
+      const imageUrls = [];
+
+      for (const file of imageFiles) {
+        const imageRef = ref(storage, 'property-images/' + Date.now() + '-' + file.name);
+        const snapshot = await uploadBytes(imageRef, file);
+        const url = await getDownloadURL(snapshot.ref);
+        imageUrls.push(url);
+      }
+
+      try {
+        await addDoc(collection(db, "properties"), {
           title,
           price,
           description,
-          image,
+          images: imageUrls,
           createdAt: new Date().toISOString()
-        }});
-        alert("✅ Property posted successfully!");
+        });
+
+        alert("✅ Property posted with images!");
         document.getElementById("property-form").reset();
-      }} catch (e) {{
-        alert("❌ Failed to post property");
-        console.error("Error adding document: ", e);
-      }}
+      } catch (e) {
+        alert("❌ Failed to post property.");
+        console.error("Error:", e);
+      }
     };
   </script>
 </head>
@@ -52,7 +69,8 @@
       <input type="text" id="title" placeholder="Property Title" class="w-full border px-4 py-2 rounded" required>
       <input type="number" id="price" placeholder="Price (THB)" class="w-full border px-4 py-2 rounded" required>
       <textarea id="description" placeholder="Description" rows="4" class="w-full border px-4 py-2 rounded" required></textarea>
-      <input type="url" id="image" placeholder="Image URL" class="w-full border px-4 py-2 rounded" required>
+      <input type="file" id="images" accept="image/*" multiple class="w-full border px-4 py-2 rounded bg-white" required>
+      <p class="text-sm text-gray-500">You can upload up to 10 images</p>
       <button type="submit" class="w-full bg-[#FAD59A] text-white font-bold py-2 px-4 rounded hover:bg-yellow-400">Submit</button>
     </form>
   </div>
