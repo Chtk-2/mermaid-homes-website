@@ -10,7 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Forum&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     
-    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    <!-- Chart.js SDK -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 
     <style>
         :root {
@@ -23,7 +24,7 @@
         body { font-family: 'Poppins', sans-serif; background-color: var(--bg-main); color: var(--text-dark); }
         .font-heading { font-family: 'Forum', serif; }
         .container { max-width: 1280px; margin: 0 auto; padding: 0 1rem; }
-        #loading-overlay { transition: opacity 0.3s ease-out; }
+        #loading-overlay { transition: opacity 0.5s ease-out; }
         .page-content-section { display: none; }
         .page-content-section.active { display: block; animation: fadeIn 0.5s ease-out; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -33,7 +34,7 @@
         .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); z-index: 2; }
         .hero .container { position: relative; z-index: 3; }
         .properties-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 2rem; }
-        .property-card { background: #fff; border-radius: 0.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow: hidden; transition: all 0.3s ease; display: flex; flex-direction: column; }
+        .property-card { background: #fff; border-radius: 0.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow: hidden; transition: all 0.3s ease; display: flex; flex-direction: column; cursor: pointer; }
         .property-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(177, 116, 87, 0.1); }
         .card-banner { position: relative; height: 250px; overflow: hidden; }
         .card-banner img { width: 100%; height: 100%; object-fit: cover; }
@@ -45,16 +46,117 @@
         .nav-link.nav-active { color: var(--primary-color); font-weight: 700; }
         #mobile-menu { opacity: 0; max-height: 0; transform: translateY(-10px); overflow: hidden; transition: all 0.3s ease-out; display: block !important; }
         #mobile-menu.active { opacity: 1; max-height: 500px; transform: translateY(0); }
-        .btn-primary { background: var(--primary-color); color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 0.375rem; cursor: pointer; transition: all 0.3s ease; font-weight: 500; }
+        .btn-primary { background: var(--primary-color); color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 0.375rem; cursor: pointer; transition: all 0.3s ease; font-weight: 500; text-decoration: none; display: inline-block; }
         .btn-primary:hover { background-color: var(--primary-color-dark); transform: translateY(-1px); }
+        
+        /* Fixed Add Listing Button */
+        .add-listing-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            z-index: 40;
+        }
+        .add-listing-btn:hover {
+            background: var(--primary-color-dark);
+            transform: scale(1.1);
+        }
+        
+        /* WhatsApp Float Button */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            width: 60px;
+            height: 60px;
+            background: #25D366;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            z-index: 40;
+        }
+        .whatsapp-float:hover {
+            background: #20BA5A;
+            transform: scale(1.1);
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 100;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 2rem;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        /* Form Styles */
+        .modal-content label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+        .modal-content input,
+        .modal-content select,
+        .modal-content textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+        }
+        .modal-content input:focus,
+        .modal-content select:focus,
+        .modal-content textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(177, 116, 87, 0.1);
+        }
     </style>
 </head>
 <body>
 
     <div id="loading-overlay" class="fixed top-0 left-0 w-full h-full bg-white flex flex-col items-center justify-center z-[100]">
-        <img src="Ui1.png" alt="Mermaid Homes Logo" class="h-20 mx-auto">
+        <div class="w-20 h-20 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center mb-4">
+            <i class="fas fa-home text-white text-2xl"></i>
+        </div>
         <div class="text-2xl font-bold mb-2" style="color: var(--primary-color);">Mermaid Homes</div>
-        <div id="loading-text" class="animate-pulse text-gray-500">Loading website...</div>
+        <div id="loading-text" class="animate-pulse text-gray-500">Initializing...</div>
     </div>
     
     <div id="notification" class="fixed top-4 right-4 z-[110] p-4 rounded-lg shadow-lg hidden"></div>
@@ -75,6 +177,7 @@
 const App = {
     elements: {},
     propertiesData: [],
+    roiChart: null,
     
     init() {
         document.addEventListener('DOMContentLoaded', () => {
@@ -99,21 +202,31 @@ const App = {
         event.preventDefault();
         const form = event.target;
         const formData = new FormData(form);
-        const files = formData.get('images')?.files;
-        const tempImage = files && files.length > 0 ? URL.createObjectURL(files[0]) : 'Ui1.png';
+        
+        // Fixed file handling
+        const fileInput = form.querySelector('input[type="file"]');
+        const tempImage = fileInput && fileInput.files && fileInput.files.length > 0 
+            ? URL.createObjectURL(fileInput.files[0]) 
+            : 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800';
 
         const newProperty = {
-            id: 'prop-' + Date.now(),
-            title: formData.get('title'), type: formData.get('type'), category: formData.get('category'), location: formData.get('location'), 
-            bedrooms: parseInt(formData.get('bedrooms')), bathrooms: parseInt(formData.get('bathrooms')), area: parseInt(formData.get('area')),
-            priceTHB: parseInt(formData.get('priceTHB')), description: formData.get('description'),
+            id: 'temp-' + Date.now(),
+            title: formData.get('title'), 
+            type: formData.get('type'), 
+            category: formData.get('category'), 
+            location: formData.get('location'), 
+            bedrooms: parseInt(formData.get('bedrooms')) || 0, 
+            bathrooms: parseInt(formData.get('bathrooms')) || 0, 
+            area: parseInt(formData.get('area')) || 0,
+            priceTHB: parseInt(formData.get('priceTHB')) || 0, 
+            description: formData.get('description') || '',
             images: [tempImage]
         };
         
         this.propertiesData.unshift(newProperty);
         this.filterAndRenderProperties();
         this.hideModal(this.elements.addListingModal);
-        this.showNotification('Property added (for this session only).');
+        this.showNotification('Property added for this session.', 'success');
         form.reset();
     },
 
@@ -121,12 +234,18 @@ const App = {
         this.propertiesData = this.propertiesData.filter(p => p.id !== propId);
         this.filterAndRenderProperties();
         this.hideModal(this.elements.deleteConfirmModal);
-        this.showNotification('Property deleted (for this session only).');
+        this.showNotification('Property removed for this session.', 'success');
     },
     
+    // --- UI and Helper Functions ---
     cacheDOMElements() {
         const ids = ['loading-overlay', 'loading-text', 'notification', 'header', 'main-content', 'footer', 'add-listing-btn', 'whatsapp-float', 'add-listing-modal', 'property-detail-modal', 'delete-confirm-modal'];
-        ids.forEach(id => this.elements[id] = document.getElementById(id));
+        ids.forEach(id => {
+            const element = document.getElementById(id);
+            if (element) {
+                this.elements[id.replace(/-(\w)/g, (_, l) => l.toUpperCase())] = element;
+            }
+        });
     },
 
     cacheInjectedElements() {
@@ -139,98 +258,318 @@ const App = {
     },
 
     injectHTML() {
-        if(this.elements.header) this.elements.header.innerHTML = `<div class="header-bottom"><div class="container mx-auto px-4 flex justify-between items-center py-2"><a href="#hero-section" class="nav-link"><img src="Ui1.png" alt="Mermaid Homes Logo" class="h-12"></a><nav class="hidden lg:flex items-center space-x-8 text-lg font-heading text-gray-700"><a href="#properties" class="nav-link hover:text-[var(--primary-color)] transition-colors">Properties</a><a href="#roi-calculator" class="nav-link hover:text-[var(--primary-color)] transition-colors">ROI Calculator</a><a href="#contact" class="nav-link hover:text-[var(--primary-color)] transition-colors">Contact</a></nav><button id="mobile-menu-button" class="lg:hidden text-gray-600"><i class="fas fa-bars text-2xl"></i></button></div></div><div id="mobile-menu" class="lg:hidden bg-white border-t"><a href="#properties" class="nav-link block text-center py-3 text-gray-700 hover:bg-gray-100 font-heading">Properties</a><a href="#roi-calculator" class="nav-link block text-center py-3 text-gray-700 hover:bg-gray-100 font-heading">ROI Calculator</a><a href="#contact" class="nav-link block text-center py-3 text-gray-700 hover:bg-gray-100 font-heading">Contact</a></div>`;
-        if(this.elements.mainContent) this.elements.mainContent.innerHTML = `<section id="hero-section" class="page-content-section hero"><video autoplay loop muted playsinline id="hero-video"><source src="Video opening.mp4" type="video/mp4"></video><div class="hero-overlay"></div><div class="container mx-auto px-4"><div class="hero-content"><h1 class="text-5xl md:text-6xl font-bold mb-6 font-heading">Find Your Dream House By Us</h1><p class="mt-4 text-lg text-gray-200">Thailand best luxury homes | Sell and Rent 🏡</p><a href="#properties" class="nav-link btn-primary inline-block mt-8 font-bold py-3 px-8 rounded-full">Explore Properties</a></div></div></section><section id="properties" class="page-content-section py-12 md:py-20"><div class="container mx-auto px-4"><h2 class="text-4xl md:text-5xl font-bold text-center mb-12" style="color:var(--primary-color);">Featured Listings</h2><div id="properties-grid" class="properties-grid"></div></div></section><section id="roi-calculator" class="page-content-section py-12 md:py-20"><div class="container mx-auto px-4"><h2 class="text-4xl md:text-5xl font-bold text-center mb-10 text-gray-800">Return on Investment Calculator</h2><div id="roi-calculator-content" class="max-w-xl mx-auto bg-white rounded-2xl shadow-lg p-8"></div></div></section><section id="contact" class="page-content-section py-12 md:py-20 bg-white"><div class="container mx-auto px-4"><h2 class="text-4xl md:text-5xl font-bold text-center mb-4 text-gray-800">Get In Touch</h2><p class="text-center text-gray-500 mb-12 max-w-2xl mx-auto">We are here to help you.</p><div id="contact-content" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div></div></section>`;
-        if(this.elements.footer) this.elements.footer.innerHTML = `<div class="footer-top py-12 bg-[#D8D2C2]"><div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8"><!-- Footer content --></div></div><div class="footer-bottom py-4 bg-[#c9c2b4] text-center"><p>&copy; ${new Date().getFullYear()} Mermaid Homes. All Rights Reserved.</p></div>`;
-        if(this.elements.addListingModal) this.elements.addListingModal.innerHTML = `<div class="modal-content"><div class="flex justify-between items-center mb-6"><h3 class="text-2xl font-bold">Add New Property</h3><button onclick="App.hideModal(App.elements.addListingModal)" class="text-gray-500 hover:text-gray-700">&times;</button></div><form id="property-form" class="space-y-4"><div><label>Title</label><input type="text" name="title" required class="w-full p-2 border rounded"></div><div><label>Type</label><select name="type" required class="w-full p-2 border rounded"><option value="sale">Sale</option><option value="rent">Rent</option></select></div><div><label>Category</label><input type="text" name="category" required class="w-full p-2 border rounded"></div><div><label>Location</label><input type="text" name="location" required class="w-full p-2 border rounded"></div><div><label>Bedrooms</label><input type="number" name="bedrooms" required class="w-full p-2 border rounded"></div><div><label>Bathrooms</label><input type="number" name="bathrooms" required class="w-full p-2 border rounded"></div><div><label>Area (sqm)</label><input type="number" name="area" required class="w-full p-2 border rounded"></div><div><label>Price (THB)</label><input type="number" name="priceTHB" required class="w-full p-2 border rounded"></div><div><label>Description</label><textarea name="description" rows="3" required class="w-full p-2 border rounded"></textarea></div><div><label>Images</label><input type="file" name="images" multiple accept="image/*" required class="w-full"></div><button type="submit" class="btn-primary w-full">Add Property</button></form></div>`;
-        if(this.elements.propertyDetailModal) this.elements.propertyDetailModal.innerHTML = `<div class="modal-content max-w-4xl"><button onclick="App.hideModal(App.elements.propertyDetailModal)" class="absolute top-4 right-4 text-2xl">&times;</button><div id="property-detail-content"></div></div>`;
-        if(this.elements.deleteConfirmModal) this.elements.deleteConfirmModal.innerHTML = `<div class="modal-content max-w-md text-center"><h3 class="text-xl font-bold mb-4">Are you sure?</h3><p class="text-gray-600 mb-6">This action cannot be undone.</p><div class="flex gap-4 justify-center"><button id="confirm-delete-btn" class="btn-primary bg-red-600 hover:bg-red-700">Delete</button><button onclick="App.hideModal(App.elements.deleteConfirmModal)" class="px-6 py-3 border rounded">Cancel</button></div></div>`;
-        if(document.getElementById('roi-calculator-content')) document.getElementById('roi-calculator-content').innerHTML = `<div class="space-y-4"><div><label for="investment" class="block text-lg font-medium text-gray-700 mb-1">Total Investment</label><input id="investment" type="number" placeholder="5000000" class="w-full p-3 border rounded"></div><div><label for="income" class="block text-lg font-medium text-gray-700 mb-1">Monthly Rental Income</label><input id="income" type="number" placeholder="30000" class="w-full p-3 border rounded"></div><div><label for="expenses" class="block text-lg font-medium text-gray-700 mb-1">Annual Expenses</label><input id="expenses" type="number" placeholder="25000" class="w-full p-3 border rounded"></div><div id="roi-result" class="mt-4 text-center font-bold text-3xl h-10"></div><div id="roiChartContainer" class="h-80 mt-6"><canvas id="roiChart"></canvas></div></div>`;
+        // Header
+        if(this.elements.header) {
+            this.elements.header.innerHTML = `
+                <div class="header-bottom">
+                    <div class="container mx-auto px-4 flex justify-between items-center py-2">
+                        <a href="#hero-section" class="nav-link">
+                            <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center">
+                                <i class="fas fa-home text-white text-xl"></i>
+                            </div>
+                        </a>
+                        <nav class="hidden lg:flex items-center space-x-8 text-lg font-heading text-gray-700">
+                            <a href="#properties" class="nav-link hover:text-[var(--primary-color)] transition-colors">Properties</a>
+                            <a href="#roi-calculator" class="nav-link hover:text-[var(--primary-color)] transition-colors">ROI Calculator</a>
+                            <a href="#contact" class="nav-link hover:text-[var(--primary-color)] transition-colors">Contact</a>
+                        </nav>
+                        <button id="mobile-menu-button" class="lg:hidden text-gray-600">
+                            <i class="fas fa-bars text-2xl"></i>
+                        </button>
+                    </div>
+                </div>
+                <div id="mobile-menu" class="lg:hidden bg-white border-t">
+                    <a href="#properties" class="nav-link block text-center py-3 text-gray-700 hover:bg-gray-100 font-heading">Properties</a>
+                    <a href="#roi-calculator" class="nav-link block text-center py-3 text-gray-700 hover:bg-gray-100 font-heading">ROI Calculator</a>
+                    <a href="#contact" class="nav-link block text-center py-3 text-gray-700 hover:bg-gray-100 font-heading">Contact</a>
+                </div>
+            `;
+        }
+        
+        // Main Content
+        if(this.elements.mainContent) {
+            this.elements.mainContent.innerHTML = `
+                <section id="hero-section" class="page-content-section hero">
+                    <div class="hero-overlay"></div>
+                    <div class="container mx-auto px-4">
+                        <div class="hero-content">
+                            <h1 class="text-5xl md:text-6xl font-bold mb-6 font-heading">Find Your Dream House By Us</h1>
+                            <p class="mt-4 text-lg text-gray-200">Thailand best luxury homes | Sell and Rent 🏡</p>
+                            <a href="#properties" class="nav-link btn-primary inline-block mt-8 font-bold py-3 px-8 rounded-full">Explore Properties</a>
+                        </div>
+                    </div>
+                </section>
+                
+                <section id="properties" class="page-content-section py-12 md:py-20">
+                    <div class="container mx-auto px-4">
+                        <h2 class="text-4xl md:text-5xl font-bold text-center mb-12" style="color:var(--primary-color);">Featured Listings</h2>
+                        <div id="properties-grid" class="properties-grid"></div>
+                    </div>
+                </section>
+                
+                <section id="roi-calculator" class="page-content-section py-12 md:py-20">
+                    <div class="container mx-auto px-4">
+                        <h2 class="text-4xl md:text-5xl font-bold text-center mb-10 text-gray-800">Return on Investment Calculator</h2>
+                        <div id="roi-calculator-content" class="max-w-xl mx-auto bg-white rounded-2xl shadow-lg p-8"></div>
+                    </div>
+                </section>
+                
+                <section id="contact" class="page-content-section py-12 md:py-20 bg-white">
+                    <div class="container mx-auto px-4">
+                        <h2 class="text-4xl md:text-5xl font-bold text-center mb-4 text-gray-800">Get In Touch</h2>
+                        <p class="text-center text-gray-500 mb-12 max-w-2xl mx-auto">We are here to help you find your perfect property in Phuket.</p>
+                        <div id="contact-content" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div class="text-center">
+                                <i class="fas fa-phone text-4xl text-[var(--primary-color)] mb-4"></i>
+                                <h3 class="text-xl font-bold mb-2">Phone</h3>
+                                <p class="text-gray-600">+66 65 476 5114</p>
+                            </div>
+                            <div class="text-center">
+                                <i class="fas fa-envelope text-4xl text-[var(--primary-color)] mb-4"></i>
+                                <h3 class="text-xl font-bold mb-2">Email</h3>
+                                <p class="text-gray-600">info@mermaidhomes.com</p>
+                            </div>
+                            <div class="text-center">
+                                <i class="fas fa-map-marker-alt text-4xl text-[var(--primary-color)] mb-4"></i>
+                                <h3 class="text-xl font-bold mb-2">Location</h3>
+                                <p class="text-gray-600">Phuket, Thailand</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            `;
+        }
+        
+        // Footer
+        if(this.elements.footer) {
+            this.elements.footer.innerHTML = `
+                <div class="footer-top py-12 bg-[#D8D2C2]">
+                    <div class="container mx-auto px-4 text-center">
+                        <div class="w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-home text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-2">Mermaid Homes</h3>
+                        <p class="text-gray-600">Your trusted real estate partner in Phuket</p>
+                    </div>
+                </div>
+                <div class="footer-bottom py-4 bg-[#c9c2b4] text-center">
+                    <p>&copy; ${new Date().getFullYear()} Mermaid Homes. All Rights Reserved.</p>
+                </div>
+            `;
+        }
+        
+        // Modals
+        if(this.elements.addListingModal) {
+            this.elements.addListingModal.innerHTML = `
+                <div class="modal-content">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-2xl font-bold">Add New Property</h3>
+                        <button onclick="App.hideModal(App.elements.addListingModal)" class="text-gray-500 hover:text-gray-700 text-3xl">&times;</button>
+                    </div>
+                    <form id="property-form" class="space-y-4">
+                        <div>
+                            <label>Title</label>
+                            <input type="text" name="title" required class="w-full p-2 border rounded">
+                        </div>
+                        <div>
+                            <label>Type</label>
+                            <select name="type" required class="w-full p-2 border rounded">
+                                <option value="sale">Sale</option>
+                                <option value="rent">Rent</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>Category</label>
+                            <input type="text" name="category" required class="w-full p-2 border rounded" placeholder="Villa, Condo, House">
+                        </div>
+                        <div>
+                            <label>Location</label>
+                            <input type="text" name="location" required class="w-full p-2 border rounded" placeholder="Kamala, Bangtao, Rawai">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label>Bedrooms</label>
+                                <input type="number" name="bedrooms" required class="w-full p-2 border rounded" min="1">
+                            </div>
+                            <div>
+                                <label>Bathrooms</label>
+                                <input type="number" name="bathrooms" required class="w-full p-2 border rounded" min="1">
+                            </div>
+                        </div>
+                        <div>
+                            <label>Area (sqm)</label>
+                            <input type="number" name="area" required class="w-full p-2 border rounded" min="1">
+                        </div>
+                        <div>
+                            <label>Price (THB)</label>
+                            <input type="number" name="priceTHB" required class="w-full p-2 border rounded" min="1">
+                        </div>
+                        <div>
+                            <label>Description</label>
+                            <textarea name="description" rows="3" required class="w-full p-2 border rounded" placeholder="Describe the property..."></textarea>
+                        </div>
+                        <div>
+                            <label>Images</label>
+                            <input type="file" name="images" multiple accept="image/*" class="w-full p-2 border rounded">
+                        </div>
+                        <button type="submit" class="btn-primary w-full">Add Property</button>
+                    </form>
+                </div>
+            `;
+        }
+        
+        if(this.elements.propertyDetailModal) {
+            this.elements.propertyDetailModal.innerHTML = `
+                <div class="modal-content max-w-4xl">
+                    <button onclick="App.hideModal(App.elements.propertyDetailModal)" class="absolute top-4 right-4 text-2xl text-gray-500 hover:text-gray-700">&times;</button>
+                    <div id="property-detail-content"></div>
+                </div>
+            `;
+        }
+        
+        if(this.elements.deleteConfirmModal) {
+            this.elements.deleteConfirmModal.innerHTML = `
+                <div class="modal-content max-w-md text-center">
+                    <h3 class="text-xl font-bold mb-4">Are you sure?</h3>
+                    <p class="text-gray-600 mb-6">This action cannot be undone.</p>
+                    <div class="flex gap-4 justify-center">
+                        <button id="confirm-delete-btn" class="btn-primary bg-red-600 hover:bg-red-700">Delete</button>
+                        <button onclick="App.hideModal(App.elements.deleteConfirmModal)" class="px-6 py-3 border rounded hover:bg-gray-50">Cancel</button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // ROI Calculator Content
+        const roiContent = document.getElementById('roi-calculator-content');
+        if(roiContent) {
+            roiContent.innerHTML = `
+                <div class="space-y-4">
+                    <div>
+                        <label for="investment" class="block text-lg font-medium text-gray-700 mb-1">Total Investment (THB)</label>
+                        <input id="investment" type="number" placeholder="5000000" class="w-full p-3 border rounded-lg">
+                    </div>
+                    <div>
+                        <label for="income" class="block text-lg font-medium text-gray-700 mb-1">Monthly Rental Income (THB)</label>
+                        <input id="income" type="number" placeholder="30000" class="w-full p-3 border rounded-lg">
+                    </div>
+                    <div>
+                        <label for="expenses" class="block text-lg font-medium text-gray-700 mb-1">Annual Expenses (THB)</label>
+                        <input id="expenses" type="number" placeholder="25000" class="w-full p-3 border rounded-lg">
+                    </div>
+                    <div id="roi-result" class="mt-4 text-center font-bold text-3xl h-10" style="color: var(--primary-color);"></div>
+                    <div id="roiChartContainer" class="h-80 mt-6">
+                        <canvas id="roiChart"></canvas>
+                    </div>
+                </div>
+            `;
+        }
     },
 
     bindEvents() {
-        this.elements.navLinks.forEach(link => link.addEventListener('click', e => { e.preventDefault(); const id = link.getAttribute('href')?.substring(1); if(id) this.showPage(id); }));
-        document.getElementById('mobile-menu-button')?.addEventListener('click', () => document.getElementById('mobile-menu')?.classList.toggle('active'));
-        this.elements.addListingBtn?.addEventListener('click', () => this.showModal(this.elements.addListingModal));
-        document.getElementById('open-listing-form-from-page')?.addEventListener('click', () => this.showModal(this.elements.addListingModal));
-        document.getElementById('property-form')?.addEventListener('submit', (e) => this.handlePropertySubmit(e));
-        document.getElementById('roi-calculator-content')?.addEventListener("input", () => this.calculateROI());
-        window.addEventListener('popstate', e => this.showPage(e.state?.page || 'hero-section', true));
+        // Navigation links
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('nav-link') || e.target.closest('.nav-link')) {
+                e.preventDefault();
+                const link = e.target.classList.contains('nav-link') ? e.target : e.target.closest('.nav-link');
+                const href = link.getAttribute('href');
+                if (href && href.startsWith('#')) {
+                    const id = href.substring(1);
+                    this.showPage(id);
+                }
+            }
+        });
+        
+        // Mobile menu
+        document.addEventListener('click', (e) => {
+            if (e.target.id === 'mobile-menu-button' || e.target.closest('#mobile-menu-button')) {
+                const menu = document.getElementById('mobile-menu');
+                if (menu) menu.classList.toggle('active');
+            }
+        });
+        
+        // Add listing button
+        if (this.elements.addListingBtn) {
+            this.elements.addListingBtn.addEventListener('click', () => {
+                this.showModal(this.elements.addListingModal);
+            });
+        }
+        
+        // Property form
+        document.addEventListener('submit', (e) => {
+            if (e.target.id === 'property-form') {
+                this.handlePropertySubmit(e);
+            }
+        });
+        
+        // ROI Calculator
+        document.addEventListener('input', (e) => {
+            if (e.target.id === 'investment' || e.target.id === 'income' || e.target.id === 'expenses') {
+                this.calculateROI();
+            }
+        });
+        
+        // Window events
+        window.addEventListener('popstate', e => {
+            this.showPage(e.state?.page || 'hero-section', true);
+        });
+        
+        // Modal backdrop clicks
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal') && e.target.classList.contains('active')) {
+                this.hideModal(e.target);
+            }
+        });
     },
 
     showPage(pageId, isInitial = false) {
-        document.querySelectorAll('.page-content-section').forEach(section => section.classList.remove('active'));
+        document.querySelectorAll('.page-content-section').forEach(section => {
+            section.classList.remove('active');
+        });
+        
         const targetSection = document.getElementById(pageId);
         if (targetSection) {
             targetSection.classList.add('active');
-            if (!isInitial) window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (!isInitial) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
             history.pushState({ page: pageId }, '', `#${pageId}`);
-            document.querySelectorAll('.nav-link').forEach(link => link.classList.toggle('nav-active', link.getAttribute('href') === `#${pageId}`));
+            
+            // Update nav active state
+            document.querySelectorAll('.nav-link').forEach(link => {
+                const href = link.getAttribute('href');
+                link.classList.toggle('nav-active', href === `#${pageId}`);
+            });
         }
-        document.getElementById('mobile-menu')?.classList.remove('active');
+        
+        // Close mobile menu
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenu) mobileMenu.classList.remove('active');
     },
 
     showNotification(message, type = 'info') {
         const el = this.elements.notification;
         if (!el) return;
-        const colors = { success: 'bg-green-500', error: 'bg-red-500', info: 'bg-blue-500' };
+        
+        const colors = {
+            success: 'bg-green-500',
+            error: 'bg-red-500',
+            info: 'bg-blue-500'
+        };
+        
         el.className = `fixed top-4 right-4 z-[110] p-4 rounded-lg shadow-lg text-white ${colors[type]}`;
         el.textContent = message;
         el.classList.remove('hidden');
-        setTimeout(() => el.classList.add('hidden'), 3000);
+        
+        setTimeout(() => {
+            el.classList.add('hidden');
+        }, 3000);
     },
 
     filterAndRenderProperties() {
         const grid = document.getElementById('properties-grid');
         if (!grid) return;
-        grid.innerHTML = this.propertiesData.length === 0 
-            ? `<div class="col-span-full text-center text-gray-500 py-8">No properties found.</div>`
-            : this.propertiesData.map(prop => this.getPropertyCardHTML(prop)).join('');
-    },
-
-    getPropertyCardHTML(prop) {
-        const price = prop.priceTHB ? `฿${prop.priceTHB.toLocaleString()}` : 'Price on Request';
-        return `<div class="property-card" onclick="App.showPropertyDetail('${prop.id}')"><div class="card-banner"><img src="${prop.images?.[0] || 'Ui1.png'}" alt="${prop.title}" onerror="this.onerror=null;this.src='Ui1.png';"><div class="card-badge">${prop.type}</div><button class="delete-property-btn" onclick="event.stopPropagation(); App.showDeleteConfirmation('${prop.id}')" title="Delete Property"><i class="fas fa-trash"></i></button></div><div class="card-content"><div><h3 class="text-xl font-bold">${prop.title}</h3><p class="text-sm text-gray-500 mb-4">${prop.location}</p></div><div class="card-price">${price}</div></div></div>`;
-    },
-
-    showPropertyDetail(propId) {
-        const prop = this.propertiesData.find(p => p.id === propId);
-        if (!prop) return;
-        document.getElementById('property-detail-content').innerHTML = `<h2>${prop.title}</h2><p>${prop.description}</p>`;
-        this.showModal(this.elements.propertyDetailModal);
-    },
-
-    showDeleteConfirmation(propId) {
-        this.showModal(this.elements.deleteConfirmModal);
-        document.getElementById('confirm-delete-btn').onclick = () => this.deleteProperty(propId);
-    },
-    
-    hideLoading() {
-        const overlay = this.elements.loadingOverlay;
-        if (overlay && overlay.style.display !== 'none') {
-            overlay.style.opacity = '0';
-            overlay.addEventListener('transitionend', () => {
-                overlay.style.display = 'none';
-            }, { once: true });
-        }
-    },
-    
-    setLanguage() {},
-    calculateROI() {},
-    hideModal(modalEl) { if (modalEl) modalEl.classList.remove('active'); },
-    showModal(modalEl) { if (modalEl) modalEl.classList.add('active'); },
-
-    getDefaultData() {
-        return [
-            { id: 'villa-1', title: 'Luxury Sea View Villa', type: 'sale', category: 'Villa', location: 'Kamala', bedrooms: 4, bathrooms: 5, area: 450, priceTHB: 55000000, images: ['https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800'] },
-            { id: 'condo-1', title: 'Modern Beachfront Condo', type: 'rent', category: 'Condo', location: 'Bangtao', bedrooms: 2, bathrooms: 2, area: 120, priceTHB: 80000, images: ['https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800'] },
-            { id: 'house-1', title: 'Cozy Family House', type: 'sale', category: 'House', location: 'Rawai', bedrooms: 3, bathrooms: 2, area: 200, priceTHB: 12000000, images: ['https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800'] }
-        ];
-    }
-};
-
-App.init();
-</script>
-
-</body>
-</html>
+        
+        if (this.propertiesData.length === 0) {
+            grid.innerHTML = `
+                <div class="col-span-full text-
