@@ -20,8 +20,6 @@
             --bg-main: #FFFFFF;
             --bg-secondary: #FAF7F0;
             --text-dark: #2d3748;
-            --text-light: #718096;
-            --border-color: #e2e8f0;
         }
         html { scroll-behavior: smooth; }
         body { font-family: 'Poppins', sans-serif; background-color: var(--bg-main); color: var(--text-dark); }
@@ -35,7 +33,7 @@
             opacity: 1; transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
             visibility: visible;
         }
-        #loader.hidden { opacity: 0; visibility: hidden; }
+        #loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
         .loader-logo {
             font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 2rem;
             letter-spacing: 0.1em; color: #2d3748;
@@ -92,8 +90,6 @@
 <body>
 
     <div id="loader"><div class="loader-logo">MERMAID HOMES</div></div>
-    
-    <div id="notification" class="fixed top-5 right-5 z-[110] p-4 rounded-lg shadow-lg text-white opacity-0 transition-opacity duration-300 -translate-y-10" style="transform: translateY(-50px);"></div>
 
     <header id="header" class="header"></header>
     <main id="main-content"></main>
@@ -106,9 +102,11 @@ const App = {
     roiChart: null,
     
     init() {
-        // Hide loader on initial load
         window.addEventListener('load', () => {
-            setTimeout(() => { this.elements.loader?.classList.add('hidden'); }, 300);
+             // Hide loader only on initial page load, after a small delay
+            setTimeout(() => {
+                this.elements.loader?.classList.add('hidden');
+            }, 500); // A bit longer for initial asset loading
         });
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -116,22 +114,29 @@ const App = {
             this.injectHTML();
             this.cacheInjectedElements();
             this.bindEvents();
-            this.loadProperties();
-            const initialPage = window.location.hash.substring(1) || 'hero-section';
-            this.showPage(initialPage, true); // True for initial load
+            this.loadInitialContent();
             this.scrollReveal();
         });
     },
+    
+    loadInitialContent() {
+        this.loadProperties();
+        const initialPage = window.location.hash.substring(1) || 'hero-section';
+        this.showPage(initialPage, true); // true for initial load (no loader)
+        if (initialPage === 'roi-calculator') {
+            this.calculateROI(); // Initial calculation if landing on ROI page
+        }
+    },
 
     cacheDOMElements() {
-        const ids = ['loader', 'notification', 'header', 'main-content', 'footer'];
+        const ids = ['loader', 'header', 'main-content', 'footer'];
         ids.forEach(id => {
             this.elements[id] = document.getElementById(id);
         });
     },
 
     cacheInjectedElements() {
-        const ids = ['mobile-menu', 'mobile-menu-button', 'properties-grid', 'roi-calculator-content'];
+        const ids = ['mobile-menu', 'mobile-menu-button', 'properties-grid', 'roi-calculator-content', 'roiChart'];
         ids.forEach(id => {
             const el = document.getElementById(id);
             if(el) this.elements[id.replace(/-(\w)/g, (_,l) => l.toUpperCase())] = el;
@@ -162,9 +167,7 @@ const App = {
         if(this.elements.mainContent) {
             this.elements.mainContent.innerHTML = `
                 <section id="hero-section" class="page-content-section hero">
-                    <video autoplay muted loop playsinline id="hero-video">
-                        <source src="Video opening.mp4" type="video/mp4">
-                    </video>
+                    <video autoplay muted loop playsinline id="hero-video"><source src="Video opening.mp4" type="video/mp4"></video>
                     <div class="hero-overlay"></div>
                     <div class="container mx-auto px-4"><div class="hero-content reveal visible">
                         <h1>MERMAID HOMES</h1><p>FIND YOUR OWN</p>
@@ -184,9 +187,9 @@ const App = {
                         <h2 class="section-heading text-center mb-12 reveal">Investment Calculator</h2>
                         <div id="roi-calculator-content" class="max-w-xl mx-auto bg-white rounded-2xl shadow-lg p-8 reveal">
                              <div class="space-y-4">
-                                <div><label for="investment" class="block text-lg font-medium text-gray-700 mb-1">Total Investment (THB)</label><input id="investment" type="number" placeholder="5000000"></div>
-                                <div><label for="income" class="block text-lg font-medium text-gray-700 mb-1">Monthly Rental Income (THB)</label><input id="income" type="number" placeholder="30000"></div>
-                                <div><label for="expenses" class="block text-lg font-medium text-gray-700 mb-1">Annual Expenses (THB)</label><input id="expenses" type="number" placeholder="25000"></div>
+                                <div><label for="investment" class="block text-lg font-medium text-gray-700 mb-1">Total Investment (THB)</label><input id="investment" type="number" class="w-full p-2 border rounded" placeholder="5000000"></div>
+                                <div><label for="income" class="block text-lg font-medium text-gray-700 mb-1">Monthly Rental Income (THB)</label><input id="income" type="number" class="w-full p-2 border rounded" placeholder="30000"></div>
+                                <div><label for="expenses" class="block text-lg font-medium text-gray-700 mb-1">Annual Expenses (THB)</label><input id="expenses" type="number" class="w-full p-2 border rounded" placeholder="25000"></div>
                                 <div id="roi-result" class="mt-4 text-center font-bold text-3xl h-10" style="color: var(--primary-color);"></div>
                                 <div class="h-64 md:h-80 mt-6"><canvas id="roiChart"></canvas></div>
                             </div>
@@ -238,6 +241,10 @@ const App = {
                 this.calculateROI();
             }
         });
+
+        this.elements.mobileMenuButton?.addEventListener('click', () => {
+             this.elements.mobileMenu?.classList.toggle('active');
+        });
     },
 
     showPage(pageId, isInitial = false) {
@@ -248,9 +255,9 @@ const App = {
             const targetSection = document.getElementById(pageId);
             if (targetSection) {
                 targetSection.classList.add('active');
+                if (!isInitial) window.scrollTo({ top: 0, behavior: 'auto' });
                 history.pushState({ page: pageId }, '', `#${pageId}`);
                 document.querySelectorAll('.nav-link').forEach(l => l.classList.toggle('nav-active', l.getAttribute('href') === `#${pageId}`));
-                if (!isInitial) window.scrollTo({ top: 0, behavior: 'auto' });
             }
             loader?.classList.add('hidden');
         };
@@ -283,14 +290,14 @@ const App = {
         const expenses = parseFloat(document.getElementById('expenses')?.value) || 0;
         const resultEl = document.getElementById('roi-result');
         if (!resultEl) return;
-        if (investment === 0) { resultEl.textContent = ''; if (this.roiChart) this.roiChart.destroy(); return; }
+        if (investment === 0) { resultEl.textContent = ''; if (this.roiChart) this.roiChart.destroy(); this.roiChart=null; return; }
         const roi = ((income * 12 - expenses) / investment) * 100;
         resultEl.textContent = `Annual ROI: ${roi.toFixed(2)}%`;
         this.updateRoiChart(investment, (income * 12 - expenses));
     },
 
     updateRoiChart(investment, netProfit) {
-        const ctx = document.getElementById('roiChart')?.getContext('2d');
+        const ctx = this.elements.roiChart?.getContext('2d');
         if (!ctx) return;
         if (this.roiChart) this.roiChart.destroy();
         this.roiChart = new Chart(ctx, { type: 'doughnut', data: { labels: ['Net Profit', 'Investment'], datasets: [{ data: [netProfit > 0 ? netProfit : 0, investment], backgroundColor: ['#4CAF50', '#E0E0E0'], borderWidth: 2 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { display: false } } } });
@@ -304,7 +311,7 @@ const App = {
     },
 
     getDefaultData() {
-       return [{"id":1,"title":"Luxury Pool Villa in Bangtao","type":"sale","location":"Bangtao, Phuket","bedrooms":4,"bathrooms":5,"area":450,"priceTHB":25000000,"images":["https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800"]},{"id":2,"title":"Modern Sea View Condo","type":"rent","location":"Kamala, Phuket","bedrooms":2,"bathrooms":2,"area":120,"priceTHB":60000,"images":["https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800"]},{"id":3,"title":"Cozy House near Rawai Beach","type":"sale","location":"Rawai, Phuket","bedrooms":3,"bathrooms":2,"area":200,"priceTHB":8500000,"images":["https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800"]}];
+       return [{"id":1,"title":"Luxury Pool Villa in Bangtao","type":"sale","location":"Bangtao, Phuket","bedrooms":4,"bathrooms":5,"area":450,"priceTHB":25000000,"images":["https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800"]},{"id":2,"title":"Modern Sea View Condo","type":"rent","location":"Kamala, Phuket","bedrooms":2,"bathrooms":2,"area":120,"priceTHB":60000,"images":["https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800"]},{"id":3,"title":"Cozy House near Rawai Beach","type":"sale","location":"Rawai, Phuket","bedrooms":3,"bathrooms":2,"area":200,"priceTHB":8500000,"images":["https.unsplash.com/photo-1570129477492-45c003edd2be?w=800"]}];
     }
 };
 
