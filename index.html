@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Forum&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-    
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
 
@@ -51,22 +51,17 @@
     </style>
 </head>
 <body>
-
     <div id="loading-overlay" class="fixed top-0 left-0 w-full h-full bg-white flex flex-col items-center justify-center z-[100]">
         <img src="Ui1.png" alt="Mermaid Homes Logo" class="h-20 mx-auto">
         <div class="text-2xl font-bold mb-2" style="color: var(--primary-color);">Mermaid Homes</div>
         <div id="loading-text" class="animate-pulse text-gray-500">Connecting to Supabase...</div>
     </div>
-    
     <div id="notification" class="fixed top-4 right-4 z-[110] p-4 rounded-lg shadow-lg hidden"></div>
-
     <header id="header" class="header"></header>
     <main id="main-content"></main>
     <footer id="footer" class="footer"></footer>
-
     <button id="add-listing-btn" class="add-listing-btn"><i class="fas fa-plus"></i></button>
     <a href="https://wa.me/66654765114" target="_blank" class="whatsapp-float"><i class="fab fa-whatsapp"></i></a>
-
     <div id="add-listing-modal" class="modal"></div>
     <div id="property-detail-modal" class="modal"></div>
     <div id="delete-confirm-modal" class="modal"></div>
@@ -76,7 +71,6 @@ const App = {
     elements: {},
     propertiesData: [],
     supabase: null,
-    
     init() {
         document.addEventListener('DOMContentLoaded', () => {
             this.cacheDOMElements();
@@ -87,16 +81,13 @@ const App = {
             this.showPage(initialPage, true);
         });
     },
-
     connectToSupabase() {
         const SUPABASE_URL = 'https://ikukwjgqnegtvzwelldnw.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlrdWt3amdxbmVndHZ6d2VuZG53Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk5NTAxMTIsImV4cCI6MjA2NTUyNjExMn0.z4NAbPaIaUYkPugyOZSyMJGN308LP-6qw2bylibHS84';
-
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...';
         if (SUPABASE_URL.includes('YOUR_SUPABASE_URL')) {
             this.elements.loadingText.textContent = 'Error: Supabase not configured in code.';
             return;
         }
-
         try {
             this.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             this.loadProperties();
@@ -106,7 +97,6 @@ const App = {
             this.hideLoading();
         }
     },
-
     async loadProperties() {
         if (!this.supabase) return;
         this.elements.loadingText.textContent = "Loading properties...";
@@ -114,7 +104,6 @@ const App = {
             .from('properties')
             .select('*')
             .order('created_at', { ascending: false });
-
         if (error) {
             console.error('Error loading properties:', error);
             this.showNotification(`Error: ${error.message}`, 'error');
@@ -125,61 +114,16 @@ const App = {
             this.hideLoading();
         }
     },
-
-    async handlePropertySubmit(event) {
-        event.preventDefault();
-        const form = event.target;
-        const formData = new FormData(form);
-        const files = formData.get('images')?.files;
-        if (!files || files.length === 0) return this.showNotification('Please select at least one image.', 'error');
-        
-        this.showNotification('Uploading...', 'success');
-
-        const fileToBase64 = file => new Promise((resolve, reject) => { 
-            const reader = new FileReader(); 
-            reader.readAsDataURL(file); 
-            reader.onload = () => resolve(reader.result); 
-            reader.onerror = error => reject(error); 
-        });
-        const base64Images = await Promise.all(Array.from(files).map(fileToBase64));
-        
-        const newPropertyData = {
-            title: formData.get('title'), type: formData.get('type'), category: formData.get('category'), location: formData.get('location'), 
-            bedrooms: parseInt(formData.get('bedrooms')), bathrooms: parseInt(formData.get('bathrooms')), area: parseInt(formData.get('area')),
-            priceTHB: parseInt(formData.get('priceTHB')), description: formData.get('description'), agentCode: 'USR-' + Date.now().toString().slice(-6),
-            images: base64Images
-        };
-        
-        const { data, error } = await this.supabase.from('properties').insert([newPropertyData]).select();
-
-        if (error) {
-            this.showNotification('Failed to add property.', 'error');
-        } else {
-            this.showNotification('Property added successfully!');
-            this.propertiesData.unshift(data[0]);
-            this.filterAndRenderProperties();
-            this.hideModal(this.elements.addListingModal);
-            form.reset();
-        }
-    },
-
-    async deleteProperty(propId) {
-        const { error } = await this.supabase.from('properties').delete().eq('id', propId);
-        
-        if (error) {
-            this.showNotification('Failed to delete property.', 'error');
-        } else {
-            this.showNotification('Property deleted successfully!');
-            this.propertiesData = this.propertiesData.filter(p => p.id !== propId);
-            this.filterAndRenderProperties();
-            this.hideModal(this.elements.deleteConfirmModal);
-        }
-    },
-    
-    // ... all other helper functions (cache, inject, bind, UI updates) go here ...
 };
 
-App.init();
+window.addEventListener('load', () => {
+    const waitForSupabase = setInterval(() => {
+        if (window.supabase && window.supabase.createClient) {
+            clearInterval(waitForSupabase);
+            App.init();
+        }
+    }, 50);
+});
 </script>
 </body>
 </html>
